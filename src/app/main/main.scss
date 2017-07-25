@@ -1,0 +1,21 @@
+.ui-view-container {
+	position: relative;
+}
+
+[ui-view] {
+	&.ng-enter,
+	&.ng-leave {
+		position: absolute;
+		transition: opacity .5s ease-in-out;
+		width: 100%;
+	}
+
+	&.ng-enter,
+	&.ng-leave-active {
+		opacity: 0;
+	}
+
+	&.ng-enter-active {
+		opacity: 1;
+	}
+}

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+	<meta charset="utf-8">
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>squarrels</title>
+
+	<link rel="apple-touch-icon" href="apple-touch-icon.png">
+	<!-- <link rel="favicon" href="favicon.ico"> -->
+
+	<!-- build:css styles/vendor.css -->
+	<!-- bower:css -->
+	<!-- endbower -->
+	<!-- endbuild -->
+
+	<!-- build:css styles/main.css -->
+	<link rel="stylesheet" href="styles/main.css">
+	<!-- endbuild -->
+
+	<!-- build:js scripts/lib/modernizr.js -->
+	<!-- endbuild -->
+  </head>
+	<body ng-app="squarrels" ng-strict-di>
+		<!--[if lt IE 10]>
+		  <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+		<![endif]-->
+
+		<div class="main-header" ng-include="'main/header/mainHeader.tpl.html'"></div>
+
+		<section class="main">
+			<ui-view></ui-view>
+		</section>
+
+		<div class="main-footer" ng-include="'main/footer/mainFooter.tpl.html'"></div>
+
+		<!-- build:js scripts/vendor.js -->
+		<!-- bower:js -->
+		<!-- endbower -->
+		<!-- endbuild -->
+
+		<!-- build:js scripts/plugins.js -->
+		<!-- endbuild -->
+
+		<!-- build:js scripts/app.js -->
+		<script src="scripts/app.js"></script>
+		<!-- endbuild -->
+	</body>
+</html>

@@ -1,0 +1,12 @@
+<div class="players">
+	<ul ng-repeat="player in playersCtrl.players track by $index">
+		<!-- <player person="player"></player> -->
+		<li ng-class="{'active': playerCtrl.isCurrentPlayer()}">{{playerCtrl.name}}</li>
+	</ul>
+	<button
+		class="btn btn-primary"
+		ng-class="{'hide': playersCtrl.playersModel.playerData}"
+		ng-click="playersCtrl.newPlayer()">Join
+	</button>
+	Total Players: {{playersCtrl.playersModel.players.length}}
+</div>

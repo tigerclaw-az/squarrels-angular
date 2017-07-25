@@ -1,3 +1,6 @@
+*.sublime-*
+public/
+
 # Logs
 logs
 *.log

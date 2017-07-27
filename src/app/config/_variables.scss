@@ -14,18 +14,19 @@ $gray:                   lighten($gray-base, 33.5%); // #555
 $gray-light:             lighten($gray-base, 46.7%); // #777
 $gray-lighter:           lighten($gray-base, 93.5%); // #eee
 
-$brand-primary: 		get-color(white);
+$brand-neutral:			get-color(armadillo-black);
+$brand-primary: 		get-color(zest);
 $brand-success:         get-color(fern);
-$brand-info:            get-color(viking);
-$brand-warning:         get-color(sandy-brown);
-$brand-danger:          get-color(roman);
+$brand-info:            get-color(tussock);
+$brand-warning:         get-color(gold);
+$brand-danger:          get-color(guardsman-red);
 
 //== Scaffolding
 //
 //## Settings for some of the most global styles.
 
 //** Background color for `<body>`.
-$body-bg: 				lighten(get-color(black), 7);
+$body-bg: 				lighten(get-color(pickled-bean), 7);
 //** Global text color on `<body>`.
 $text-color:            $gray-lighter;
 
@@ -112,11 +113,11 @@ $caret-width-large:         calc($caret-width-base + 1px);
 $btn-font-weight:               $font-weight-bold;
 
 $btn-default-color:				get-color(black);
-$btn-default-bg: 				$brand-primary;
+$btn-default-bg: 				$brand-neutral;
 $btn-default-border: 			transparent;
 
 $btn-primary-color: 			get-color(black);
-$btn-primary-bg: 				get-color('fountain');
+$btn-primary-bg: 				get-color($brand-primary);
 $btn-primary-border:            darken($btn-primary-bg, 5%);
 
 $btn-success-bg:                $brand-success;

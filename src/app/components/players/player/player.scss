@@ -1,0 +1,6 @@
+.sq-player {
+	&.active {
+		color: get-color(casablanca);
+		font-weight: $font-weight-bold;
+	}
+}

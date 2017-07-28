@@ -5,10 +5,15 @@ module.exports = function(wss) {
 
 	const log = require('loggy');
 
-	wss.broadcast = function broadcast(data) {
+	wss.broadcast = function broadcast(data, ws, all = true) {
+		log.info(`broadcast(): ${data}`);
 		wss.clients.forEach(function each(client) {
+			log.info(`client: ${client}`);
+
 			if (client.readyState === WebSocket.OPEN) {
-				client.send(data);
+				if (all || client != ws) {
+					client.send(JSON.stringify(data));
+				}
 			}
 		});
 	};
@@ -17,16 +22,23 @@ module.exports = function(wss) {
 		log.info(`Connection accepted: ${req.connection.remoteAddress}`);
 		log.info(`Clients Connected: ${wss.clients.size}`);
 
+		wss.broadcast({ action: 'connected', type: 'ws' }, ws);
+
 		// This is the most important callback for us, we'll handle
 		// all messages from users here.
 		ws.on('message', function(message) {
-			var data;
+			var data = JSON.parse(message);
 
-			if (message.type === 'utf8') {
-				data = JSON.parse(message.utf8Data);
+			// Process WebSocket message
+			log.info(`Message received: ${data}`);
 
-				// Process WebSocket message
-				log.info(`Message received: ${data}`);
+			switch(data.action) {
+				case 'create':
+					wss.broadcast(data, ws, false);
+					break;
+				default:
+					wss.broadcast(data, ws);
+					break;
 			}
 		});
 

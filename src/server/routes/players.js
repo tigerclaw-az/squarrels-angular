@@ -36,7 +36,7 @@ players.get('/:id?', function(req, res, next) {
 		query._id = req.params.id;
 	}
 
-	logger.info('/players/:id -> ', query);
+	logger.info('GET /players/:id -> ', query);
 
 	Player
 		.find(query).exec()
@@ -58,49 +58,71 @@ players.get('/:id?', function(req, res, next) {
 });
 
 players.post('/:id?', function(req, res, next) {
-	logger.info(`players:post -> ${req.toString()}`);
+	logger.info('POST /players/:id -> ', req.params, req.body);
 
-	Player
-		.find({}).exec()
-		.then(function(list) {
-			var totalPlayers = list.length,
-				playerDefaults = {
+	let playerId = req.params.id,
+		addPlayer = function() {
+			let playerDefaults = {
 					name: config.getRandomStr(8),
 					img: config.playerImage
 				},
-				pl;
-
-			logger.info('Total Players:', totalPlayers);
-
-			if (totalPlayers === 6) {
-				logger.error('TOO MANY PLAYERS!');
-				res.status(500).json(config.apiError());
-
-				return false;
-			}
-
-			if (req.params.id) {
-				// Update player
-			} else {
-				pData = Object.assign(playerDefaults, req.body);
-				logger.info(`pData -> ${pData.toString()}`);
-
+				pData = Object.assign(playerDefaults, req.body),
 				pl = new Player(pData);
 
-				pl.save()
-					.then(function() {
-						res.status(201).json(pl);
-					})
-					.catch(function(err) {
-						logger.error(err);
-						res.status(500).json(config.apiError(err));
-					});
-			}
-		})
-		.catch(function(err) {
-			logger.error(err);
-			res.status(500).json(config.apiError(err));
-		});
+			logger.info(`pData -> ${pData.toString()}`);
+
+			pl.save()
+				.then(function() {
+					res.status(201).json(pl);
+				})
+				.catch(function(err) {
+					logger.error(err);
+					res.status(500).json(config.apiError(err));
+				});
+		}
+		updatePlayer = function(id) {
+			let player = { _id: id },
+				options = { new: true };
+
+			Player.findOneAndUpdate(player, req.body, options)
+				.then(function(doc) {
+					if (doc) {
+						res.status(200).json(doc);
+					} else {
+						res.status(204).json([]);
+					}
+				})
+				.catch(function(err) {
+					logger.error(err);
+					res.status(500).json(config.apiError(err));
+				});
+		};
+
+	if (playerId) {
+		updatePlayer(playerId);
+	} else {
+		// Add new player, if the maximum players hasn't been reached
+		Player
+			.find({}).exec()
+			.then(function(list) {
+				var totalPlayers = list.length;
+
+				logger.info('Total Players:', totalPlayers);
+
+				if (totalPlayers === 6) {
+					logger.error('TOO MANY PLAYERS!');
+					res.status(500).json(config.apiError());
+
+					return false;
+				}
+
+				addPlayer();
+			})
+			.catch(function(err) {
+				logger.error(err);
+				res.status(500).json(config.apiError(err));
+			});
+	}
 });
 
 module.exports = players;

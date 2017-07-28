@@ -100,7 +100,7 @@ exports.options = {
 		debug: true
 	},
 	browserSync: {
-		debugInfo: false,
+		debugInfo: true,
 		minify: false,
 		open: false,
 		port: 8181,

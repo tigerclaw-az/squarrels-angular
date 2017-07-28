@@ -19,7 +19,27 @@ default class PlayersController {
 	}
 
 	$onInit() {
-		var self = this;
+		var self = this,
+			onSuccess = function(res) {
+				var activePlayer = self.$localStorage.player;
+
+				self.$log.info('onSuccess()', res, self);
+
+				if (res.status === 200) {
+					self.playersStore.model.players = res.data;
+
+					self.$log.info('players', self.playersStore.model.players);
+				}
+
+				self.$log.info('player', activePlayer);
+
+				if (activePlayer && self.playersStore.get(activePlayer._id)) {
+					self.playerModel.setPlayer(activePlayer);
+				}
+			},
+			onError = function(res) {
+				self.$log.error(res);
+			};
 
 		this.$scope.playerData = this.playerModel.model;
 		this.$scope.model = this.playersStore.model;
@@ -33,6 +53,8 @@ default class PlayersController {
 			self.playersStore.update('add', data);
 		});
 
+		this.playersStore.loadAll().then(onSuccess, onError);
+
 		this.$log.info('$onInit()', this);
 	}
 
@@ -43,13 +65,24 @@ default class PlayersController {
 	}
 
 	create() {
-		var data = {
+		var self = this,
+			data = {
 				name: this.utils.getRandomStr(8),
-				img: 'http://www.fillmurray.com/120/120'
+				// img will be set to default on server
 			},
 			canvas = angular.element('<canvas/>')[0],
 			ctx = canvas.getContext('2d'),
-			video = this.$scope.webcam.video;
+			video = this.$scope.webcam.video,
+			onSuccess = function(res) {
+				self.$log.info(res);
+
+				if (res.status === 201) {
+					self.playersStore.update('create', res.data);
+				}
+			},
+			onError = function(res) {
+				self.$log.error(res);
+			};
 
 		canvas.width = 120;
 		canvas.height = 120;
@@ -59,6 +92,8 @@ default class PlayersController {
 			data.img = canvas.toDataURL();
 		}
 
-		this.playersStore.insert(data);
+		this.playersStore
+			.insert(data)
+			.then(onSuccess, onError);
 	}
 };

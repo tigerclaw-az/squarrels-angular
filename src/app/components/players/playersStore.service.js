@@ -18,8 +18,6 @@ export class PlayersStoreService {
 		};
 
 		this.$log.info('constructor()', this);
-
-		this.loadAll();
 	}
 
 	get(id) {
@@ -29,38 +27,19 @@ export class PlayersStoreService {
 	}
 
 	loadAll() {
-		var self = this,
-			onSuccess = function(res) {
-				var activePlayer = self.$localStorage.player;
-
-				self.$log.info('onSuccess()', res, self);
-
-				if (res.status === 200) {
-					self.model.players = res.data;
-
-					self.$log.info('players', self.model.players);
-				}
-
-				self.$log.info('player', activePlayer);
-
-				if (activePlayer && self.get(activePlayer._id)) {
-					self.playerModel.setPlayer(activePlayer);
-				}
-			},
-			onError = function(res) {
-
-			};
-
 		this.$log.info('loadAll()', this);
 
-		this.playersApi.get().then(onSuccess, onError);
+		return this.playersApi.get();
 	}
 
 	update(action, data) {
+		this.$log.info('update()', action, data, this);
+
 		switch(action) {
 			case 'add':
 				this.model.players.push(data);
 				break;
+
 			case 'create':
 				this.playerModel.setPlayer(data);
 				this.model.players.push(data);
@@ -74,20 +53,8 @@ export class PlayersStoreService {
 	}
 
 	insert(data) {
-		var self = this,
-			onSuccess = function(res) {
-				self.$log.info(res);
+		this.$log.info('insert()', data, this);
 
-				if (res.status === 201) {
-					self.update('create', res.data);
-				}
-			},
-			onError = function(res) {
-				self.$log.error(res);
-			};
-
-		this.playersApi.update(data)
-			.then(onSuccess, onError)
-		;
+		return this.playersApi.update(data);
 	}
 }

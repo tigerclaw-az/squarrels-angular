@@ -58,12 +58,16 @@ players.get('/:id?', function(req, res, next) {
 });
 
 players.post('/:id?', function(req, res, next) {
-	logger.info(`players:post -> ${req}`);
+	logger.info(`players:post -> ${req.toString()}`);
 
 	Player
 		.find({}).exec()
 		.then(function(list) {
 			var totalPlayers = list.length,
+				playerDefaults = {
+					name: config.getRandomStr(8),
+					img: config.playerImage
+				},
 				pl;
 
 			logger.info('Total Players:', totalPlayers);
@@ -78,7 +82,10 @@ players.post('/:id?', function(req, res, next) {
 			if (req.params.id) {
 				// Update player
 			} else {
-				pl = new Player(req.body);
+				pData = Object.assign(playerDefaults, req.body);
+				logger.info(`pData -> ${pData.toString()}`);
+
+				pl = new Player(pData);
 
 				pl.save()
 					.then(function() {

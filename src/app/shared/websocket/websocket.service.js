@@ -1,22 +1,25 @@
-export class WebsocketService {
-	constructor($log, _) {
+export class WebSocketService {
+	constructor($rootScope, $log, appConfig, toastr, _) {
 		'ngInject';
 
-		this._ = _;
 		this.$log = $log;
+		this.$rootScope = $rootScope;
 
-		this.$log.info('constructor()', this);
+		this._ = _;
+		this.toastr = toastr;
 
-		this.host = 'localhost:1337';
+		this.host = `${appConfig.localhost}:1337`;
 
 		// if user is running mozilla then use it's built-in WebSocket
-		window.WebSocket = window.WebSocket || window.MozWebSocket;
+		this.WebSocket = (window.WebSocket || window.MozWebSocket);
 
-		this.connection = new WebSocket(`ws://${this.host}`);
+		this.connection = new this.WebSocket(`ws://${this.host}`);
 
 		this.$log.info('connection', this.connection);
 
-		this.connection.onmessage = this.onMessage;
+		this.connection.onmessage = this.onMessage.bind(this);
+
+		this.$log.info('constructor()', this);
 	}
 
 	send(obj) {
@@ -27,7 +30,29 @@ export class WebsocketService {
 		this.connection.send(message);
 	}
 
-	onMessage() {
-		this.$log.info('onMessage()', arguments);
+	// TODO: Watch for a message coming back from any service using the websocketService
+	onMessage(msg) {
+		var data = JSON.parse(msg.data),
+			action = data.action || 'none',
+			type = data.type || 'global',
+			broadcast;
+
+		this.$log.info('onMessage()', data, type, action, this);
+
+		if (type === 'player') {
+			switch(action) {
+				case 'create':
+					data = data.nuts;
+					break;
+				default:
+					break;
+			}
+		}
+
+		//--- TESTING ONLY ---//
+		this.toastr.info(JSON.stringify(data), `websocket:${type}:${action}`);
+
+		this.$rootScope.$broadcast('websocket', msg);
+		this.$rootScope.$broadcast(`websocket:${type}:${action}`, data);
 	}
 }

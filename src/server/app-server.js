@@ -10,6 +10,8 @@ var players = require('./routes/players');
 
 var mongoose = require('mongoose');
 
+mongoose.Promise = require('q').Promise;
+
 mongoose.connect('mongodb://localhost:27017/squarrels', function(err) {
 	if (err) {
 		logger.error('mongodb connection error', err);

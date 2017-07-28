@@ -1,9 +1,9 @@
 import { PlayersComponent } from './players.component';
-import { PlayersModelService } from './PlayersModel.service';
+import { PlayersStoreService } from './PlayersStore.service';
 
 export
 	default angular
 			.module('players', [])
 			.component('players', PlayersComponent)
-			.service('playersModel', PlayersModelService)
+			.service('playersStore', PlayersStoreService)
 ;

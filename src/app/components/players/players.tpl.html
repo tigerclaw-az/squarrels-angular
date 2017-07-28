@@ -1,12 +1,18 @@
-<div class="players">
-	<ul ng-repeat="player in playersCtrl.players track by $index">
+<div class="sq-players-wrapper">
+	<webcam channel="webcam"></webcam>
+	<ul class="sq-players" ng-repeat="player in model.players track by $index">
 		<!-- <player person="player"></player> -->
-		<li ng-class="{'active': playerCtrl.isCurrentPlayer()}">{{playerCtrl.name}}</li>
+		<li class="sq-player" ng-class="{'active': playerData.player._id == player._id}">
+			<span>{{player.name}}</span>
+			<img src="{{player.img}}"/>
+		</li>
 	</ul>
 	<button
 		class="btn btn-primary"
-		ng-class="{'hide': playersCtrl.playersModel.playerData}"
-		ng-click="playersCtrl.newPlayer()">Join
+		ng-class="{
+			'hide': playerData.player || model.players.length == 6,
+		}"
+		ng-click="playersCtrl.create()">Join
 	</button>
-	Total Players: {{playersCtrl.playersModel.players.length}}
+	Total Players: {{model.players.length}}
 </div>

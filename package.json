@@ -70,6 +70,7 @@
     "chalk": "^2.0.1",
     "debug": "^2.6.8",
     "express": "^4.15.3",
+    "express-session": "^1.15.4",
     "jade": "^1.11.0",
     "mongoose": "^4.11.4",
     "morgan": "^1.8.2",

@@ -1,14 +1,20 @@
-var express = require('express'),
+var config = require('./config/config'),
+	express = require('express'),
 	bodyParser = require('body-parser'),
 	cookieParser = require('cookie-parser'),
 	sessionParser = require('express-session'),
+	mongodbSession = require('connect-mongodb-session')(sessionParser),
 	path = require('path'),
 	favicon = require('serve-favicon'),
 	logger = require('loggy'),
 	players = require('./routes/players');
 
 let app = express(),
-	secret = '$eCuRiTy';
+	secret = '$eCuRiTy',
+	sessionStore = new mongodbSession({
+		uri: `mongodb://${config.server}/squarrels_sessions`,
+		collection: 'sessions'
+	});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -23,6 +29,7 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 //----------
 app.use(sessionParser({
 	secret,
+	store: sessionStore,
 	resave: false,
 	saveUninitialized: true
 }));
@@ -61,7 +68,7 @@ app.use(function (req, res, next) {
 // will print stacktrace
 if (app.get('env') === 'development') {
 	app.use(function(err, req, res, next) {
-		console.info('Server is listening on port ' + app.get('port'));
+		logger.log('Server is listening on port ' + app.get('port'));
 
 		res.status(err.status || 500);
 		res.render('error', {
@@ -81,4 +88,8 @@ app.use(function(err, req, res, next) {
 	});
 });
 
-module.exports = app;
+module.exports = {
+	app,
+	sessionParser,
+	sessionStore
+};

@@ -32,7 +32,7 @@ players.delete('/:id?', function(req, res, next) {
 players.get('/:id?', function(req, res, next) {
 	var query = {};
 
-	logger.info('GET /players/:id -> ', query, req.session.id, req.cookie);
+	logger.info('GET /players/:id -> ', query, req.session.id);
 
 	Player
 		.find(query).exec()
@@ -73,7 +73,9 @@ players.post('/', function(req, res, next) {
 					logger.info('Player.save()', pl);
 
 					wss.broadcast(
-						{ type: 'players', action: 'create', nuts: pl }
+						{ type: 'players', action: 'create', nuts: pl },
+						req.session.id,
+						false
 					);
 
 					res.status(201).json(pl);

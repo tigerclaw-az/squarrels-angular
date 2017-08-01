@@ -9,7 +9,7 @@ export function routerConfig($stateProvider, $urlRouterProvider) {
 			url: '',
 			controller: 'mainController',
 			controllerAs: 'mainCtrl',
-			templateUrl: 'main/main.tpl.html',
+			templateUrl: 'main/main.tpl.html'
 			// resolve: {
 			// 	// Ensure that puzzles are loaded properly before other route(s) that
 			// 	// requires them is run.

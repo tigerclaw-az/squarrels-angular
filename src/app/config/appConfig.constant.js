@@ -3,5 +3,5 @@
 export const AppConfigConstant = {
 	debug: true,
 	logLevel: 'INFO',
-	localhost: 'localhost'
+	host: 'uschdancn2n6acs'
 };

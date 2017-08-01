@@ -1,90 +1,97 @@
-module.exports = function(server) {
+module.exports = function(server, sessionParser, store) {
 	var	_ = require('lodash'),
-		uuid = require('uuid/v1'),
-		Player = require('./models/PlayerModel').model,
+		cookie = require('cookie'),
+		cookieParser = require('cookie-parser'),
 		WebSocket = require('ws'),
-		wss = new WebSocket.Server({ port: 1337, server });
+		Player = require('./models/PlayerModel').model;
 
-	const log = require('loggy');
+	const logger = require('loggy');
 
-	log.info('server:', server);
-	log.info('wss:', wss);
+	let wss = new WebSocket.Server({
+		verifyClient: function(info, done) {
+			logger.log('verifyClient() -> ', info.req.headers);
+			done(info.req.headers);
+		},
+		server
+	});
 
-	var conn;
-
-	wss.broadcast = function broadcast(data, all = true) {
-		log.info('broadcast() -> ', data);
+	wss.broadcastAll = function broadcastAll(data) {
+		logger.info('broadcastAll() -> ', data.id);
 		wss.clients.forEach(function each(client) {
-			log.info('client() -> ', client.readyState);
 			if (client.readyState === WebSocket.OPEN) {
-				if (all || client != conn) {
-					log.info('send()!');
-					client.send(JSON.stringify(data));
-				}
+				logger.info('send()..');
+				client.send(JSON.stringify(data));
 			}
 		});
 	};
 
 	wss.on('connection', function connection(ws, req) {
-		log.info('Connection accepted:', ws);
-		log.info(`Clients Connected: ${wss.clients.size}`);
+		let sid = cookieParser.signedCookie(cookie.parse(req.headers.cookie)['connect.sid'], '$eCuRiTy');
+		logger.info('Connection accepted:', req.headers, req.session);
+		logger.info(`Clients Connected: ${wss.clients.size}`);
 
-		conn = ws;
+		logger.info('sid -> ', sid);
+		store.get(sid, function(err, ss) {
+			logger.log('err -> ', err);
+			logger.log('ss -> ', ss);
+			logger.log(req.sessionID);
+		});
 
 		ws.send(JSON.stringify({ action: 'connected', type: 'global' }));
+
+		wss.broadcast = function broadcast(data) {
+			logger.info('broadcast() -> ', data.action, data.type);
+			wss.clients.forEach(function each(client) {
+				if (client.readyState === WebSocket.OPEN && client !== ws) {
+					logger.info('send()..');
+					client.send(JSON.stringify(data));
+				}
+			});
+		};
 
 		// This is the most important callback for us, we'll handle
 		// all messages from users here.
 		ws.on('message', function(message) {
 			var data = JSON.parse(message),
-				// sessionId = req.session.id,
+				// sessionId = cookieParser(req.headers.cookie, 'cookie.sid'),
 				query = {
 					// sessionId
 				};
 
-			log.info('Request:', req.session);
 			// Process WebSocket message
-			log.info('Message received: ', data);
+			logger.info('Message received: ', data);
 
 			switch(data.action) {
-				case 'create':
-					wss.broadcast(data, false);
-					break;
-
 				case 'whoami':
-					log.info('websocket:onmessage:whoami -> ', query);
+					logger.info('websocket:onmessage:whoami -> ', query);
 
 					Player.find(query)
 						.select('+sessionId')
 						.exec()
 						.then(function(list) {
-							if (list.length !== 1) {
-								list = [];
-							}
-
 							let nuts = { action: 'whoami', type: 'players', nuts: list };
 
-							log.info(nuts);
+							logger.info(nuts);
 							ws.send(JSON.stringify(nuts));
 						})
 						.catch(function(err) {
-							log.error(err);
+							logger.error(err);
 						});
 					break;
 
 				default:
-					wss.broadcast(data);
+					wss.broadcastAll(data);
 					break;
 			}
 		});
 
 		ws.on('error', function(err) {
-			log.error(err);
+			logger.error(err);
 		});
 
 		ws.on('close', function(connection) {
 			// close user connection
-			log.info('Connection Closed:', connection, wss.clients);
+			logger.info('Connection Closed:', connection, wss.clients);
 		});
 	});
 

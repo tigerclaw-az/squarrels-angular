@@ -1,8 +1,8 @@
-<li class="sq-player"
+<li class="sq-player" ng-init="pModel = playerCtrl.playerModel.model; player = playerCtrl.player"
 	ng-class="{
-		'active': playerCtrl.player.isActive,
-		'current': playerData.player.id == playerCtrl.player.id
+		'active': pModel.player.isActive,
+		'current': player.id == pModel.player.id
 	}">
-	<span>{{playerCtrl.player.name}}</span>
-	<img src="{{playerCtrl.player.img}}"/>
+	<span>{{player.name}}</span>
+	<img src="{{player.img}}"/>
 </li>

@@ -24,5 +24,7 @@ module.exports = {
 		}).join('').replace(/`/g, ' ');
 	},
 
+	server: 'localhost',
+
 	playerImage: 'http://www.fillmurray.com/120/120'
 }

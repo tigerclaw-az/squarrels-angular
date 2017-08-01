@@ -1,7 +1,7 @@
 <div class="sq-players-wrapper">
 	<webcam channel="webcam"></webcam>
-	<ul class="sq-players" ng-repeat="p in model.players track by $index">
-		<player player="p"></player>
+	<ul class="sq-players">
+		<player ng-repeat="p in model.players track by $index" player="p"></player>
 	</ul>
 	<button
 		class="btn btn-primary"

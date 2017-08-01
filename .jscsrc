@@ -80,7 +80,7 @@
 	"requireCurlyBraces": [ "if", "else", "for", "while", "do", "try", "catch" ],
 	"requireDollarBeforejQueryAssignment": true,
 	"requireDotNotation": true,
-	"requireKeywordsOnNewLine": ["case", "default"],
+	"requireKeywordsOnNewLine": ["case"],
 	"requireLineBreakAfterVariableAssignment": true,
 	"requireLineFeedAtFileEnd": true,
 	"requireMultipleVarDecl": true,

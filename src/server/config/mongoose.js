@@ -1,8 +1,9 @@
 var mongoose = require('mongoose'),
-	logger = require('loggy');
+	logger = require('loggy'),
+	config = require('./config');
 
 mongoose.Promise = require('q').Promise;
-mongoose.connect('mongodb://localhost:27017/squarrels', function(err) {
+mongoose.connect(`mongodb://${config.server}/squarrels`, function(err) {
 	if (err) {
 		logger.error('mongodb connection error', err);
 	} else {

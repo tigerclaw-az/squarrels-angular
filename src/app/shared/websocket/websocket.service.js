@@ -9,7 +9,7 @@ export class WebSocketService {
 		this._ = _;
 		this.toastr = toastr;
 
-		this.host = `${appConfig.localhost}:1337`;
+		this.host = `${appConfig.localhost}:3000`;
 
 		this.connect();
 

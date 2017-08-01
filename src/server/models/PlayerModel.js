@@ -1,10 +1,16 @@
 var mongoose = require('mongoose'),
 	uuid = require('uuid/v1'),
-	CardsModel = require('./CardsModel'),
+	Cards = require('./CardsModel'),
 	Schema = mongoose.Schema,
 	PlayerSchema = new Schema({
+		sessionId: {
+			type: String,
+			required: true,
+			// select: false
+		},
 		name: {
 			type: String,
+			required: true,
 			trim: true
 		},
 		img: String,
@@ -16,11 +22,30 @@ var mongoose = require('mongoose'),
 			type: Number,
 			default: 0
 		},
-		cardsInHand: [Schema.Types.ObjectId],
-		cardsUsed: [Schema.Types.ObjectId]
+		cardsInHand: [{
+				type: Schema.Types.ObjectId,
+				ref: Cards.model
+		}],
+		cardsUsed: [{
+			type: Schema.Types.ObjectId,
+			ref: Cards.model
+		}]
 	}, {
 		collection: 'players',
 		timestamps: true
 	});
 
-module.exports = mongoose.model('Player', PlayerSchema);
+const log = require('loggy');
+
+PlayerSchema.set('toJSON', {
+	transform: function(doc, ret, options) {
+		delete ret._id;
+		return ret;
+	},
+	virtuals: true
+});
+
+module.exports = {
+	schema: PlayerSchema,
+	model: mongoose.model('Player', PlayerSchema)
+};

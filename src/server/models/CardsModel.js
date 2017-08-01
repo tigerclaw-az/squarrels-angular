@@ -7,4 +7,7 @@ var mongoose = require('mongoose'),
 		collection: 'cards'
 	});
 
-module.exports = mongoose.model('Cards', CardsSchema);
+module.exports = {
+	schema: CardsSchema,
+	model: mongoose.model('Cards', CardsSchema)
+};

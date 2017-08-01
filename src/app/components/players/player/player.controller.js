@@ -1,14 +1,14 @@
 export
 default class PlayerController {
-	constructor($rootScope, $scope, $localStorage, $log, playersModel, websocket) {
+	constructor($rootScope, $scope, $localStorage, $log, playersStore, playerModel, websocket) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
 		this.$scope = $scope;
-		this.$localStorage = $localStorage;
 		this.$log = $log;
 
-		this.playerModel = playersModel;
+		this.playerModel = playerModel;
+		this.playersStore = playersStore;
 		this.ws = websocket;
 
 		this.$log.info('constructor()', this);
@@ -24,9 +24,5 @@ default class PlayerController {
 		return () => {
 			this.$log.info('destroy', this);
 		};
-	}
-
-	isPlayer() {
-		return false;
 	}
 };

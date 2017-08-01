@@ -20,10 +20,8 @@ export class PlayersStoreService {
 		this.$log.info('constructor()', this);
 	}
 
-	get(id) {
-		return this._.find(this.model.players, function(o) {
-			return o._id === id;
-		});
+	whoami() {
+		this.ws.send({ action: 'whoami' });
 	}
 
 	loadAll() {
@@ -33,21 +31,24 @@ export class PlayersStoreService {
 	}
 
 	update(action, data) {
+		var player = this.playerModel.model.player;
+
 		this.$log.info('update()', action, data, this);
 
-		switch(action) {
+		switch (action) {
 			case 'add':
-				this.model.players.push(data);
+				if (!player || player.id !== data.id) {
+					this.model.players.push(data);
+				}
 				break;
 
 			case 'create':
 				this.playerModel.setPlayer(data);
 				this.model.players.push(data);
-				this.ws.send({
-					action: action,
-					type: 'player',
-					nuts: data
-				});
+				break;
+
+			case 'whoami':
+				this.playerModel.setPlayer(data);
 				break;
 		}
 	}

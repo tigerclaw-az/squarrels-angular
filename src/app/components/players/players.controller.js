@@ -20,6 +20,7 @@ default class PlayersController {
 
 	$onInit() {
 		var self = this,
+			activePlayer = this.$localStorage.player,
 			onSuccess = function(res) {
 				var activePlayer = self.$localStorage.player;
 
@@ -29,12 +30,10 @@ default class PlayersController {
 					self.playersStore.model.players = res.data;
 
 					self.$log.info('players', self.playersStore.model.players);
-				}
 
-				self.$log.info('player', activePlayer);
-
-				if (activePlayer && self.playersStore.get(activePlayer._id)) {
-					self.playerModel.setPlayer(activePlayer);
+					if (activePlayer) {
+						self.playersStore.whoami();
+					}
 				}
 			},
 			onError = function(res) {
@@ -48,9 +47,17 @@ default class PlayersController {
 			self.$log.info('$on -> websocket', data);
 		});
 
-		this.$rootScope.$on('websocket:player:create', function(event, data) {
-			self.$log.info('$on -> websocket:player:create', data);
+		this.$rootScope.$on('websocket:players:create', function(event, data) {
+			self.$log.info('$on -> websocket:players:create', data);
 			self.playersStore.update('add', data);
+		});
+
+		this.$rootScope.$on('websocket:players:whoami', function(event, data) {
+			self.$log.info('$on -> websocket:players:whoami', data);
+
+			if (data && data[0].id === activePlayer.id) {
+				self.playersStore.update('whoami', data[0]);
+			}
 		});
 
 		this.playersStore.loadAll().then(onSuccess, onError);
@@ -67,7 +74,7 @@ default class PlayersController {
 	create() {
 		var self = this,
 			data = {
-				name: this.utils.getRandomStr(8),
+				name: this.utils.getRandomStr(8)
 				// img will be set to default on server
 			},
 			canvas = angular.element('<canvas/>')[0],

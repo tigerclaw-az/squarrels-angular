@@ -4,25 +4,26 @@
  * Module dependencies.
  */
 
-var app = require('../src/server/app-server'),
+var appServe = require('../src/server/app-server'),
+	app = appServe.app,
+	sessionParser = appServe.sessionParser,
+	sessionStore = appServe.sessionStore,
+	config = require('../src/server/config/config'),
 	debug = require('debug')('Slide:server'),
 	http = require('http'),
-	WebSocket = require('ws'),
-	// WebSocketServer = require('websocket').server,
+	log = require('loggy'),
 	// Get port from environment and store in Express.
 	port = normalizePort(process.env.PORT || '3000'),
-	wsServerPort = 1337;
+	WebSocket = require('ws');
 
 app.set('port', port);
 
 /**
- * Create HTTP server.
+ * Create HTTP server & websocket connection.
  */
-var server = http.createServer(app),
-	// wsServer = new WebSocketServer({
-	// 	httpServer: server
-	// });
-	wss = new WebSocket.Server({ port: wsServerPort });
+let server = http.createServer(app);
+// global.wss = new WebSocket.Server({ path: '/squarrels', port: 1337, server });
+require('../src/server/websocket')(server, sessionParser, sessionStore);
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -30,9 +31,6 @@ var server = http.createServer(app),
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
-
-// require('../src/server/websocket')(wsServer);
-require('../src/server/websocket')(wss);
 
 /**
  * Normalize a port into a number, string, or false.

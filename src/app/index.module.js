@@ -14,6 +14,7 @@ let deps = [
 	'ngStorage',
 	'ngTouch',
 	'angular-logger',
+	'angular-websocket',
 	'toastr',
 	'ui.bootstrap',
 	'ui.router',

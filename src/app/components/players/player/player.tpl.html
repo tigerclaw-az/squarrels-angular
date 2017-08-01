@@ -1,1 +1,8 @@
-<li ng-class="{'active': playerCtrl.isCurrentPlayer()}">{{playerCtrl.name}}</li>
+<li class="sq-player"
+	ng-class="{
+		'active': playerCtrl.player.isActive,
+		'current': playerData.player.id == playerCtrl.player.id
+	}">
+	<span>{{playerCtrl.player.name}}</span>
+	<img src="{{playerCtrl.player.img}}"/>
+</li>

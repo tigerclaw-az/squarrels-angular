@@ -6,7 +6,7 @@ var mongoose = require('mongoose'),
 		sessionId: {
 			type: String,
 			required: true,
-			// select: false
+			select: false
 		},
 		name: {
 			type: String,
@@ -22,14 +22,15 @@ var mongoose = require('mongoose'),
 			type: Number,
 			default: 0
 		},
-		cardsInHand: [{
-				type: Schema.Types.ObjectId,
-				ref: Cards.model
-		}],
-		cardsUsed: [{
-			type: Schema.Types.ObjectId,
+		cardsInHand: {
+			type: [Schema.Types.ObjectId],
+			ref: Cards.model,
+			select: false
+		},
+		cardsUsed: {
+			type: [Schema.Types.ObjectId],
 			ref: Cards.model
-		}]
+		}
 	}, {
 		collection: 'players',
 		timestamps: true

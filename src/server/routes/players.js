@@ -2,7 +2,7 @@ var express = require('express'),
 	mongoose = require('mongoose'),
 	logger = require('loggy'),
 	config = require('../config/config'),
-	Player = require('../models/PlayerModel.js'),
+	Player = require('../models/PlayerModel.js').model,
 	players = express.Router();
 
 players.delete('/:id?', function(req, res, next) {
@@ -32,11 +32,7 @@ players.delete('/:id?', function(req, res, next) {
 players.get('/:id?', function(req, res, next) {
 	var query = {};
 
-	if (req.params.id) {
-		query._id = req.params.id;
-	}
-
-	logger.info('GET /players/:id -> ', query);
+	logger.info('GET /players/:id -> ', query, req.session.id, req.cookie);
 
 	Player
 		.find(query).exec()
@@ -57,29 +53,36 @@ players.get('/:id?', function(req, res, next) {
 		});
 });
 
-players.post('/:id?', function(req, res, next) {
-	logger.info('POST /players/:id -> ', req.params, req.body);
+players.post('/', function(req, res, next) {
+	logger.info('POST /players/:id -> ', req.session.id);
 
 	let playerId = req.params.id,
 		addPlayer = function() {
 			let playerDefaults = {
+					sessionId: req.session.id,
 					name: config.getRandomStr(8),
 					img: config.playerImage
 				},
 				pData = Object.assign(playerDefaults, req.body),
 				pl = new Player(pData);
 
-			logger.info(`pData -> ${pData.toString()}`);
+			logger.info('addPlayer() ');
 
 			pl.save()
-				.then(function() {
+				.then(function(doc) {
+					logger.info('Player.save()', pl);
+
+					wss.broadcast(
+						{ type: 'players', action: 'create', nuts: pl }
+					);
+
 					res.status(201).json(pl);
 				})
 				.catch(function(err) {
 					logger.error(err);
 					res.status(500).json(config.apiError(err));
 				});
-		}
+		},
 		updatePlayer = function(id) {
 			let player = { _id: id },
 				options = { new: true };
@@ -97,6 +100,12 @@ players.post('/:id?', function(req, res, next) {
 					res.status(500).json(config.apiError(err));
 				});
 		};
+
+	if (!req.session.id) {
+		logger.error('!!Possible Attack!!', req);
+		res.status(500).json(config.apiError('ALERT: Missing required sessionId!!'));
+		return false;
+	}
 
 	if (playerId) {
 		updatePlayer(playerId);

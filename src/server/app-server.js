@@ -1,47 +1,50 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-// var logger = require('morgan');
-var logger = require('loggy');
-// var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
+var express = require('express'),
+	bodyParser = require('body-parser'),
+	cookieParser = require('cookie-parser'),
+	sessionParser = require('express-session'),
+	path = require('path'),
+	favicon = require('serve-favicon'),
+	logger = require('loggy'),
+	players = require('./routes/players');
 
-var players = require('./routes/players');
-
-var mongoose = require('mongoose');
-
-mongoose.Promise = require('q').Promise;
-
-mongoose.connect('mongodb://localhost:27017/squarrels', function(err) {
-	if (err) {
-		logger.error('mongodb connection error', err);
-	} else {
-		logger.info('mongodb connection successful');
-	}
-});
-
-var app = express();
+let app = express(),
+	secret = '$eCuRiTy';
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-app.use(favicon(path.join(__dirname, '../../public/serve', 'favicon.ico')));
-// app.use(logger('dev'));
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
-// app.use(cookieParser());
+// app.use(cookieParser(secret));
+
+//----------
+// SESSION
+//----------
+app.use(sessionParser({
+	secret,
+	resave: false,
+	saveUninitialized: true
+}));
+
+require('./config/mongoose');
+
+app.use(favicon(path.join(__dirname, '../../public/serve', 'favicon.ico')));
 app.use(express.static(path.join(__dirname, '../../public/serve')));
 app.use(express.static(path.join(__dirname, '../app')));
+
 app.use('/bower_components', express.static(path.join(__dirname, '../../bower_components')));
 
-app.all("/api/*", function (req, res, next) {
-	res.header("Access-Control-Allow-Origin", "*");
-	res.header("Access-Control-Allow-Headers", "Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With");
-	res.header("Access-Control-Allow-Methods", "GET, PUT, POST");
+//----------
+// ROUTING
+//----------
+app.use(function (req, res, next) {
+	res.header('Access-Control-Allow-Credentials', true);
+	res.header('Access-Control-Allow-Origin', '*');
+	res.header('Access-Control-Allow-Headers', 'Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With');
+	res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
 	return next();
 });
-
 // app.use('/api/', routes);
 app.use('/api/players', players);
 

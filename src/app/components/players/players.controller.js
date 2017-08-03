@@ -1,6 +1,6 @@
 export
 default class PlayersController {
-	constructor($rootScope, $scope, $localStorage, $log, utils, websocket, playersStore, playerModel) {
+	constructor($rootScope, $scope, $localStorage, $log, utils, websocket, playersApi, playersStore, playerModel) {
 		'ngInject';
 
 		var self = this;
@@ -12,6 +12,7 @@ default class PlayersController {
 
 		this.utils = utils;
 		this.playerModel = playerModel;
+		this.playersApi = playersApi;
 		this.playersStore = playersStore;
 		this.ws = websocket;
 
@@ -21,46 +22,53 @@ default class PlayersController {
 	$onInit() {
 		var self = this,
 			currentPlayer = this.$localStorage.player,
-			onSuccess = function(res) {
-				self.$log.info('onSuccess()', res, self);
+			onSuccess = (res => {
+				this.$log.info('onSuccess()', res, currentPlayer, this);
 
 				if (res.status === 200) {
-					self.playersStore.model.players = res.data;
+					this.playersStore.model.players = res.data;
 
-					self.$log.info('players', self.playersStore.model.players);
+					this.$log.info('players', this.playersStore.model.players);
 
 					if (currentPlayer) {
-						self.playersStore.whoami();
+						this.playersStore.whoami();
 					}
 				}
-			},
-			onError = function(res) {
-				self.$log.error(res);
-			};
+			}),
+			onError = (res => {
+				this.$log.error(res);
+			});
 
 		this.$scope.playerData = this.playerModel.model;
 		this.$scope.model = this.playersStore.model;
 
-		this.$rootScope.$on('websocket', function(event, data) {
-			self.$log.info('$on -> websocket', data);
+		this.$rootScope.$on('websocket', (event, data) => {
+			this.$log.info('$on -> websocket', data);
 		});
 
-		this.$rootScope.$on('websocket:players:create', function(event, data) {
-			self.$log.info('$on -> websocket:players:create', data);
-			self.playersStore.update('add', data);
-		});
+		this.$rootScope.$on('websocket:players:create', ((event, data) => {
+			let currentPlayer = this.playerModel.model.player;
 
-		this.$rootScope.$on('websocket:players:whoami', function(event, data) {
-			self.$log.info('$on -> websocket:players:whoami', data);
+			this.$log.info('$on -> websocket:players:create', data);
 
-			if (data && data[0].id === currentPlayer.id) {
-				self.playersStore.update('whoami', data[0]);
+			if (!currentPlayer || currentPlayer.id !== data.id) {
+				this.playersStore.insert(data);
 			}
-		});
+		}));
 
-		this.playersStore.loadAll().then(onSuccess, onError);
+		this.$rootScope.$on('websocket:players:whoami', ((event, data) => {
+			this.$log.info('$on -> websocket:players:whoami', data);
 
-		this.$log.info('$onInit()', this);
+			if (data.length && data[0].id === currentPlayer.id) {
+				this.playerModel.insert(data[0]);
+			}
+		}));
+
+		this.playersApi
+			.get()
+			.then(onSuccess, onError);
+
+		this.$log.info('$onInit()', currentPlayer, this);
 	}
 
 	$onDestroy() {
@@ -70,24 +78,25 @@ default class PlayersController {
 	}
 
 	create() {
-		var self = this,
-			data = {
+		var data = {
 				name: this.utils.getRandomStr(8)
 				// img will be set to default on server
 			},
 			canvas = angular.element('<canvas/>')[0],
 			ctx = canvas.getContext('2d'),
 			video = this.$scope.webcam.video,
-			onSuccess = function(res) {
-				self.$log.info(res);
+			onSuccess = (res => {
+				this.$log.info('onSuccess()', res, this);
 
 				if (res.status === 201) {
-					self.playersStore.update('create', res.data);
+					this.playerModel.insert(res.data);
+					this.playersStore.insert(res.data);
+					this.playersStore.whoami();
 				}
-			},
-			onError = function(res) {
-				self.$log.error(res);
-			};
+			}),
+			onError = (res => {
+				this.$log.error(res);
+			});
 
 		canvas.width = 120;
 		canvas.height = 120;
@@ -97,8 +106,8 @@ default class PlayersController {
 			data.img = canvas.toDataURL();
 		}
 
-		this.playersStore
-			.insert(data)
+		this.playersApi
+			.update(data)
 			.then(onSuccess, onError);
 	}
 };

@@ -9,7 +9,6 @@ export default class PlayersStoreService {
 		this.$localStorage = $localStorage;
 
 		this._ = _;
-		this.playerModel = playerModel;
 		this.playersApi = playersApi;
 		this.ws = websocket;
 
@@ -20,46 +19,36 @@ export default class PlayersStoreService {
 		this.$log.info('constructor()', this);
 	}
 
-	whoami() {
-		this.ws.send({ action: 'whoami' });
-	}
+	get(id) {
+		this.$log.info('get()', id, this);
 
-	loadAll() {
-		this.$log.info('loadAll()', this);
-
-		return this.playersApi.get();
-	}
-
-	getAll() {
-		return this.model.players;
-	}
-
-	update(action, data) {
-		var player = this.playerModel.model.player;
-
-		this.$log.info('update()', action, data, this);
-
-		switch (action) {
-			case 'add':
-				if (!player || player.id !== data.id) {
-					this.model.players.push(data);
-				}
-				break;
-
-			case 'create':
-				this.playerModel.insert(data);
-				this.model.players.push(data);
-				break;
-
-			case 'whoami':
-				this.playerModel.insert(data);
-				break;
+		if (id) {
+			return this._.find(this.model.players, function(o) {
+				return o.id === id;
+			});
 		}
+
+		return this.model.players;
 	}
 
 	insert(data) {
 		this.$log.info('insert()', data, this);
 
-		return this.playersApi.update(data);
+		this.model.players.push(data);
+	}
+
+	update(id, data) {
+		this.$log.info('update()', id, data, this);
+
+		// Find the index of player to update and modify the object
+	}
+
+	// Send a request to get the current player's private data
+	// DO NOT move into playerController as it would be called everytime
+	// a new player is added
+	whoami() {
+		this.$log.info('whoami()', this);
+
+		this.ws.send({ action: 'whoami' });
 	}
 }

@@ -1,0 +1,32 @@
+[
+	{
+		"name": "1",
+		"amount": 1,
+		"action": "",
+		"cardType": "number"
+	},
+	{
+		"name": "2",
+		"amount": 2,
+		"action": "",
+		"cardType": "number"
+	},
+	{
+		"name": "3",
+		"amount": 3,
+		"action": "",
+		"cardType": "number"
+	},
+	{
+		"name": "4",
+		"amount": 4,
+		"action": "",
+		"cardType": "number"
+	},
+	{
+		"name": "5",
+		"amount": 5,
+		"action": "",
+		"cardType": "number"
+	}
+]

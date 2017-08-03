@@ -18,7 +18,7 @@ export default class BaseApiService {
 		return this.$http.get(`${this.url}/${query}`);
 	}
 
-	update(data) {
-		return this.$http.post(`${this.url}`, data);
+	update(data, id = '') {
+		return this.$http.post(`${this.url}/${id}`, data);
 	}
 }

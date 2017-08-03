@@ -1,5 +1,6 @@
-[
-	{
+{
+	"model": "Card",
+	"data": [{
 		"name": "1",
 		"amount": 1,
 		"action": "",
@@ -28,5 +29,5 @@
 		"amount": 5,
 		"action": "",
 		"cardType": "number"
-	}
-]
+	}]
+}

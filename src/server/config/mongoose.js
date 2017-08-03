@@ -1,10 +1,10 @@
 var mongoose = require('mongoose'),
-	logger = require('loggy'),
+	mongooseSeed = require('mongoose-seed-db'),
 	config = require('./config');
 
 mongoose.Promise = require('q').Promise;
 mongoose.set('debug', true);
 
 module.exports = function() {
-	return mongoose.connect(`mongodb://${config.server}/squarrels`);
+	return mongooseSeed.connect(`mongodb://${config.server}/squarrels`);
 };

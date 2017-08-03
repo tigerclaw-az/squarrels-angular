@@ -1,4 +1,4 @@
-import controller from './players.controller.js';
+import controller from './players.controller';
 
 export const PlayersComponent = {
 	bindings: {

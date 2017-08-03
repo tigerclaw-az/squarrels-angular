@@ -1,4 +1,4 @@
-export class PlayersStoreService {
+export default class PlayersStoreService {
 	constructor($log, $http, $localStorage, _, playersApi, websocket, playerModel) {
 		'ngInject';
 
@@ -28,6 +28,10 @@ export class PlayersStoreService {
 		this.$log.info('loadAll()', this);
 
 		return this.playersApi.get();
+	}
+
+	getAll() {
+		return this.model.players;
 	}
 
 	update(action, data) {

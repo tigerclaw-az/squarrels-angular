@@ -1,5 +1,5 @@
 import { PlayersComponent } from './players.component';
-import { PlayersStoreService } from './PlayersStore.service';
+import PlayersStoreService from './PlayersStore.service';
 
 export
 	default angular

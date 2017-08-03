@@ -48,16 +48,8 @@ export class WebSocketService {
 
 		this.$log.info('onMessage()', data, type, action, this);
 
-		if (type === 'players') {
-			switch (action) {
-				case 'create':
-				case 'whoami':
-					data = data.nuts;
-					break;
-
-				default:
-					break;
-			}
+		if (data.nuts) {
+			data = data.nuts;
 		}
 
 		// --- TESTING ONLY ---//

@@ -1,0 +1,9 @@
+<span>Game Started at {{model.game.createdAt}}</span>
+<players></players>
+<button
+	class="btn btn-primary new-game"
+	type="submit"
+	ng-click="gameCtrl.newGame()"
+	ng-disabled="!canStartGame"
+	ng-hide="model.game"
+	>New Game</button>

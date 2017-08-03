@@ -22,6 +22,10 @@ export class PlayerModelService {
 	}
 
 	update(prop, value) {
-		this.model.player[prop] = value;
+		if (value) {
+			this.model.player[prop] = value;
+		} else {
+			Object.assign(this.model.player, prop);
+		}
 	}
 }

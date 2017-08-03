@@ -14,29 +14,6 @@ export default class GameModelService {
 		};
 	}
 
-	update(action, data) {
-		var player = this.playerModel.model.player;
-
-		this.$log.info('update()', action, data, this);
-
-		switch (action) {
-			case 'add':
-				if (!player || player.id !== data.id) {
-					this.model.players.push(data);
-				}
-				break;
-
-			case 'create':
-				this.playerModel.setPlayer(data);
-				this.model.players.push(data);
-				break;
-
-			case 'whoami':
-				this.playerModel.setPlayer(data);
-				break;
-		}
-	}
-
 	update(data) {
 		this.model.game = data;
 	}

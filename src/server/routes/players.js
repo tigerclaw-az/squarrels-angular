@@ -53,7 +53,7 @@ players.get('/:id?', function(req, res, next) {
 		});
 });
 
-players.post('/', function(req, res, next) {
+players.post('/:id?', function(req, res, next) {
 	logger.info('POST /players/:id -> ', req.session.id);
 
 	let playerId = req.params.id,
@@ -93,6 +93,11 @@ players.post('/', function(req, res, next) {
 				.then(function(doc) {
 					if (doc) {
 						res.status(200).json(doc);
+						wss.broadcast(
+							{ type: 'players', action: 'update', nuts: doc },
+							req.session.id,
+							false
+						);
 					} else {
 						res.status(204).json([]);
 					}

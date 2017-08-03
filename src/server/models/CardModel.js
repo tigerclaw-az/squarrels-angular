@@ -17,7 +17,8 @@ var mongoose = require('mongoose'),
 			type: String
 		}
 	}, {
-		collection: 'cards'
+		collection: 'cards',
+		timestamps: false
 	});
 
 module.exports = {

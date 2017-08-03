@@ -35,7 +35,7 @@ export default class GameController {
 		};
 	}
 
-	newGame() {
+	create() {
 		var playersData = this.playersStore.getAll(),
 			players = [],
 			onSuccess = (res => {

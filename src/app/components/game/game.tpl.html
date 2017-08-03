@@ -7,7 +7,7 @@
 <button
 	class="btn btn-primary new-game"
 	type="submit"
-	ng-click="gameCtrl.newGame()"
+	ng-click="gameCtrl.create()"
 	ng-disabled="!canStartGame"
-	ng-hide="model.game"
+	ng-show="!model.game"
 	>New Game</button>

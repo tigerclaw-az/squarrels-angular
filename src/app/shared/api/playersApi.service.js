@@ -8,8 +8,4 @@ export class PlayersApiService extends BaseApiService {
 
 		this.$log.info('constructor()', this);
 	}
-
-	get() {
-		return this.$http.get(this.url);
-	}
 }

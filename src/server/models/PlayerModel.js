@@ -33,18 +33,14 @@ var mongoose = require('mongoose'),
 		}
 	}, {
 		collection: 'players',
-		timestamps: true
+		timestamps: true,
+		toObject: {
+			virtuals: true
+		},
+		toJSON: {
+			virtuals: true
+		}
 	});
-
-const log = require('loggy');
-
-PlayerSchema.set('toJSON', {
-	transform: function(doc, ret, options) {
-		delete ret._id;
-		return ret;
-	},
-	virtuals: true
-});
 
 module.exports = {
 	schema: PlayerSchema,

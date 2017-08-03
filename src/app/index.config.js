@@ -11,9 +11,11 @@ export function config(logEnhancerProvider, $httpProvider, toastrConfig, appConf
 	$httpProvider.useApplyAsync(true);
 
 	// Set options third-party lib
-	toastrConfig.allowHtml = true;
-	toastrConfig.timeOut = 1000;
-	toastrConfig.positionClass = 'toast-top-right';
-	toastrConfig.preventDuplicates = true;
-	toastrConfig.progressBar = true;
+	angular.extend(toastrConfig, {
+		allowHtml: true,
+		closeButton: true,
+		positionClass: 'toast-top-right',
+		preventDuplicates: true,
+		progressBar: false
+	});
 }

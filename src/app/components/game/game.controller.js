@@ -36,7 +36,7 @@ export default class GameController {
 	}
 
 	create() {
-		var playersData = this.playersStore.getAll(),
+		var playersData = this.playersStore.get(),
 			players = [],
 			onSuccess = (res => {
 				if (res.status === 201) {
@@ -44,6 +44,8 @@ export default class GameController {
 
 					// Will only fire for the client that clicked 'New Game'
 					this.gameModel.update(res.data);
+
+					this.playersStore.nextPlayer(-1);
 				}
 			}),
 			onError = (err => {

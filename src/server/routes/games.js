@@ -1,34 +1,31 @@
-var express = require('express'),
+var _ = require('lodash'),
 	logger = require('loggy'),
 	config = require('../config/config'),
-	games = express.Router();
+	games = require('express').Router();
 
 const GameModel = require('../models/GameModel').model;
 
 games.delete('/:id?', function(req, res, next) {
+	let action;
+
 	if (req.params.id) {
 		// Remove single game
-		GameModel
-			.findByIdAndRemove(req.params.id)
-			.then(function() {
-				res.sendStatus(200);
-			})
-			.catch(function(err) {
-				logger.error(err);
-				res.status(500).json(apiError(err));
-			});
+		// TODO: Remove associated decks to game
+		action = GameModel.findByIdAndRemove(req.params.id);
 	} else {
 		// Remove ALL games
-		GameModel
-			.remove()
-			.then(function() {
-				res.sendStatus(200);
-			})
-			.catch(function(err) {
-				logger.error(err);
-				res.status(500).json(apiError(err));
-			});
+		// TODO: Remove all decks as well
+		action = GameModel.remove();
 	}
+
+	action
+		.then(function() {
+			res.sendStatus(200);
+		})
+		.catch(function(err) {
+			logger.error(err);
+			res.status(500).json(apiError(err));
+		});
 });
 
 games.get('/:id?', function(req, res, next) {
@@ -66,16 +63,16 @@ games.post('/', function(req, res, next) {
 		.then(cards => {
 			let mainDeck = new DeckModel({
 					type: 'main',
-					cards: cards
+					cards: _.shuffle(cards)
 				}),
-				discardDeck = new DeckModel({
+				hoardDeck = new DeckModel({
 					type: 'discard'
 				});
 
 			// Create both decks, and store promises to be used later
 			deckPromises = [
 				DeckModel.create(mainDeck),
-				DeckModel.create(discardDeck)
+				DeckModel.create(hoardDeck)
 			];
 
 			Promise

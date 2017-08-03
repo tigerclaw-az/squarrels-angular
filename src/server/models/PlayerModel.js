@@ -1,6 +1,6 @@
 var mongoose = require('mongoose'),
 	uuid = require('uuid/v1'),
-	Cards = require('./CardsModel'),
+	Card = require('./CardModel'),
 	Schema = mongoose.Schema,
 	PlayerSchema = new Schema({
 		sessionId: {
@@ -24,12 +24,12 @@ var mongoose = require('mongoose'),
 		},
 		cardsInHand: {
 			type: [Schema.Types.ObjectId],
-			ref: Cards.model,
+			ref: Card.model,
 			select: false
 		},
 		cardsUsed: {
 			type: [Schema.Types.ObjectId],
-			ref: Cards.model
+			ref: Card.model
 		}
 	}, {
 		collection: 'players',

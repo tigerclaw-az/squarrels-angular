@@ -5,9 +5,7 @@
 	</ul>
 	<button
 		class="btn btn-primary"
-		ng-class="{
-			'hide': playerData.player || model.players.length == 6,
-		}"
+		ng-show="!playerData.player && model.players.length !== 6"
 		ng-click="playersCtrl.create()">Join
 	</button>
 	Total Players: {{model.players.length}}

@@ -1,5 +1,5 @@
 export default class GameController {
-	constructor($rootScope, $scope, $log, gamesApi, gameModel, playersStore) {
+	constructor($rootScope, $scope, $log, gamesApi, gameModel, playerModel, playersStore) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
@@ -8,23 +8,22 @@ export default class GameController {
 
 		this.gamesApi = gamesApi;
 		this.gameModel = gameModel;
+		this.playerModel = playerModel;
 		this.playersStore = playersStore;
 
 		this.$log.info('constructor()', this);
 	}
 
 	$onInit() {
-		var self = this;
-
 		this.$scope.isGameStarted = false;
 		this.$scope.canStartGame = true;
 
 		this.$scope.model = this.gameModel.model;
 
 		// Should only fire for clients that didn't click 'New Game'
-		this.$rootScope.$on('websocket:games:create', function(event, data) {
-			self.$log.info('$on -> websocket:games:create', data);
-			self.gameModel.update(data);
+		this.$rootScope.$on('websocket:games:create', (event, data) => {
+			this.$log.info('$on -> websocket:games:create', data);
+			this.gameModel.update(data);
 		});
 
 		this.$log.info('$onInit()', this);
@@ -37,9 +36,19 @@ export default class GameController {
 	}
 
 	newGame() {
-		var self = this,
-			playersData = this.playersStore.getAll(),
-			players = [];
+		var playersData = this.playersStore.getAll(),
+			players = [],
+			onSuccess = (res => {
+				if (res.status === 201) {
+					this.$scope.isGameStarted = true;
+
+					// Will only fire for the client that clicked 'New Game'
+					this.gameModel.update(res.data);
+				}
+			}),
+			onError = (err => {
+				this.$log.error(err);
+			});
 
 		_.forEach(playersData, function(obj) {
 			players.push(obj.id);
@@ -47,17 +56,8 @@ export default class GameController {
 
 		this.$scope.canStartGame = false;
 
-		this.gamesApi.update(players)
-			.then(function(res) {
-				if (res.status === 201) {
-					self.$scope.isGameStarted = true;
-
-					// Will only fire for the client that clicked 'New Game'
-					self.gameModel.update(res.data);
-				}
-			})
-			.catch(function() {
-
-			});
+		this.gamesApi
+			.update(players)
+			.then(onSuccess, onError);
 	}
 };

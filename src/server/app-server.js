@@ -29,7 +29,7 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 // ----------
 app.use(sessionParser({
 	secret,
-	cookie: {},
+	cookie: { httpOnly: true },
 	store: sessionStore,
 	resave: false,
 	saveUninitialized: true
@@ -57,6 +57,7 @@ app.use('/bower_components', express.static(path.join(__dirname, '../../bower_co
 // ROUTING
 // ----------
 let routes = {
+	decks: require('./routes/decks'),
 	games: require('./routes/games'),
 	players: require('./routes/players')
 };
@@ -69,6 +70,7 @@ app.use(function(req, res, next) {
 	return next();
 });
 // app.use('/api/', routes);
+app.use('/api/decks', routes.decks);
 app.use('/api/games', routes.games);
 app.use('/api/players', routes.players);
 

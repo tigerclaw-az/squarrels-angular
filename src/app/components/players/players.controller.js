@@ -20,10 +20,8 @@ default class PlayersController {
 
 	$onInit() {
 		var self = this,
-			activePlayer = this.$localStorage.player,
+			currentPlayer = this.$localStorage.player,
 			onSuccess = function(res) {
-				var activePlayer = self.$localStorage.player;
-
 				self.$log.info('onSuccess()', res, self);
 
 				if (res.status === 200) {
@@ -31,7 +29,7 @@ default class PlayersController {
 
 					self.$log.info('players', self.playersStore.model.players);
 
-					if (activePlayer) {
+					if (currentPlayer) {
 						self.playersStore.whoami();
 					}
 				}
@@ -55,7 +53,7 @@ default class PlayersController {
 		this.$rootScope.$on('websocket:players:whoami', function(event, data) {
 			self.$log.info('$on -> websocket:players:whoami', data);
 
-			if (data && data[0].id === activePlayer.id) {
+			if (data && data[0].id === currentPlayer.id) {
 				self.playersStore.update('whoami', data[0]);
 			}
 		});

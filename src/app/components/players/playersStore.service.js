@@ -1,5 +1,5 @@
 export default class PlayersStoreService {
-	constructor($log, $http, $localStorage, _, playersApi, websocket, playerModel) {
+	constructor($log, $http, $localStorage, _, websocket, playersApi, playerModel) {
 		'ngInject';
 
 		var self = this;
@@ -9,6 +9,7 @@ export default class PlayersStoreService {
 		this.$localStorage = $localStorage;
 
 		this._ = _;
+		this.playerModel = playerModel;
 		this.playersApi = playersApi;
 		this.ws = websocket;
 
@@ -19,12 +20,14 @@ export default class PlayersStoreService {
 		this.$log.info('constructor()', this);
 	}
 
-	get(id) {
-		this.$log.info('get()', id, this);
+	get(prop, value, index = false) {
+		this.$log.info('get()', prop, value, index, this);
 
-		if (id) {
-			return this._.find(this.model.players, function(o) {
-				return o.id === id;
+		let method = index ? 'findIndex' : 'find';
+
+		if (prop) {
+			return this._[method](this.model.players, function(o) {
+				return o[prop] === value;
 			});
 		}
 
@@ -37,10 +40,65 @@ export default class PlayersStoreService {
 		this.model.players.push(data);
 	}
 
-	update(id, data) {
-		this.$log.info('update()', id, data, this);
+	getNextPlayer(activeIndex) {
+		this.$log.info('nextPlayer()', activeIndex, this);
 
+		if (activeIndex === -1) {
+			return _.sample(this.model.players).id;
+		} else if (activeIndex === this.model.players.length - 1) {
+			activeIndex = 0;
+		} else {
+			activeIndex++;
+		}
+
+		return this.model.players[activeIndex].id;
+	}
+
+	nextPlayer(index) {
+		let activePlayerIndex = index || this.get('isActive', true, true),
+			nextPlayerId = this.getNextPlayer(activePlayerIndex),
+			onSuccess = (res => {
+				// Merge data with existing object of player
+				if (res.status === 200) {
+					this.update(res.data.id, res.data);
+				}
+			}),
+			onError = (err => {
+				this.$log.error(err);
+			}),
+			activePlayer;
+
+		this.$log.info('nextPlayer()', index, activePlayerIndex, nextPlayerId, this);
+
+		if (activePlayerIndex !== -1) {
+			activePlayer = this.model.players[activePlayerIndex];
+			activePlayer.isActive = false;
+			this.update(activePlayer.id, { isActive: false });
+
+			this.playersApi
+				.update(activePlayer, activePlayer.id)
+				.then(onSuccess, onError);
+		}
+
+		this.playersApi
+			.update({ isActive: true }, nextPlayerId)
+			.then(onSuccess, onError);
+	}
+
+	update(id, data) {
 		// Find the index of player to update and modify the object
+		let playerIndex = this.get('id', id, true),
+			player = this.model.players[playerIndex];
+
+		Object.assign(player, data);
+
+		this.$log.info('update()', id, data, player, this);
+
+		if (player.id === this.playerModel.model.player.id) {
+			this.playerModel.update(data);
+		}
+
+		return player;
 	}
 
 	// Send a request to get the current player's private data

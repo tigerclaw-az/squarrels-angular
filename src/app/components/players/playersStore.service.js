@@ -47,12 +47,12 @@ export default class PlayersStoreService {
 				break;
 
 			case 'create':
-				this.playerModel.setPlayer(data);
+				this.playerModel.insert(data);
 				this.model.players.push(data);
 				break;
 
 			case 'whoami':
-				this.playerModel.setPlayer(data);
+				this.playerModel.insert(data);
 				break;
 		}
 	}

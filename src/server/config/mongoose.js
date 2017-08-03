@@ -3,10 +3,8 @@ var mongoose = require('mongoose'),
 	config = require('./config');
 
 mongoose.Promise = require('q').Promise;
-mongoose.connect(`mongodb://${config.server}/squarrels`, function(err) {
-	if (err) {
-		logger.error('mongodb connection error', err);
-	} else {
-		logger.info('mongodb connection successful');
-	}
-});
+mongoose.set('debug', true);
+
+module.exports = function() {
+	return mongoose.connect(`mongodb://${config.server}/squarrels`);
+};

@@ -3,15 +3,15 @@ var config = require('./config/config'),
 	bodyParser = require('body-parser'),
 	cookieParser = require('cookie-parser'),
 	sessionParser = require('express-session'),
-	mongodbSession = require('connect-mongodb-session')(sessionParser),
+	MongodbSession = require('connect-mongodb-session')(sessionParser),
 	path = require('path'),
 	favicon = require('serve-favicon'),
-	logger = require('loggy'),
-	players = require('./routes/players');
+	logger = require('loggy');
 
 let app = express(),
+// let app = require('express-ws-routes'),
 	secret = '$eCuRiTy',
-	sessionStore = new mongodbSession({
+	sessionStore = new MongodbSession({
 		uri: `mongodb://${config.server}/squarrels_sessions`,
 		collection: 'sessions'
 	});
@@ -24,17 +24,28 @@ app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 // app.use(cookieParser(secret));
 
-//----------
+// ----------
 // SESSION
-//----------
+// ----------
 app.use(sessionParser({
 	secret,
+	cookie: {},
 	store: sessionStore,
 	resave: false,
 	saveUninitialized: true
 }));
 
-require('./config/mongoose');
+require('./config/mongoose')()
+	.then(function() {
+		logger.info('mongodb connection successful');
+
+		// Seed the necessary Models
+		require('./config/db-seeds');
+	})
+	.catch(function(err) {
+		logger.error('mongodb connection error', err);
+		process.exit(1);
+	});
 
 app.use(favicon(path.join(__dirname, '../../public/serve', 'favicon.ico')));
 app.use(express.static(path.join(__dirname, '../../public/serve')));
@@ -42,10 +53,15 @@ app.use(express.static(path.join(__dirname, '../app')));
 
 app.use('/bower_components', express.static(path.join(__dirname, '../../bower_components')));
 
-//----------
+// ----------
 // ROUTING
-//----------
-app.use(function (req, res, next) {
+// ----------
+let routes = {
+	games: require('./routes/games'),
+	players: require('./routes/players')
+};
+
+app.use(function(req, res, next) {
 	res.header('Access-Control-Allow-Credentials', true);
 	res.header('Access-Control-Allow-Origin', '*');
 	res.header('Access-Control-Allow-Headers', 'Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With');
@@ -53,11 +69,13 @@ app.use(function (req, res, next) {
 	return next();
 });
 // app.use('/api/', routes);
-app.use('/api/players', players);
+app.use('/api/games', routes.games);
+app.use('/api/players', routes.players);
 
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
+app.use(function(req, res, next) {
 	var err = new Error('Not Found');
+
 	err.status = 404;
 	next(err);
 });

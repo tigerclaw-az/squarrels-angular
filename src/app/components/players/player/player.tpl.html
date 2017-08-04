@@ -5,4 +5,10 @@
 	}">
 	<span>{{player.name}}</span>
 	<img src="{{player.img}}"/>
+	<div class="player-cards hand">
+		<div ng-repeat="card in player.cardsInHand">
+			{{card}}
+		</div>
+	</div>
+	<div class="player-cards storage"></div>
 </li>

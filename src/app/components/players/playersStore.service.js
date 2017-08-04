@@ -94,7 +94,7 @@ export default class PlayersStoreService {
 
 		this.$log.info('update()', id, data, player, this);
 
-		if (player.id === this.playerModel.model.player.id) {
+		if (player.isCurrent) {
 			this.playerModel.update(data);
 		}
 

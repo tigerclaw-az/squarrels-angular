@@ -62,6 +62,7 @@ default class PlayersController {
 			this.$log.info('$on -> websocket:players:update', data);
 
 			this.playersStore.update(data.id, data);
+			this.playersStore.whoami();
 		}));
 
 		this.$rootScope.$on('websocket:players:whoami', ((event, data) => {
@@ -73,7 +74,7 @@ default class PlayersController {
 				if (!this.playerModel.player) {
 					this.playerModel.insert(player);
 				} else {
-					this.playerModel.update(player.id, player);
+					this.playerModel.update(player);
 				}
 
 				this.playersStore.update(player.id, player);

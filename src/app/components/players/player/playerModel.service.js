@@ -22,11 +22,7 @@ export class PlayerModelService {
 		this.$localStorage.player = this.model.player;
 	}
 
-	update(prop, value) {
-		if (value) {
-			this.model.player[prop] = value;
-		} else {
-			Object.assign(this.model.player, prop);
-		}
+	update(data) {
+		Object.assign(this.model.player, data);
 	}
 }

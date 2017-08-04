@@ -1,14 +1,15 @@
 export default class GameController {
-	constructor($rootScope, $scope, $log, gamesApi, gameModel, playerModel, playersStore) {
+	constructor($rootScope, $scope, $log, deckStore, decksApi, gamesApi, gameModel, playersStore) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
 		this.$scope = $scope;
 		this.$log = $log;
 
+		this.deckStore = deckStore;
+		this.decksApi = decksApi;
 		this.gamesApi = gamesApi;
 		this.gameModel = gameModel;
-		this.playerModel = playerModel;
 		this.playersStore = playersStore;
 
 		this.$log.info('constructor()', this);
@@ -39,13 +40,38 @@ export default class GameController {
 		var playersData = this.playersStore.get(),
 			players = [],
 			onSuccess = (res => {
+				this.$log.info('onSuccess()', res, this);
+
 				if (res.status === 201) {
+					let gameData = res.data,
+						onSuccessDeck = (res) => {
+						this.$log.info('onSuccessDeck()', res, this);
+
+						if (res.status === 200) {
+							let deckData = res.data[0];
+
+							this.deckStore.insert(deckData.id, {
+								deckType: deckData.type,
+								cards: deckData.cards
+							});
+
+							if (deckData.type === 'main') {
+								this.deckStore.dealCards();
+							}
+						}
+					},
+					onErrorDeck = (res) => {
+						this.$log.error(res);
+					};
+
 					this.$scope.isGameStarted = true;
 
 					// Will only fire for the client that clicked 'New Game'
-					this.gameModel.update(res.data);
+					this.gameModel.update(gameData);
 
-					this.playersStore.nextPlayer(-1);
+					this.decksApi
+						.get(gameData.decks[0])
+						.then(onSuccessDeck, onErrorDeck);
 				}
 			}),
 			onError = (err => {

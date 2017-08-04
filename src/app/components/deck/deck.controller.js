@@ -10,34 +10,20 @@ export default class DeckController {
 		this.deckStore = deckStore;
 		this.gameModel = gameModel;
 
+		// Comes from <deck type="..">
+		// this.type
+
 		this.$log.info('constructor()', this);
 	}
 
 	$onInit() {
-		var onSuccess = (res) => {
-				this.$log.info('onSuccess()', res, this);
-
-				if (res.status === 200) {
-					let data = res.data[0];
-
-					this.deckStore.insert(data.id, data.cards);
-				}
-			},
-			onError = (res) => {
-				this.$log.error(res);
-			};
-
 		// Should only fire for clients that didn't click 'New Game'
 		this.$rootScope.$on('websocket:decks:update', (event, data) => {
 			this.$log.info('$on -> websocket:decks:update', data);
-			// this.gameModel.update(data);
+			this.deckStore.update(data.id, data);
 		});
 
-		this.decksApi
-			.get(this.deckId)
-			.then(onSuccess, onError);
-
-		// this.$scope.cards = this.deckStore.get(this.id);
+		// this.$scope.deck = this.deckStore.get(this.id);
 
 		this.$log.info('$onInit()', this);
 	}

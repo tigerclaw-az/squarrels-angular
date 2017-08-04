@@ -23,7 +23,8 @@
     "moment": "~2.18.1",
     "webcam": "webcam-directive#^3.1.1",
     "ngstorage": "^0.3.11",
-    "angular-websocket": "^2.0.0"
+    "angular-websocket": "^2.0.0",
+    "angular-cookie": "^4.1.0"
   },
   "resolutions": {
     "angular": "1.6.5"

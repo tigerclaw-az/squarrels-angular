@@ -20,6 +20,8 @@ let app = express(),
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
+app.set('trust proxy', 1);
+
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 // app.use(cookieParser(secret));
@@ -29,7 +31,9 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 // ----------
 app.use(sessionParser({
 	secret,
-	cookie: { httpOnly: true },
+	cookie: {
+		httpOnly: false
+	},
 	store: sessionStore,
 	resave: false,
 	saveUninitialized: true
@@ -37,10 +41,19 @@ app.use(sessionParser({
 
 require('./config/mongoose')()
 	.then(function() {
+		let mongooseSeed = require('mongoose-seed-db');
+
 		logger.info('mongodb connection successful');
 
-		// Seed the necessary Models
-		require('./config/db-seeds');
+		mongooseSeed.loadModels(path.join(__dirname, '/models/seeds'));
+		mongooseSeed
+			.clearAll()
+			.then(() => {
+				mongooseSeed.populate(path.join(__dirname, '/config/seeds'));
+			})
+			.catch((err) => {
+				logger.error(err);
+			});
 	})
 	.catch(function(err) {
 		logger.error('mongodb connection error', err);

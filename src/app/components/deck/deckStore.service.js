@@ -1,5 +1,5 @@
 export default class DeckStoreService {
-	constructor($log, $http, $q, _, decksApi, playersApi, playersStore) {
+	constructor($log, $http, $q, _, decksApi, playerModel, playersApi, playersStore) {
 		'ngInject';
 
 		var self = this;
@@ -10,6 +10,7 @@ export default class DeckStoreService {
 
 		this._ = _;
 		this.decksApi = decksApi;
+		this.playerModel = playerModel;
 		this.playersApi = playersApi;
 		this.playersStore = playersStore;
 
@@ -33,7 +34,9 @@ export default class DeckStoreService {
 
 			this.$log.info('cards:', cards);
 
-			pl.cardsInHand = cards;
+			if (pl.id === this.playerModel.model.player.id) {
+				this.playersStore.update(pl.id, { cardsInHand: cards });
+			}
 			_.pullAll(drawDeck.cards, cards);
 
 			this.playersApi

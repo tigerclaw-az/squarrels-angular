@@ -15,12 +15,6 @@ default class PlayerController {
 	}
 
 	$onInit() {
-		this.$rootScope.$on('websocket:player:active', (event, data) => {
-			this.$log.info('$on -> websocket:player:active', data);
-
-			this.playerModel.update('isActive', data.isActive);
-		});
-
 		this.$log.info('$onInit()', this);
 	}
 

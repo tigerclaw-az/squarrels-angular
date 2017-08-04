@@ -14,7 +14,7 @@ export default class BaseApiService {
 		this.$log.info('constructor()', this);
 	}
 
-	get(query) {
+	get(query = '') {
 		return this.$http.get(`${this.url}/${query}`);
 	}
 

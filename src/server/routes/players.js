@@ -20,7 +20,7 @@ players.delete('/:id?', function(req, res, next) {
 		// Remove ALL players
 		Player.remove()
 			.then(function() {
-				res.sendStatus(200);
+				res.status(200).json();
 			})
 			.catch(function(err) {
 				logger.error(err);

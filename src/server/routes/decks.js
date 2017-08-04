@@ -32,4 +32,34 @@ decks.get('/:id?', function(req, res, next) {
 		});
 });
 
+decks.post('/:id', function(req, res, next) {
+	var deckId = req.params.id,
+		deck = { _id: deckId },
+		options = { new: true };
+
+	logger.info('POST /decks/:id -> ', deck, req.session.id);
+
+	DeckModel
+		.findOneAndUpdate(deck, req.body, options)
+		.then(function(doc) {
+			logger.info('decksPost -> ', doc);
+
+			if (doc) {
+				res.status(200).json(doc);
+
+				wss.broadcast(
+					{ type: 'decks', action: 'update', nuts: doc },
+					req.session.id,
+					false
+				);
+			} else {
+				res.status(204).json([]);
+			}
+		})
+		.catch(function(err) {
+			logger.error(err);
+			res.status(500).json(config.apiError(err));
+		});
+});
+
 module.exports = decks;

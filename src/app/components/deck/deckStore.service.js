@@ -1,14 +1,16 @@
 export default class DeckStoreService {
-	constructor($log, $http, _, decksApi, playersStore) {
+	constructor($log, $http, $q, _, decksApi, playersApi, playersStore) {
 		'ngInject';
 
 		var self = this;
 
 		this.$log = $log;
 		this.$http = $http;
+		this.$q = $q;
 
 		this._ = _;
 		this.decksApi = decksApi;
+		this.playersApi = playersApi;
 		this.playersStore = playersStore;
 
 		this.model = {
@@ -19,23 +21,32 @@ export default class DeckStoreService {
 	}
 
 	dealCards() {
-		let mainDeck = this._.find(this.model.deck, function(o) {
+		let drawDeck = this._.find(this.model.deck, function(o) {
 			return o.deckType === 'main';
 		});
 
-		this.$log.info('dealCards()', mainDeck, this);
+		this.$log.info('dealCards()', drawDeck, this);
 
 		_.forEach(this.playersStore.model.players, (pl) => {
-			let cards = _.sampleSize(mainDeck.cards, 7);
+			let cards = _.sampleSize(drawDeck.cards, 7),
+				dealPromise;
 
 			this.$log.info('cards:', cards);
 
 			pl.cardsInHand = cards;
+			_.pullAll(drawDeck.cards, cards);
 
-			_.pullAll(mainDeck.cards, cards);
-
-			this.$log.info('mainDeck:', this.get(mainDeck.id));
+			this.playersApi
+				.update({ cardsInHand: cards }, pl.id)
+				.then(res => {
+					this.$log.info('playersApi:update()', res, this);
+				})
+				.catch(err => {
+					this.$log.error('This is nuts! Error: ', err);
+				});
 		});
+
+		this.decksApi.update({ cards: drawDeck.cards }, drawDeck.id);
 
 		// After all cards have been dealt, set the starting player
 		this.playersStore.nextPlayer(-1);
@@ -51,10 +62,10 @@ export default class DeckStoreService {
 		return this.model.deck;
 	}
 
-	insert(id, data) {
-		this.$log.info('insert()', id, data, this);
+	insert(data) {
+		this.$log.info('insert()', data, this);
 
-		this.model.deck[id] = data;
+		this.model.deck[data.id] = data;
 	}
 
 	update(id, data) {

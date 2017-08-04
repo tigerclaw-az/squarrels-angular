@@ -17,6 +17,7 @@ export class PlayerModelService {
 	insert(data) {
 		this.$log.info('insert()', data, this);
 
+		data.isCurrent = true;
 		this.model.player = data;
 		this.$localStorage.player = this.model.player;
 	}

@@ -20,7 +20,7 @@ module.exports = function(server, sessionParser, store) {
 	CLIENTS = [];
 
 	wss.broadcast = function broadcast(data, sid, all = true) {
-		logger.info('broadcast() -> ', data.id);
+		logger.info('broadcast() -> ', data, sid, all);
 		wss.clients.forEach(function each(client) {
 			if (client.readyState === WebSocket.OPEN) {
 				if (all || client !== CLIENTS[sid]) {
@@ -62,7 +62,7 @@ module.exports = function(server, sessionParser, store) {
 					logger.info('websocket:onmessage:whoami -> ', query, sid);
 
 					Player.find(query)
-						.select('+sessionId')
+						.select('+sessionId +cardsInHand')
 						.exec()
 						.then(function(list) {
 							let nuts = { action: 'whoami', type: 'players', nuts: list };

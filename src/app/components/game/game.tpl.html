@@ -8,5 +8,5 @@
 	class="btn btn-primary new-game"
 	ng-click="gameCtrl.create()"
 	ng-disabled="!canStartGame"
-	ng-show="!model.game"
+	ng-show="!model.game && playersModel.players.length >= 2"
 	>New Game</button>

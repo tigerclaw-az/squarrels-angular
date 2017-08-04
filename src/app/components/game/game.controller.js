@@ -28,6 +28,15 @@ export default class GameController {
 			this.gameModel.update(data);
 		});
 
+		// Should only fire for clients that didn't click 'New Game'
+		this.$rootScope.$on('websocket:decks:update', (event, data) => {
+			this.$log.info('$on -> websocket:decks:update', data);
+
+			if (data.id) {
+				this.deckStore.update(data.id, data);
+			}
+		});
+
 		this.$log.info('$onInit()', this);
 	}
 

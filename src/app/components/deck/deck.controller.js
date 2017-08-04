@@ -17,12 +17,6 @@ export default class DeckController {
 	}
 
 	$onInit() {
-		// Should only fire for clients that didn't click 'New Game'
-		this.$rootScope.$on('websocket:decks:update', (event, data) => {
-			this.$log.info('$on -> websocket:decks:update', data);
-			this.deckStore.update(data.id, data);
-		});
-
 		// this.$scope.deck = this.deckStore.get(this.id);
 
 		this.$log.info('$onInit()', this);

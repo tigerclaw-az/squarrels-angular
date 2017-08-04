@@ -20,6 +20,7 @@ export default class GameController {
 		this.$scope.canStartGame = true;
 
 		this.$scope.model = this.gameModel.model;
+		this.$scope.playersModel = this.playersStore.model;
 
 		// Should only fire for clients that didn't click 'New Game'
 		this.$rootScope.$on('websocket:games:create', (event, data) => {
@@ -50,10 +51,12 @@ export default class GameController {
 						if (res.status === 200) {
 							let deckData = res.data[0];
 
-							this.deckStore.insert(deckData.id, {
-								deckType: deckData.type,
-								cards: deckData.cards
-							});
+							this.deckStore.insert(
+								Object.assign({
+										deckType: deckData.type,
+									}, deckData
+								)
+							);
 
 							if (deckData.type === 'main') {
 								this.deckStore.dealCards();

@@ -37,6 +37,7 @@ export default class PlayersStoreService {
 	insert(data) {
 		this.$log.info('insert()', data, this);
 
+		data.isCurrent = false;
 		this.model.players.push(data);
 	}
 

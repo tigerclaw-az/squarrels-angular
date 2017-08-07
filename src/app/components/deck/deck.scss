@@ -1,6 +1,17 @@
+@import '../cards/cards';
+
 .card-deck {
-	border: 1px dotted black;
+	@extend %playing-cards;
+
 	float: left;
-	height: rem-calc(175);
-	width: rem-calc(150);
+	width: rem-calc($card-width);
+
+	&.hoard {
+		border: 1px dashed get-color(black);
+	}
+
+	.card {
+		background-image: url('../images/card-back.jpg');
+		border: 0;
+	}
 }

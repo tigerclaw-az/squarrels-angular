@@ -4,14 +4,22 @@
 		'current': player.isCurrent
 	}">
 	<span>{{player.name}}</span>
-	<img src="{{player.img}}"/>
+	<img ng-src="{{player.img}}"/>
 	<div class="sq-player-cards">
 		<div class="cards-group hand">
-			<div ng-show="player.isCurrent" class="card" ng-repeat="card in player.cardsInHand">
+			<div class="card"
+				ng-show="player.isCurrent && player.cardsInHand.length"
+				ng-repeat="card in player.cardsInHand">
 				{{card}}
 			</div>
-			<div ng-show="!player.isCurrent" class="card blank" ng-repeat="n in playerCtrl._.range(0, player.totalCards)">{{n}}</div>
+			<div class="card blank"
+				ng-show="!player.isCurrent && player.totalCards"
+				ng-repeat="n in playerCtrl._.range(0, player.totalCards)">
+				{{n}}
+			</div>
 		</div>
-		<div class="cards-group storage"></div>
+		<div class="cards-group storage">
+			<div class="card" ng-show="card" ng-repeat="card in player.cardsInStorage"></div>
+		</div>
 	</div>
 </li>

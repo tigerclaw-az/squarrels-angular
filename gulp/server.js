@@ -73,6 +73,8 @@ gulp.task('watch', ['build'], function() {
 		browserSync.reload(event.path);
 	});
 
+	gulp.watch(paths.images.source, { cwd: './' }, ['images']);
+
 	return true;
 });
 

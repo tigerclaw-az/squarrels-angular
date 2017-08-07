@@ -69,6 +69,7 @@ paths = Object.assign(paths, {
 });
 
 paths.fonts.serve = path.join(paths.serve.public, 'fonts');
+paths.images.serve = path.join(paths.serve.public, 'images');
 paths.scripts.source.inject = paths.scripts.source.all.concat(
 	[
 		'!' + path.join(paths.app, 'index*')

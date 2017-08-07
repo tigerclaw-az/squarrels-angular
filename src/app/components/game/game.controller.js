@@ -1,10 +1,11 @@
 export default class GameController {
-	constructor($rootScope, $scope, $log, deckStore, decksApi, gamesApi, gameModel, playersStore) {
+	constructor($rootScope, $scope, $log, $q, deckStore, decksApi, gamesApi, gameModel, playersStore) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
 		this.$scope = $scope;
 		this.$log = $log;
+		this.$q = $q;
 
 		this.deckStore = deckStore;
 		this.decksApi = decksApi;
@@ -18,9 +19,17 @@ export default class GameController {
 	$onInit() {
 		let onSuccess = (res => {
 				if (res.status === 200) {
-					let gameData = res.data;
+					let gameData = res.data[0],
+						drawDeck = gameData.decks[0],
+						hoardDeck = gameData.decks[1];
 
-					this.gameModel.update(gameData[0]);
+					this.gameModel.update(gameData);
+
+					this.$scope.drawDeckId = drawDeck;
+					this.$scope.hoardDeckId = hoardDeck;
+
+					this.updateDeck(drawDeck);
+					this.updateDeck(hoardDeck);
 				}
 			}),
 			onError = (res => {
@@ -68,37 +77,22 @@ export default class GameController {
 				this.$log.info('onSuccess()', res, this);
 
 				if (res.status === 201) {
-					let gameData = res.data,
-						onSuccessDeck = (res) => {
-						this.$log.info('onSuccessDeck()', res, this);
-
-						if (res.status === 200) {
-							let deckData = res.data[0];
-
-							this.deckStore.insert(
-								Object.assign({
-										deckType: deckData.type,
-									}, deckData
-								)
-							);
-
-							if (deckData.type === 'main') {
-								this.deckStore.dealCards();
-							}
-						}
-					},
-					onErrorDeck = (res) => {
-						this.$log.error(res);
-					};
+					let gameData = res.data;
 
 					this.$scope.isGameStarted = true;
+					this.$scope.drawDeckId = gameData.decks[0];
+					this.$scope.hoardDeckId = gameData.decks[1];
 
 					// Will only fire for the client that clicked 'New Game'
 					this.gameModel.update(gameData);
 
-					this.decksApi
-						.get(gameData.decks[0])
-						.then(onSuccessDeck, onErrorDeck);
+					this
+						.updateDeck(gameData.decks[0])
+						.then((deck) => {
+							if (deck.type === 'main') {
+								this.deckStore.dealCards();
+							}
+						});
 				}
 			}),
 			onError = (err => {
@@ -114,5 +108,36 @@ export default class GameController {
 		this.gamesApi
 			.update(players)
 			.then(onSuccess, onError);
+	}
+
+	updateDeck(id) {
+		var deckPromise = this.$q.defer(),
+			onSuccessDeck = (res => {
+				this.$log.info('onSuccessDeck()', res, this);
+
+				if (res.status === 200) {
+					let deckData = res.data[0];
+
+					this.deckStore.insert(
+						Object.assign({
+								deckType: deckData.type
+							}, deckData
+						)
+					);
+
+					deckPromise.resolve(deckData);
+				}
+			}),
+			onErrorDeck = (res => {
+				this.$log.error(res);
+
+				deckPromise.reject(res);
+			});
+
+		this.decksApi
+			.get(id)
+			.then(onSuccessDeck, onErrorDeck);
+
+		return deckPromise;
 	}
 };

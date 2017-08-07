@@ -3,7 +3,6 @@ import controller from './deck.controller';
 export const DeckComponent = {
 	bindings: {
 		deckId: '=',
-		pModel: '=',
 		type: '@'
 	},
 	controller,

@@ -3,5 +3,5 @@
 	ng-class=""
 	ng-click="deckCtrl.canDraw() && deckCtrl.drawCard()"
 	>
-		<div class="card"></div>
+		<div ng-repeat="card in deck.cards" class="card"></div>
 	</div>

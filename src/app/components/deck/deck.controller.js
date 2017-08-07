@@ -10,13 +10,15 @@ export default class DeckController {
 		this.deckStore = deckStore;
 		this.playerModel = playerModel.model;
 
-		// Comes from <deck type="..">
+		// Comes from <deck>
 		// this.type
+		// this.deckId
 
 		this.$log.info('constructor()', this);
 	}
 
 	$onInit() {
+		this.$scope.deck = this.deckStore.model.deck[this.deckId];
 		this.$scope.pModel = this.playerModel;
 
 		this.$log.info('$onInit()', this);

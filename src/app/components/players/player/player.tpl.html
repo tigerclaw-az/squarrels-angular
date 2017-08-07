@@ -5,10 +5,13 @@
 	}">
 	<span>{{player.name}}</span>
 	<img src="{{player.img}}"/>
-	<div class="player-cards hand">
-		<div ng-repeat="card in player.cardsInHand">
-			{{card}}
+	<div class="sq-player-cards">
+		<div class="cards-group hand">
+			<div ng-show="player.isCurrent" class="card" ng-repeat="card in player.cardsInHand">
+				{{card}}
+			</div>
+			<div ng-show="!player.isCurrent" class="card blank" ng-repeat="n in playerCtrl._.range(0, player.totalCards)">{{n}}</div>
 		</div>
+		<div class="cards-group storage"></div>
 	</div>
-	<div class="player-cards storage"></div>
 </li>

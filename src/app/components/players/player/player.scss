@@ -1,6 +1,37 @@
 .sq-player {
+	position: relative;
+
 	&.active {
 		color: get-color(mandy);
 		font-weight: $font-weight-bold;
+	}
+
+	.sq-player-cards {
+		@include clearfix;
+
+		.cards-group {
+			@extend %playing-cards;
+			float: left;
+
+			.card {
+				background-color: get-color(white);
+				$position: 0;
+
+				@for $i from 0 through $num-cards {
+					&:nth-child(#{$i}) {
+						left: #{$position}px;
+					}
+					$position: $position + 15;
+				}
+			}
+
+			&.hand {
+
+			}
+
+			&.storage {
+				border: 2px dotted get-color(black);
+			}
+		}
 	}
 }

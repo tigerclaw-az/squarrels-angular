@@ -73,8 +73,6 @@ default class PlayersController {
 
 				if (!this.playerModel.player) {
 					this.playerModel.insert(player);
-				} else {
-					this.playerModel.update(player);
 				}
 
 				this.playersStore.update(player.id, player);

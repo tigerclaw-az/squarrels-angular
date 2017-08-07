@@ -41,6 +41,7 @@ gulp.task('html', ['wiredep', 'partials', 'scripts', 'styles'], function() {
 gulp.task('images', function() {
 	return gulp.src(paths.images.source)
 		.pipe($.cache($.imagemin(options.imagemin)))
+		.pipe(gulp.dest(paths.images.serve))
 		.pipe($.size());
 });
 

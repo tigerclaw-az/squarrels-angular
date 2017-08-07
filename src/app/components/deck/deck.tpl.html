@@ -1,5 +1,7 @@
 <div
 	class="card-deck {{deckCtrl.type}}"
 	ng-class=""
-	ng-click="drawCard()"
-	></div>
+	ng-click="deckCtrl.canDraw() && deckCtrl.drawCard()"
+	>
+		<div class="card"></div>
+	</div>

@@ -1,5 +1,5 @@
 export default class DeckController {
-	constructor($rootScope, $scope, $log, gameModel, decksApi, deckStore) {
+	constructor($rootScope, $scope, $log, gameModel, decksApi, deckStore, playerModel) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
@@ -8,7 +8,7 @@ export default class DeckController {
 
 		this.decksApi = decksApi;
 		this.deckStore = deckStore;
-		this.gameModel = gameModel;
+		this.playerModel = playerModel.model;
 
 		// Comes from <deck type="..">
 		// this.type
@@ -17,7 +17,7 @@ export default class DeckController {
 	}
 
 	$onInit() {
-		// this.$scope.deck = this.deckStore.get(this.id);
+		this.$scope.pModel = this.playerModel;
 
 		this.$log.info('$onInit()', this);
 	}
@@ -28,12 +28,20 @@ export default class DeckController {
 		};
 	}
 
+	canDraw() {
+		return this.playerModel.player.isActive &&
+			this.playerModel.player.isCurrent &&
+			this.playerModel.player.totalCards < 7;
+	}
+
 	drawCard() {
-		let isActivePlayer = this.playerModel.model.player.isActive;
+		let isActivePlayer = this.playerModel.player.isActive;
+
+		this.$log.info('drawCard()', isActivePlayer, this);
 
 		if (this.type === 'main' && isActivePlayer) {
 			this.$log.info('You drew a card!');
-		} else if (this.gameModel.model.action === 'hoard' && !isActivePlayer) {
+		} else if (this.action === 'hoard' && !isActivePlayer) {
 			this.$log.info('You got the hoard!');
 		}
 	}

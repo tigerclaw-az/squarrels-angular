@@ -30,6 +30,10 @@ var mongoose = require('mongoose'),
 		cardsUsed: {
 			type: [Schema.Types.ObjectId],
 			ref: Card.model
+		},
+		totalCards: {
+			type: Number,
+			default: 0
 		}
 	}, {
 		collection: 'players',

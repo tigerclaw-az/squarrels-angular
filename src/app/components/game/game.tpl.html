@@ -1,7 +1,7 @@
 <span>Game Started at {{model.game.createdAt}} :: Round {{model.game.round}}</span>
 <div class="play-area clearfix" ng-if="model.game">
-	<deck type="main" deck-id="model.game.decks[0]" pModel="gameCtrl.playerModel"></deck>
-	<deck type="hoard" deck-id="model.game.decks[1]" pModel="gameCtrl.playerModel"></deck>
+	<deck type="main" deck-id="model.game.decks[0]"></deck>
+	<deck type="hoard" deck-id="model.game.decks[1]"></deck>
 </div>
 <players></players>
 <button

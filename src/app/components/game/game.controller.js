@@ -16,6 +16,17 @@ export default class GameController {
 	}
 
 	$onInit() {
+		let onSuccess = (res => {
+				if (res.status === 200) {
+					let gameData = res.data;
+
+					this.gameModel.update(gameData[0]);
+				}
+			}),
+			onError = (res => {
+				this.$log.error(res);
+			});
+
 		this.$scope.isGameStarted = false;
 		this.$scope.canStartGame = true;
 
@@ -36,6 +47,10 @@ export default class GameController {
 				this.deckStore.update(data.id, data);
 			}
 		});
+
+		this.gamesApi
+			.get()
+			.then(onSuccess, onError);
 
 		this.$log.info('$onInit()', this);
 	}

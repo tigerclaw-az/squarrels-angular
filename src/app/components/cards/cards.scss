@@ -1,4 +1,4 @@
-$card-height: 250;
+$card-height: 270;
 $card-width: 200;
 $num-cards: 7;
 
@@ -9,6 +9,8 @@ $num-cards: 7;
 	width: auto;
 
 	.card {
+		background-image: url('../images/card-back.jpg');
+		background-repeat: no-repeat;
 		border: 1px solid get-color(black);
 		height: 100%;
 		outline: none;

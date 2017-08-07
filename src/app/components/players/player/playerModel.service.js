@@ -12,6 +12,8 @@ export class PlayerModelService {
 		this.model = {
 			player: null
 		};
+
+		this.numDrawCards = 7;
 	}
 
 	insert(data) {

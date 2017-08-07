@@ -29,18 +29,18 @@ export default class DeckStoreService {
 		this.$log.info('dealCards()', drawDeck, this);
 
 		_.forEach(this.playersStore.model.players, (pl) => {
-			let cards = _.sampleSize(drawDeck.cards, 7),
+			let cards = _.sampleSize(drawDeck.cards, this.playerModel.numDrawCards),
 				dealPromise;
 
-			this.$log.info('cards:', cards);
+			this.$log.info('cards:', pl, cards);
 
 			if (pl.id === this.playerModel.model.player.id) {
-				this.playersStore.update(pl.id, { cardsInHand: cards });
+				this.playersStore.update(pl.id, { cardsInHand: cards, totalCards: this.playerModel.numDrawCards });
 			}
 			_.pullAll(drawDeck.cards, cards);
 
 			this.playersApi
-				.update({ cardsInHand: cards }, pl.id)
+				.update({ cardsInHand: cards, totalCards: this.playerModel.numDrawCards }, pl.id)
 				.then(res => {
 					this.$log.info('playersApi:update()', res, this);
 				})

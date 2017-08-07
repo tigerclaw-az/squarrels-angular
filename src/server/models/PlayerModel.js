@@ -27,7 +27,7 @@ var mongoose = require('mongoose'),
 			ref: Card.model,
 			select: false
 		},
-		cardsUsed: {
+		cardsInStorage: {
 			type: [Schema.Types.ObjectId],
 			ref: Card.model
 		},

@@ -5,13 +5,13 @@ var mongoose = require('mongoose'),
 	PlayerSchema = new Schema({
 		cardsInHand: {
 			type: [Schema.Types.ObjectId],
-			ref: Card.model,
+			ref: 'Card',
 			select: false
 		},
-		cardsInStorage: {
-			type: [Schema.Types.ObjectId],
-			ref: Card.model
-		},
+		cardsInStorage: [{
+			type: Schema.Types.ObjectId,
+			ref: 'Card'
+		}],
 		img: {
 			type: String
 		},

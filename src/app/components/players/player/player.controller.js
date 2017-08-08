@@ -1,6 +1,6 @@
 export
 default class PlayerController {
-	constructor($rootScope, $scope, $localStorage, $log, _, playersStore, playerModel, websocket) {
+	constructor($rootScope, $scope, $localStorage, $log, _, gameModel, playersStore, playerModel, websocket) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
@@ -8,6 +8,7 @@ default class PlayerController {
 		this.$log = $log;
 
 		this._ = _;
+		this.gameModel = gameModel.model;
 		this.playerModel = playerModel;
 		this.playersStore = playersStore;
 		this.ws = websocket;

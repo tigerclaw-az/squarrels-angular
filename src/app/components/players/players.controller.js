@@ -1,6 +1,6 @@
 export
 default class PlayersController {
-	constructor($rootScope, $scope, $localStorage, $log, utils, websocket, playersApi, playersStore, playerModel) {
+	constructor($rootScope, $scope, $localStorage, $log, _, utils, websocket, playersApi, playersStore, playerModel) {
 		'ngInject';
 
 		var self = this;
@@ -10,6 +10,7 @@ default class PlayersController {
 		this.$localStorage = $localStorage;
 		this.$log = $log;
 
+		this._ = _;
 		this.utils = utils;
 		this.playerModel = playerModel;
 		this.playersApi = playersApi;
@@ -53,7 +54,7 @@ default class PlayersController {
 
 			this.$log.info('$on -> websocket:players:create', data);
 
-			if (!currentPlayer || currentPlayer.id !== data.id) {
+			if (this._.isEmpty(currentPlayer) || currentPlayer.id !== data.id) {
 				this.playersStore.insert(data);
 			}
 		}));
@@ -71,8 +72,9 @@ default class PlayersController {
 			if (data.length && data[0].id === playerStorage.id) {
 				let player = data[0];
 
-				if (!this.playerModel.player) {
+				if (this._.isEmpty(this.playerModel.player)) {
 					this.playerModel.insert(player);
+					player = this.playerModel.model.player;
 				}
 
 				this.playersStore.update(player.id, player);

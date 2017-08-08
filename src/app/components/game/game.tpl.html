@@ -1,9 +1,9 @@
 <span>Game Started at {{model.game.createdAt}} :: Round {{model.game.round}}</span>
 <div class="row">
 	<div class="col-sm-3">
-		<div class="play-area clearfix" ng-if="model.isGameStarted">
-			<deck type="main" deck-id="drawDeckId"></deck>
-			<deck type="hoard" deck-id="hoardDeckId"></deck>
+		<div class="play-area clearfix" ng-if="model.isGameStarted && model.drawDeckId && model.hoardDeckId">
+			<deck type="main" deck-id="model.drawDeckId"></deck>
+			<deck type="hoard" deck-id="model.hoardDeckId"></deck>
 		</div>
 	</div>
 	<div class="col-sm-9">

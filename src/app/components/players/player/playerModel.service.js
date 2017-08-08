@@ -17,10 +17,15 @@ export class PlayerModelService {
 	}
 
 	insert(data) {
-		this.$log.info('insert()', data, this);
+		let pl = Object.assign({}, {
+					isCurrent: true,
+					cardsInHand: []
+				}, data
+			);
 
-		data.isCurrent = true;
-		this.model.player = data;
+		this.$log.info('insert()', pl, this);
+
+		this.model.player = pl;
 		this.$localStorage.player = this.model.player;
 	}
 

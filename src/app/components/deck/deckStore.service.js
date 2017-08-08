@@ -29,30 +29,43 @@ export default class DeckStoreService {
 		this.$log.info('dealCards()', drawDeck, this);
 
 		_.forEach(this.playersStore.model.players, (pl) => {
-			let cards = _.sampleSize(drawDeck.cards, this.playerModel.numDrawCards),
-				dealPromise;
-
-			this.$log.info('cards:', pl, cards);
-
-			if (pl.id === this.playerModel.model.player.id) {
-				this.playersStore.update(pl.id, { cardsInHand: cards, totalCards: this.playerModel.numDrawCards });
-			}
-			_.pullAll(drawDeck.cards, cards);
-
-			this.playersApi
-				.update({ cardsInHand: cards, totalCards: this.playerModel.numDrawCards }, pl.id)
-				.then(res => {
-					this.$log.info('playersApi:update()', res, this);
-				})
-				.catch(err => {
-					this.$log.error('This is nuts! Error: ', err);
-				});
+			this.drawCard(pl, drawDeck, this.playerModel.numDrawCards);
 		});
 
 		this.decksApi.update({ cards: drawDeck.cards }, drawDeck.id);
 
 		// After all cards have been dealt, set the starting player
 		this.playersStore.nextPlayer(-1);
+	}
+
+	drawCard(pl, deck, count) {
+		let cards = this._.map(_.sampleSize(deck.cards, count), '_id'),
+			totalCards = pl.totalCards + count;
+
+		this.$log.info('drawCard()', pl, deck, totalCards, this);
+
+		if (!this._.isEmpty(pl.cardsInHand)) {
+			cards = this._.union(pl.cardsInHand, cards);
+		}
+
+		this.$log.info('cards -> ', cards);
+
+		if (pl.id === this.playerModel.model.player.id) {
+			this.playersStore.update(pl.id, { cardsInHand: cards, totalCards: totalCards });
+		}
+		_.pullAll(deck.cards, cards);
+
+		// TODO: Update deck to remove card(s)
+		// this.decksApi.update({ cards: drawDeck.cards }, drawDeck.id);
+
+		this.playersApi
+			.update({ cardsInHand: cards, totalCards: totalCards }, pl.id)
+			.then(res => {
+				this.$log.info('playersApi:update()', res, this);
+			})
+			.catch(err => {
+				this.$log.error('This is nuts! Error: ', err);
+			});
 	}
 
 	get(id) {
@@ -72,6 +85,8 @@ export default class DeckStoreService {
 	}
 
 	update(id, data) {
+		this.$log.info('update()', id, data, this);
+
 		this.model.deck[id] = data;
 	}
 }

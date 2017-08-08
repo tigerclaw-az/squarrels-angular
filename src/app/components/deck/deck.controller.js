@@ -19,7 +19,9 @@ export default class DeckController {
 	}
 
 	$onInit() {
-		this.$scope.deck = this.deckStore.model.deck[this.deckId];
+		this.deck = this.deckStore.model.deck[this.deckId];
+
+		this.$scope.deck = this.deck;
 		this.$scope.pModel = this.playerModel;
 
 		this.$log.info('$onInit()', this);
@@ -42,7 +44,7 @@ export default class DeckController {
 		let player = this.playerModel.player;
 
 		return player.isActive && player.isCurrent &&
-			(player.isFirstTurn || player.totalCards < 7);
+			(player.isFirstTurn && player.totalCards < 8 || player.totalCards < 7);
 	}
 
 	discardCard() {
@@ -58,6 +60,7 @@ export default class DeckController {
 
 		if (this.type === 'main' && isActivePlayer) {
 			this.$log.info('You drew a card!');
+			this.deckStore.drawCard(this.playerModel.player, this.deck, 1);
 		} else if (this.action === 'hoard' && !isActivePlayer) {
 			this.$log.info('You got the hoard!');
 		}

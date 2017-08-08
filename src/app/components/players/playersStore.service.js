@@ -35,10 +35,14 @@ export default class PlayersStoreService {
 	}
 
 	insert(data) {
-		this.$log.info('insert()', data, this);
+		let pl = Object.assign({}, {
+					isCurrent: false
+				}, data
+			);
 
-		data.isCurrent = false;
-		this.model.players.push(data);
+		this.$log.info('insert()', pl, this);
+
+		this.model.players.push(pl);
 	}
 
 	getNextPlayer(activeIndex) {

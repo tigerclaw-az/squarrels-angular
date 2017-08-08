@@ -46,14 +46,7 @@ require('./config/mongoose')()
 		logger.info('mongodb connection successful');
 
 		mongooseSeed.loadModels(path.join(__dirname, '/models/seeds'));
-		mongooseSeed
-			.clearAll()
-			.then(() => {
-				mongooseSeed.populate(path.join(__dirname, '/config/seeds'));
-			})
-			.catch((err) => {
-				logger.error(err);
-			});
+		mongooseSeed.populate(path.join(__dirname, '/config/seeds'));
 	})
 	.catch(function(err) {
 		logger.error('mongodb connection error', err);

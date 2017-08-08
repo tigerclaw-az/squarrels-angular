@@ -25,8 +25,8 @@ export default class GameController {
 
 					this.gameModel.update(gameData);
 
-					this.$scope.drawDeckId = drawDeck;
-					this.$scope.hoardDeckId = hoardDeck;
+					this.gameModel.model.drawDeckId = drawDeck;
+					this.gameModel.model.hoardDeckId = hoardDeck;
 
 					this.updateDeck(drawDeck);
 					this.updateDeck(hoardDeck);
@@ -76,8 +76,8 @@ export default class GameController {
 				if (res.status === 201) {
 					let gameData = res.data;
 
-					this.$scope.drawDeckId = gameData.decks[0];
-					this.$scope.hoardDeckId = gameData.decks[1];
+					this.gameModel.model.drawDeckId = gameData.decks[0];
+					this.gameModel.model.hoardDeckId = gameData.decks[1];
 
 					// Will only fire for the client that clicked 'New Game'
 					this.gameModel.update(gameData);

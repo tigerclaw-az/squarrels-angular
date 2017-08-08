@@ -63,6 +63,7 @@ app.use('/bower_components', express.static(path.join(__dirname, '../../bower_co
 // ROUTING
 // ----------
 let routes = {
+	cards: require('./routes/cards'),
 	decks: require('./routes/decks'),
 	games: require('./routes/games'),
 	players: require('./routes/players')
@@ -76,6 +77,7 @@ app.use(function(req, res, next) {
 	return next();
 });
 // app.use('/api/', routes);
+app.use('/api/cards', routes.cards);
 app.use('/api/decks', routes.decks);
 app.use('/api/games', routes.games);
 app.use('/api/players', routes.players);

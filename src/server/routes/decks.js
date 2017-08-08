@@ -16,7 +16,9 @@ decks.get('/:id?', function(req, res, next) {
 	}
 
 	DeckModel
-		.find(query).exec()
+		.find(query)
+		.populate('cards')
+		.exec()
 		.then(function(list) {
 			if (list.length === 0) {
 				res.status(204);

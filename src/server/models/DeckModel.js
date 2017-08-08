@@ -6,10 +6,10 @@ var mongoose = require('mongoose'),
 			type: String,
 			required: true
 		},
-		cards: {
-			type: [Schema.Types.ObjectId],
-			ref: Card.model
-		}
+		cards: [{
+			type: Schema.Types.ObjectId,
+			ref: 'Card'
+		}]
 	}, {
 		collection: 'decks',
 		timestamps: true,

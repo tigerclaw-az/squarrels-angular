@@ -1,7 +1,7 @@
 <div
 	class="card-deck {{deckCtrl.type}}"
 	ng-class=""
-	ng-click="deckCtrl.canDraw() && deckCtrl.drawCard()"
+	ng-click="deckCtrl.onClick()"
 	>
 		<div ng-repeat="card in deck.cards" class="card"></div>
 	</div>

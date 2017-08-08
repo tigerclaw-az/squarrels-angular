@@ -1,5 +1,5 @@
 export default class DeckController {
-	constructor($rootScope, $scope, $log, gameModel, decksApi, deckStore, playerModel) {
+	constructor($rootScope, $scope, $log, gameModel, decksApi, deckStore, playerModel, playersStore) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
@@ -9,6 +9,7 @@ export default class DeckController {
 		this.decksApi = decksApi;
 		this.deckStore = deckStore;
 		this.playerModel = playerModel.model;
+		this.playersStore = playersStore;
 
 		// Comes from <deck>
 		// this.type
@@ -30,10 +31,24 @@ export default class DeckController {
 		};
 	}
 
+	canDiscard() {
+		let player = this.playerModel.player;
+
+		// TODO: Make sure the card isn't a Golden or Rotten (unless only card)
+		return player.isActive && player.selectedCard;
+	}
+
 	canDraw() {
-		return this.playerModel.player.isActive &&
-			this.playerModel.player.isCurrent &&
-			this.playerModel.player.totalCards < 7;
+		let player = this.playerModel.player;
+
+		return player.isActive && player.isCurrent &&
+			(player.isFirstTurn || player.totalCards < 7);
+	}
+
+	discardCard() {
+		this.$log.info('discardCard()', this);
+
+		this.playersStore.nextPlayer();
 	}
 
 	drawCard() {
@@ -45,6 +60,16 @@ export default class DeckController {
 			this.$log.info('You drew a card!');
 		} else if (this.action === 'hoard' && !isActivePlayer) {
 			this.$log.info('You got the hoard!');
+		}
+	}
+
+	onClick() {
+		this.$log.info('onClick()', this);
+
+		if (this.type === 'main' && this.canDraw()) {
+			this.drawCard();
+		} else if (this.type === 'discard' && this.canDiscard()) {
+			this.discardCard();
 		}
 	}
 };

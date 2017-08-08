@@ -11,7 +11,13 @@
 
 		.cards-group {
 			@extend %playing-cards;
+
 			float: left;
+			width: 100%;
+
+			&.ng-hide {
+				display: none;
+			}
 
 			.card {
 				background-color: get-color(white);
@@ -21,16 +27,21 @@
 					&:nth-child(#{$i}) {
 						left: #{$position}px;
 					}
-					$position: $position + 15;
+					$position: $position + 25;
 				}
 			}
 
 			&.hand {
-
+				.card {
+					&:hover {
+						top: -25px;
+					}
+				}
 			}
 
 			&.storage {
 				border: 2px dotted get-color(black);
+				width: rem-calc($card-width);
 			}
 		}
 	}

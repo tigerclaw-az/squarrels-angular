@@ -11,8 +11,6 @@ export class WebSocketService {
 
 		this.host = `${appConfig.host}:3000`;
 
-		this.connect();
-
 		this.$log.info('constructor()', this);
 	}
 
@@ -23,6 +21,10 @@ export class WebSocketService {
 
 		this.$ws.onMessage(this.onMessage.bind(this));
 		this.$ws.onError(this.onError.bind(this));
+	}
+
+	getStatus() {
+		return this.$ws.readyState;
 	}
 
 	send(msg) {

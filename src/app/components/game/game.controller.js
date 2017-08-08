@@ -36,9 +36,6 @@ export default class GameController {
 				this.$log.error(res);
 			});
 
-		this.$scope.isGameStarted = false;
-		this.$scope.canStartGame = true;
-
 		this.$scope.model = this.gameModel.model;
 		this.$scope.playersModel = this.playersStore.model;
 
@@ -79,7 +76,6 @@ export default class GameController {
 				if (res.status === 201) {
 					let gameData = res.data;
 
-					this.$scope.isGameStarted = true;
 					this.$scope.drawDeckId = gameData.decks[0];
 					this.$scope.hoardDeckId = gameData.decks[1];
 
@@ -88,10 +84,15 @@ export default class GameController {
 
 					this
 						.updateDeck(gameData.decks[0])
-						.then((deck) => {
-							if (deck.type === 'main') {
+						.then(deck => {
+							this.$log.info('decksApi:update()', deck);
+
+							if (deck.deckType === 'main') {
 								this.deckStore.dealCards();
 							}
+						})
+						.catch(err => {
+							this.$log.error(err);
 						});
 				}
 			}),
@@ -102,8 +103,6 @@ export default class GameController {
 		_.forEach(playersData, function(obj) {
 			players.push(obj.id);
 		});
-
-		this.$scope.canStartGame = false;
 
 		this.gamesApi
 			.update(players)
@@ -118,12 +117,7 @@ export default class GameController {
 				if (res.status === 200) {
 					let deckData = res.data[0];
 
-					this.deckStore.insert(
-						Object.assign({
-								deckType: deckData.type
-							}, deckData
-						)
-					);
+					this.deckStore.insert(deckData);
 
 					deckPromise.resolve(deckData);
 				}
@@ -138,6 +132,6 @@ export default class GameController {
 			.get(id)
 			.then(onSuccessDeck, onErrorDeck);
 
-		return deckPromise;
+		return deckPromise.promise;
 	}
 };

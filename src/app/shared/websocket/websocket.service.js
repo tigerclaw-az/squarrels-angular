@@ -10,12 +10,20 @@ export class WebSocketService {
 		this.toastr = toastr;
 
 		this.host = `${appConfig.host}:3000`;
+		this.options = {
+			maxTimeout: 60 * 1000,
+			reconnectIfNotNormalClose: true
+		};
 
 		this.$log.info('constructor()', this);
 	}
 
+	close() {
+		this.$ws.close();
+	}
+
 	connect() {
-		this.$ws = this.$websocket(`ws://${this.host}`);
+		this.$ws = this.$websocket(`ws://${this.host}`, this.options);
 
 		this.$log.info('ws', this.$ws);
 

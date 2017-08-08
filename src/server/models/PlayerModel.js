@@ -3,25 +3,6 @@ var mongoose = require('mongoose'),
 	Card = require('./CardModel'),
 	Schema = mongoose.Schema,
 	PlayerSchema = new Schema({
-		sessionId: {
-			type: String,
-			required: true,
-			select: false
-		},
-		name: {
-			type: String,
-			required: true,
-			trim: true
-		},
-		img: String,
-		isActive: {
-			type: Boolean,
-			default: false
-		},
-		score: {
-			type: Number,
-			default: 0
-		},
 		cardsInHand: {
 			type: [Schema.Types.ObjectId],
 			ref: Card.model,
@@ -30,6 +11,31 @@ var mongoose = require('mongoose'),
 		cardsInStorage: {
 			type: [Schema.Types.ObjectId],
 			ref: Card.model
+		},
+		img: {
+			type: String
+		},
+		isActive: {
+			type: Boolean,
+			default: false
+		},
+		name: {
+			type: String,
+			required: true,
+			trim: true
+		},
+		score: {
+			type: Number,
+			default: 0
+		},
+		sessionId: {
+			type: String,
+			required: true,
+			select: false
+		},
+		isFirstTurn: {
+			type: Boolean,
+			default: true
 		},
 		totalCards: {
 			type: Number,

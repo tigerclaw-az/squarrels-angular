@@ -10,11 +10,18 @@ export default class GameModelService {
 		this.ws = websocket;
 
 		this.model = {
-			game: null
+			game: {}
 		};
 	}
 
+	isGameStarted() {
+		return !this._.isEmpty(this.model.game);
+	}
+
 	update(data) {
-		this.model.game = data;
+		data.isGameStarted = true;
+		this.model.isGameStarted = true;
+
+		Object.assign(this.model.game, data);
 	}
 }

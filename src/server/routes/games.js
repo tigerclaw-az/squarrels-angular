@@ -62,11 +62,11 @@ games.post('/', function(req, res, next) {
 		.find({}).exec()
 		.then(cards => {
 			let mainDeck = new DeckModel({
-					type: 'main',
+					deckType: 'main',
 					cards: _.shuffle(cards)
 				}),
 				hoardDeck = new DeckModel({
-					type: 'discard'
+					deckType: 'discard'
 				});
 
 			// Create both decks, and store promises to be used later

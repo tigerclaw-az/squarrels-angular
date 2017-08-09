@@ -7,14 +7,15 @@ import { AppConfigConstant } from './config/appConfig.constant';
 /* endinject */
 
 let deps = [
+	'angular-logger',
+	'angular-websocket',
 	'ngAnimate',
 	'ngAria',
+	'ngDraggable',
 	'ngMessages',
 	'ngResource',
 	'ngStorage',
 	'ngTouch',
-	'angular-logger',
-	'angular-websocket',
 	'toastr',
 	'ui.bootstrap',
 	'ui.router',

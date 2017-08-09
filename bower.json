@@ -1,5 +1,5 @@
 {
-  "name": "quotefall",
+  "name": "squarrels",
   "dependencies": {
     "animate.css": "~3.5.2",
     "angular": "~1.6.4",
@@ -24,7 +24,8 @@
     "webcam": "webcam-directive#^3.1.1",
     "ngstorage": "^0.3.11",
     "angular-websocket": "^2.0.0",
-    "angular-cookie": "^4.1.0"
+    "angular-cookie": "^4.1.0",
+    "ngDraggable": "^0.1.11"
   },
   "resolutions": {
     "angular": "1.6.5"

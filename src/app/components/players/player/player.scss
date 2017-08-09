@@ -5,6 +5,12 @@
 
 	&.current {
 		color: get-color(gold);
+
+		.card {
+			&:hover {
+				top: -25px;
+			}
+		}
 	}
 
 	&.active {
@@ -34,14 +40,6 @@
 						left: #{$position}px;
 					}
 					$position: $position + 25;
-				}
-			}
-
-			&.hand {
-				.card {
-					&:hover {
-						top: -25px;
-					}
 				}
 			}
 

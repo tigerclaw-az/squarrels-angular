@@ -1,1 +1,10 @@
-<div ng-click="cardCtrl.onClick()">{{cardData.name}}</div>
+<a
+	class="{{cardData.cardType}}--{{cardData.name}}"
+	href="#"
+	role="button"
+	ng-class="{
+		disabled: isDisabled
+	}"
+	ng-click="!isDisabled && cardCtrl.onClick($event)">
+	{{cardData.name}}
+</a>

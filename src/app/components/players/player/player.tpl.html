@@ -7,12 +7,12 @@
 	<img ng-src="{{player.img}}"/>
 	<div class="sq-player-cards" ng-show="playerCtrl.gameModel.isGameStarted">
 		<div class="cards-group hand">
-			<div class="card"
+			<card
+				class="card"
 				ng-show="player.isCurrent && player.cardsInHand.length"
 				ng-repeat="card in player.cardsInHand"
-				ng-click="player.isActive">
-			{{card}}
-			</div>
+				card-id="card"
+			></card>
 			<div class="card blank"
 				ng-show="!player.isCurrent && player.totalCards"
 				ng-repeat="n in playerCtrl._.range(0, player.totalCards)">

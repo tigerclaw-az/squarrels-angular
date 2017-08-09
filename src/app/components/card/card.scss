@@ -1,6 +1,6 @@
 $card-height: 270;
 $card-width: 200;
-$num-cards: 7;
+$num-cards: 14;
 
 %playing-cards {
 	height: rem-calc($card-height);
@@ -9,6 +9,8 @@ $num-cards: 7;
 	width: auto;
 
 	.card {
+		@include user-select(none);
+
 		background-image: url('../images/card-back.jpg');
 		background-repeat: no-repeat;
 		border: 1px solid get-color(black);

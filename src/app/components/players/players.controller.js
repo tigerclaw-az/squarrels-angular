@@ -107,6 +107,7 @@ default class PlayersController {
 
 				if (res.status === 201) {
 					let player = res.data;
+
 					this.playerModel.insert(player);
 					this.playersStore.insert(player);
 				}

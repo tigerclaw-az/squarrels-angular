@@ -49,7 +49,6 @@ export class WebSocketService {
 		this.toastr.error('websocket:error', msg);
 	}
 
-	// TODO: Watch for a message coming back from any service using the websocketService
 	onMessage(msg) {
 		var data = JSON.parse(msg.data),
 			action = data.action || 'none',

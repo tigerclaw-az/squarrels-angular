@@ -1,3 +1,10 @@
+a {
+	&.disabled {
+		cursor: default;
+		pointer-events: none;
+	}
+}
+
 .ui-view-container {
 	position: relative;
 }

@@ -9,6 +9,7 @@
 		<div class="cards-group hand">
 			<card
 				class="card"
+				ng-attr-ng-drag="{{player.isCurrent && player.isActive ? true : false}}"
 				ng-show="player.isCurrent && player.cardsInHand.length"
 				ng-repeat="card in player.cardsInHand"
 				card-id="card"
@@ -22,7 +23,7 @@
 				card-type="hand">
 			</card>
 		</div>
-		<div class="cards-group storage">
+		<div class="storage">
 			<card
 				class="card"
 				ng-show="card"

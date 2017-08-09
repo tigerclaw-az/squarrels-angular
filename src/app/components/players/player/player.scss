@@ -6,7 +6,7 @@
 	&.current {
 		color: get-color(gold);
 
-		.card {
+		card {
 			&:hover {
 				top: -25px;
 			}
@@ -31,8 +31,11 @@
 				display: none;
 			}
 
-			.card {
-				background-color: get-color(white);
+			card {
+				height: 100%;
+				position: absolute;
+				width: rem-calc($card-width);
+
 				$position: 0;
 
 				@for $i from 0 through $num-cards {

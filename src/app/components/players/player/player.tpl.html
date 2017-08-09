@@ -12,17 +12,24 @@
 				ng-show="player.isCurrent && player.cardsInHand.length"
 				ng-repeat="card in player.cardsInHand"
 				card-id="card"
+				card-type="hand"
 			></card>
-			<div class="card blank"
+			<card
+				class="card"
 				ng-show="!player.isCurrent && player.totalCards"
-				ng-repeat="n in playerCtrl._.range(0, player.totalCards)">
-				{{n}}
-			</div>
+				ng-repeat="n in playerCtrl._.range(0, player.totalCards)"
+				card-id="null"
+				card-type="hand">
+			</card>
 		</div>
 		<div class="cards-group storage">
-			<div class="card"
+			<card
+				class="card"
 				ng-show="card"
-				ng-repeat="card in player.cardsInStorage"></div>
+				ng-repeat="card in player.cardsInStorage"
+				card-id="card"
+				card-type="storage">
+			</card>
 		</div>
 	</div>
 </li>

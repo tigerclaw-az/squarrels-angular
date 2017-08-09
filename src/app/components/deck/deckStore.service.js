@@ -38,6 +38,10 @@ export default class DeckStoreService {
 		this.playersStore.nextPlayer(-1);
 	}
 
+	discard(id) {
+		this.$log.info('discard()', id, this);
+	}
+
 	drawCard(pl, deck, count) {
 		let cards = this._.map(_.sampleSize(deck.cards, count), '_id'),
 			totalCards = pl.totalCards + count;

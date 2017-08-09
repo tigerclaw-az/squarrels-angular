@@ -76,7 +76,13 @@ export default class DeckController {
 		}
 	}
 
-	onDropComplete($data, $event) {
-		this.$log.info('onDropComplete()', $data, $event, this);
+	onDropComplete(data, event) {
+		let $el = event.element,
+			cardId = data;
+
+		this.$log.info('onDropComplete()', data, cardId, event, this);
+
+		// TODO: Don't allow 'golden' or 'rotten' cards unless ONLY card left
+		this.deckStore.discard(cardId);
 	}
 };

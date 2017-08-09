@@ -75,4 +75,8 @@ export default class DeckController {
 			this.discardCard();
 		}
 	}
+
+	onDropComplete($data, $event) {
+		this.$log.info('onDropComplete()', $data, $event, this);
+	}
 };

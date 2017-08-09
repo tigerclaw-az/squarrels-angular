@@ -50,8 +50,14 @@ export default class DeckStoreService {
 
 		this.$log.info('cards -> ', cards);
 
+		let plData = {
+			cardsInHand: cards,
+			isFirstTurn: false,
+			totalCards: totalCards
+		};
+
 		if (pl.id === this.playerModel.model.player.id) {
-			this.playersStore.update(pl.id, { cardsInHand: cards, totalCards: totalCards });
+			this.playersStore.update(pl.id, plData);
 		}
 		_.pullAll(deck.cards, cards);
 
@@ -59,7 +65,7 @@ export default class DeckStoreService {
 		// this.decksApi.update({ cards: drawDeck.cards }, drawDeck.id);
 
 		this.playersApi
-			.update({ cardsInHand: cards, totalCards: totalCards }, pl.id)
+			.update(plData, pl.id)
 			.then(res => {
 				this.$log.info('playersApi:update()', res, this);
 			})

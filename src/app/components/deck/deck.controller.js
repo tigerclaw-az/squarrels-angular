@@ -44,7 +44,7 @@ export default class DeckController {
 		let player = this.playerModel.player;
 
 		return player.isActive && player.isCurrent &&
-			(player.isFirstTurn && player.totalCards < 8 || player.totalCards < 7);
+			(player.isFirstTurn || player.totalCards < 7);
 	}
 
 	discardCard() {

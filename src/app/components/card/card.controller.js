@@ -28,10 +28,13 @@ export default class CardController {
 		this.$log.info('$onInit()', this);
 
 		this.$scope.cardData = {};
+		this.$scope.isDisabled = !this.cardId || this.cardType === 'storage';
 
-		this.cardsApi
-			.get(this.cardId)
-			.then(onSuccess, onError);
+		if (this.cardId) {
+			this.cardsApi
+				.get(this.cardId)
+				.then(onSuccess, onError);
+		}
 	}
 
 	$onDestroy() {
@@ -40,7 +43,9 @@ export default class CardController {
 		};
 	}
 
-	onClick() {
+	onClick($e) {
 		this.$log.info('onClick()', this);
+
+		$e.preventDefault();
 	}
 };

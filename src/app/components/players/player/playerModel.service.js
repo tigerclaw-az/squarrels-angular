@@ -1,5 +1,5 @@
 export class PlayerModelService {
-	constructor($log, $http, $localStorage, _, websocket) {
+	constructor($log, $http, $localStorage, _) {
 		'ngInject';
 
 		this.$log = $log;
@@ -7,7 +7,6 @@ export class PlayerModelService {
 		this.$localStorage = $localStorage;
 
 		this._ = _;
-		this.ws = websocket;
 
 		this.model = {
 			player: null

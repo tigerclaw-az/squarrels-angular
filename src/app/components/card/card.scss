@@ -8,7 +8,8 @@ $num-cards: 14;
 	// width: rem-calc($card-width);
 	width: auto;
 
-	.card {
+	.card,
+	card {
 		@include user-select(none);
 
 		background-image: url('../images/card-back.jpg');
@@ -18,5 +19,10 @@ $num-cards: 14;
 		outline: none;
 		position: absolute;
 		width: rem-calc($card-width);
+
+		[role="button"] {
+			display: block;
+			height: 100%;
+		}
 	}
 }

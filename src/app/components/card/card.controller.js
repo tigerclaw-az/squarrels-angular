@@ -28,7 +28,7 @@ export default class CardController {
 		this.$log.info('$onInit()', this);
 
 		this.$scope.cardData = {};
-		this.$scope.isDisabled = !this.cardId || this.cardType === 'storage';
+		this.$scope.isDisabled = !this.cardId || this.cardType === 'storage' || !this.player.isActive;
 
 		if (this.cardId) {
 			this.cardsApi

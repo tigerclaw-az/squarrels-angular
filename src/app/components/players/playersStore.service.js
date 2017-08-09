@@ -78,7 +78,6 @@ export default class PlayersStoreService {
 		if (activePlayerIndex !== -1) {
 			activePlayer = this.model.players[activePlayerIndex];
 			activePlayer.isActive = false;
-			this.update(activePlayer.id, { isActive: false });
 
 			this.playersApi
 				.update(activePlayer, activePlayer.id)

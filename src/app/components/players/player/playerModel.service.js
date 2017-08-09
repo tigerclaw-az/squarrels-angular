@@ -1,12 +1,14 @@
 export class PlayerModelService {
-	constructor($log, $http, $localStorage, _) {
+	constructor($log, $http, $localStorage, $q, _, playersApi) {
 		'ngInject';
 
 		this.$log = $log;
 		this.$http = $http;
 		this.$localStorage = $localStorage;
+		this.$q = $q;
 
 		this._ = _;
+		this.playersApi = playersApi;
 
 		this.model = {
 			player: null
@@ -26,6 +28,27 @@ export class PlayerModelService {
 
 		this.model.player = pl;
 		this.$localStorage.player = this.model.player;
+	}
+
+	discard(id) {
+		let cards = this.model.player.cardsInHand,
+			defer = this.$q.defer(),
+			onSuccess = (res => {
+				defer.resolve(res);
+			}),
+			onError = (err => {
+				this.$log.error(err);
+				defer.reject(err);
+			});
+
+		// Remove card from player
+		this._.pull(cards, id);
+
+		this.playersApi
+			.update({ cardsInHand: cards, totalCards: cards.length }, this.model.player.id)
+			.then(onSuccess, onError);
+
+		return defer.promise;
 	}
 
 	update(data) {

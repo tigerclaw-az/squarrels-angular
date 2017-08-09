@@ -22,9 +22,7 @@ export default class DeckStoreService {
 	}
 
 	dealCards() {
-		let drawDeck = this._.find(this.model.deck, function(o) {
-			return o.deckType === 'main';
-		});
+		let drawDeck = this.getByType('main');
 
 		this.$log.info('dealCards()', drawDeck, this);
 
@@ -39,7 +37,40 @@ export default class DeckStoreService {
 	}
 
 	discard(id) {
-		this.$log.info('discard()', id, this);
+		let hoardDeck = this.getByType('discard'),
+			cards = hoardDeck.cards,
+			onSuccess = (res => {
+				this.$log.info('onSuccess()', res, this);
+
+				if (res.status === 200) {
+					let data = res.data;
+
+					this.update(data.id, data);
+
+					this.playerModel
+						.discard(id)
+						.then(() => {
+							this.playersStore.nextPlayer();
+						})
+						.catch(err => {
+							this.$log.error(err);
+						});
+				}
+			}),
+			onError = (err => {
+				this.$log.error(err);
+			});
+
+		this.$log.info('discard()', id, hoardDeck, this);
+
+		cards.push(id);
+
+		// Remove card from cached deck
+		// this._.pull(hoardDeck.cards, id);
+
+		this.decksApi
+			.update({ cards }, hoardDeck.id)
+			.then(onSuccess, onError);
 	}
 
 	drawCard(pl, deck, count) {
@@ -63,7 +94,7 @@ export default class DeckStoreService {
 		if (pl.id === this.playerModel.model.player.id) {
 			this.playersStore.update(pl.id, plData);
 		}
-		_.pullAll(deck.cards, cards);
+		this._.pullAll(deck.cards, cards);
 
 		// TODO: Update deck to remove card(s)
 		// this.decksApi.update({ cards: drawDeck.cards }, drawDeck.id);
@@ -86,6 +117,12 @@ export default class DeckStoreService {
 		}
 
 		return this.model.deck;
+	}
+
+	getByType(type) {
+		return this._.find(this.model.deck, function(o) {
+			return o.deckType === type;
+		});
 	}
 
 	insert(data) {

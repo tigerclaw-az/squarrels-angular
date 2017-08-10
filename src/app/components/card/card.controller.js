@@ -28,7 +28,6 @@ export default class CardController {
 		this.$log.info('$onInit()', this);
 
 		this.$scope.cardData = {};
-		this.$scope.isDisabled = !this.cardId || this.cardType === 'storage' || !this.player.isActive;
 
 		if (this.cardId) {
 			this.cardsApi
@@ -41,6 +40,10 @@ export default class CardController {
 		return () => {
 			this.$log.info('$onDestroy()', this);
 		};
+	}
+
+	isDisabled() {
+		return !this.cardId || this.cardType === 'storage' || !this.player.isActive;
 	}
 
 	onClick($e) {

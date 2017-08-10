@@ -1,10 +1,10 @@
 <a
 	class="card {{cardData.cardType}}--{{cardData.name}}"
-	data-card-id="cardCtrl.cardId"
+	data-card-id="{{cardCtrl.cardId}}"
 	href="#"
 	role="button"
 	ng-class="{
-		disabled: isDisabled
+		disabled: cardCtrl.isDisabled()
 	}"
 	ng-attr-ng-drag="{{cardCtrl.player.isCurrent && cardCtrl.player.isActive ? true : false}}"
 	ng-drag-data="cardCtrl.cardId"

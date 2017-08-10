@@ -12,14 +12,20 @@ $num-cards: 14;
 
 		background-image: url('../images/card-back.jpg');
 		background-repeat: no-repeat;
-		border: 1px solid get-color(black);
+		color: get-color(white);
 		display: block;
+		font-size: 4rem;
 		height: 100%;
 		outline: none;
+		padding: 1rem;
 
 		[role="button"] {
 			display: block;
 			height: 100%;
+		}
+
+		&:focus {
+			outline: none;
 		}
 	}
 }

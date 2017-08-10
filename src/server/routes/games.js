@@ -3,28 +3,47 @@ var _ = require('lodash'),
 	config = require('../config/config'),
 	games = require('express').Router();
 
+const DeckModel = require('../models/DeckModel').model;
 const GameModel = require('../models/GameModel').model;
+const PlayerModel = require('../models/PlayerModel').model;
 
-games.delete('/:id?', function(req, res, next) {
-	let action;
+games.delete('/:id', function(req, res, next) {
+	let id = req.params.id;
 
-	if (req.params.id) {
-		// Remove single game
-		// TODO: Remove associated decks to game
-		action = GameModel.findByIdAndRemove(req.params.id);
-	} else {
-		// Remove ALL games
-		// TODO: Remove all decks as well
-		action = GameModel.remove();
-	}
+	GameModel
+		.findById(id)
+		.exec()
+		.then(game => {
+			let decks = game.decks,
+				players = game.players,
+				playerUpdate = {
+					cardsInHand: [],
+					cardsInStorage: [],
+					isFirstTurn: true,
+					isActive: false,
+					score: 0,
+					totalCards: 0
+				};
 
-	action
-		.then(function() {
-			res.sendStatus(200);
-		})
-		.catch(function(err) {
-			logger.error(err);
-			res.status(500).json(apiError(err));
+			logger.info('game -> ', game);
+
+			DeckModel
+				.deleteMany({ '_id': { $in: decks } })
+				.then(() => {
+					PlayerModel
+						.updateMany({ '_id': { $in: players } }, playerUpdate)
+						.then(() => {
+							GameModel
+								.remove({ _id: game.id })
+								.then(function() {
+									res.sendStatus(200);
+								})
+								.catch(function(err) {
+									logger.error(err);
+									res.status(500).json(apiError(err));
+								})
+						});
+				});
 		});
 });
 
@@ -92,6 +111,18 @@ games.post('/', function(req, res, next) {
 
 							wss.broadcast(
 								{ type: 'games', action: 'create', nuts: game },
+								req.session.id,
+								false
+							);
+
+							wss.broadcast(
+								{ type: 'decks', action: 'create', nuts: mainDeck },
+								req.session.id,
+								false
+							);
+
+							wss.broadcast(
+								{ type: 'decks', action: 'create', nuts: hoardDeck },
 								req.session.id,
 								false
 							);

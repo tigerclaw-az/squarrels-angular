@@ -43,19 +43,11 @@ export default class CardController {
 	}
 
 	canDrag() {
-		if (this.player) {
-			return this.player.isCurrent && this.player.isActive && !this.player.isFirstTurn;
-		}
-
-		return false;
+		return this.player.isCurrent;
 	}
 
 	isDisabled() {
-		if (this.player) {
-			return !this.cardId || this.cardType === 'storage' || !this.player.isActive;
-		}
-
-		return true;
+		return !this.cardId || this.cardType === 'storage' || !this.player.isActive;
 	}
 
 	onClick($e) {

@@ -22,7 +22,8 @@
 						ng-show="!isCurrent && player.totalCards"
 						ng-repeat="n in playerCtrl._.range(0, player.totalCards)"
 						card-id="{{null}}"
-						card-type="hand">
+						card-type="hand"
+						player="player">
 					</card>
 				</div>
 				<div class="storage">
@@ -30,7 +31,8 @@
 						ng-show="card"
 						ng-repeat="card in player.cardsInStorage"
 						card-id="{{card}}"
-						card-type="storage">
+						card-type="storage"
+						player="player">
 					</card>
 				</div>
 			</div>

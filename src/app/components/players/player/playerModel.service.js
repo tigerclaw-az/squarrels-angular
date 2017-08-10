@@ -31,28 +31,21 @@ export class PlayerModelService {
 	}
 
 	discard(id) {
-		let cards = this.model.player.cardsInHand,
-			defer = this.$q.defer(),
-			onSuccess = (res => {
-				defer.resolve(res);
-			}),
-			onError = (err => {
-				this.$log.error(err);
-				defer.reject(err);
-			});
+		let cards = this.model.player.cardsInHand;
 
 		this.$log.info('discard()', id, cards, this);
 
 		// Remove card from player
 		this._.pull(cards, id);
 
-		this.$log.info('playerModel:cards -> ', cards);
+		let plData = {
+			cardsInHand: cards,
+			totalCards: cards.length
+		};
 
-		this.playersApi
-			.update({ cardsInHand: cards, totalCards: cards.length }, this.model.player.id)
-			.then(onSuccess, onError);
+		this.$log.info('playerModel:cards -> ', plData);
 
-		return defer.promise;
+		return this.playersApi.update(plData, this.model.player.id);
 	}
 
 	update(data) {

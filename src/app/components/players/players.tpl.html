@@ -1,12 +1,12 @@
 <div class="sq-players-wrapper">
 	<webcam channel="webcam"></webcam>
-	<ul class="sq-players">
-		<player ng-repeat="p in model.players track by $index" player="p"></player>
-	</ul>
+	Total Rodents: {{model.players.length}}
+	<div class="sq-players">
+		<player ng-repeat="p in model.players | orderBy:'!isCurrent'" player="p"></player>
+	</div>
 	<button
 		class="btn btn-primary"
 		ng-show="!playerData.player && model.players.length !== 6"
 		ng-click="playersCtrl.create()">Join
 	</button>
-	Total Players: {{model.players.length}}
 </div>

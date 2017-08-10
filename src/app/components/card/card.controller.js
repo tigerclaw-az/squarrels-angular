@@ -42,8 +42,20 @@ export default class CardController {
 		};
 	}
 
+	canDrag() {
+		if (this.player) {
+			return this.player.isCurrent && this.player.isActive && !this.player.isFirstTurn;
+		}
+
+		return false;
+	}
+
 	isDisabled() {
-		return !this.cardId || this.cardType === 'storage' || !this.player.isActive;
+		if (this.player) {
+			return !this.cardId || this.cardType === 'storage' || !this.player.isActive;
+		}
+
+		return true;
 	}
 
 	onClick($e) {

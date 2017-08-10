@@ -6,7 +6,7 @@
 	ng-class="{
 		disabled: cardCtrl.isDisabled()
 	}"
-	ng-attr-ng-drag="{{cardCtrl.player.isCurrent && cardCtrl.player.isActive ? true : false}}"
+	ng-attr-ng-drag="{{cardCtrl.canDrag() ? true : false}}"
 	ng-drag-data="cardCtrl.cardId"
 	ng-drag-stop="cardCtrl.onDragStop()">
 	{{cardData.name}}

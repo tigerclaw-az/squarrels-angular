@@ -1,35 +1,39 @@
-<li class="sq-player" ng-init="pModel = playerCtrl.playerModel.model; player = playerCtrl.player"
+<div class="sq-player" ng-init="pModel = playerCtrl.playerModel.model; player = playerCtrl.player"
 	ng-class="{
 		'active': player.isActive,
 		'current': player.isCurrent
 	}">
-	<span>{{player.name}}</span>
-	<img ng-src="{{player.img}}"/>
-	<div class="sq-player-cards" ng-show="playerCtrl.gameModel.isGameStarted">
-		<div class="cards-group hand">
-			<card
-				ng-show="player.isCurrent && player.cardsInHand.length"
-				ng-repeat="card in player.cardsInHand"
-				card-id="card"
-				card-type="hand"
-				player="player"
-			></card>
-			<card
-				class="card"
-				ng-show="!player.isCurrent && player.totalCards"
-				ng-repeat="n in playerCtrl._.range(0, player.totalCards)"
-				card-id="null"
-				card-type="hand">
-			</card>
+	<div class="row">
+		<div class="col-sm-3">
+			<img ng-src="{{player.img}}"/>
+			<div>{{player.name}}</div>
 		</div>
-		<div class="storage">
-			<card
-				class="card"
-				ng-show="card"
-				ng-repeat="card in player.cardsInStorage"
-				card-id="card"
-				card-type="storage">
-			</card>
+		<div class="col-sm-9">
+			<div class="sq-player-cards" ng-show="playerCtrl.gameModel.isGameStarted">
+				<div class="cards-group hand">
+					<card
+						ng-show="player.isCurrent && player.cardsInHand.length"
+						ng-repeat="card in player.cardsInHand"
+						card-id="{{card}}"
+						card-type="hand"
+						player="player"
+					></card>
+					<card
+						ng-show="!player.isCurrent && player.totalCards"
+						ng-repeat="n in playerCtrl._.range(0, player.totalCards)"
+						card-id="{{null}}"
+						card-type="hand">
+					</card>
+				</div>
+				<div class="storage">
+					<card
+						ng-show="card"
+						ng-repeat="card in player.cardsInStorage"
+						card-id="{{card}}"
+						card-type="storage">
+					</card>
+				</div>
+			</div>
 		</div>
 	</div>
-</li>
+</div>

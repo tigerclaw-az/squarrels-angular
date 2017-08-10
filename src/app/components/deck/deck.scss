@@ -1,17 +1,8 @@
 @import '../card/card';
 
-.card-deck {
+.deck {
 	@extend %playing-cards;
 
-	float: left;
-	width: rem-calc($card-width);
-
-	&.discard {
-		border: 1px dashed get-color(black);
-		width: 100%;
-	}
-
-	.card {
-		border: 0;
-	}
+	display: block;
+	width: 100% !important;
 }

@@ -1,7 +1,7 @@
-<div class="sq-player" ng-init="pModel = playerCtrl.playerModel.model; player = playerCtrl.player"
+<div class="sq-player" ng-init="pModel = playerCtrl.playerModel.model; player = playerCtrl.player; isCurrent = player.id === pModel.player.id"
 	ng-class="{
 		'active': player.isActive,
-		'current': player.isCurrent
+		'current': isCurrent
 	}">
 	<div class="row">
 		<div class="col-sm-3">
@@ -12,14 +12,14 @@
 			<div class="sq-player-cards" ng-show="playerCtrl.gameModel.isGameStarted">
 				<div class="cards-group hand">
 					<card
-						ng-show="player.isCurrent && player.cardsInHand.length"
+						ng-show="isCurrent && player.cardsInHand.length"
 						ng-repeat="card in player.cardsInHand"
 						card-id="{{card}}"
 						card-type="hand"
 						player="player"
 					></card>
 					<card
-						ng-show="!player.isCurrent && player.totalCards"
+						ng-show="!isCurrent && player.totalCards"
 						ng-repeat="n in playerCtrl._.range(0, player.totalCards)"
 						card-id="{{null}}"
 						card-type="hand">

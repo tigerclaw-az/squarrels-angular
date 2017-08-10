@@ -61,9 +61,6 @@ export class WebSocketService {
 			data = data.nuts;
 		}
 
-		// --- TESTING ONLY ---//
-		this.toastr.info(`websocket:${type}:${action}`);
-
 		this.$rootScope.$broadcast('websocket', msg);
 		this.$rootScope.$broadcast(`websocket:${type}:${action}`, data);
 	}

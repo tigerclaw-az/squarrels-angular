@@ -1,9 +1,12 @@
 <span>Game Started at {{model.game.createdAt}} :: Round {{model.game.round}}</span>
 <div class="row">
 	<div class="col-sm-3">
-		<div class="play-area clearfix" ng-if="model.isGameStarted && model.drawDeckId && model.hoardDeckId">
-			<deck type="main" deck-id="model.drawDeckId"></deck>
-			<deck type="hoard" deck-id="model.hoardDeckId"></deck>
+		<div class="play-area clearfix" ng-if="model.isGameStarted">
+			<deck
+				ng-repeat="deck in decks"
+				type="{{deck.deckType}}"
+				deck-id="{{deck.id}}"
+			></deck>
 		</div>
 	</div>
 	<div class="col-sm-9">
@@ -13,5 +16,12 @@
 <button
 	class="btn btn-primary new-game"
 	ng-click="gameCtrl.create()"
-	ng-show="!model.isGameStarted && playersModel.players.length >= 2"
-	>New Game</button>
+	ng-show="!model.isGameStarted && playersModel.players.length >= 2">
+	New Game
+</button>
+<button
+	class="btn btn-warning new-game"
+	ng-click="gameCtrl.reset()"
+	ng-show="model.isGameStarted">
+	RESET
+</button>

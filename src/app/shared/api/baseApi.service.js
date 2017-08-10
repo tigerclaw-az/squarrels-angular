@@ -15,10 +15,20 @@ export default class BaseApiService {
 	}
 
 	get(query = '') {
+		this.$log.info('api:get()', query, this);
+
 		return this.$http.get(`${this.url}/${query}`);
 	}
 
+	remove(id) {
+		this.$log.info('api:remove', id, this);
+
+		return this.$http.delete(`${this.url}/${id}`);
+	}
+
 	update(data, id = '') {
+		this.$log.info('api:update', data, id, this);
+
 		return this.$http.post(`${this.url}/${id}`, data);
 	}
 }

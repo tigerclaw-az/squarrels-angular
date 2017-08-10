@@ -41,8 +41,12 @@ export class PlayerModelService {
 				defer.reject(err);
 			});
 
+		this.$log.info('discard()', id, cards, this);
+
 		// Remove card from player
 		this._.pull(cards, id);
+
+		this.$log.info('playerModel:cards -> ', cards);
 
 		this.playersApi
 			.update({ cardsInHand: cards, totalCards: cards.length }, this.model.player.id)

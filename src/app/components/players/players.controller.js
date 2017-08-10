@@ -78,6 +78,9 @@ default class PlayersController {
 				}
 
 				this.playersStore.update(player.id, player);
+
+				// Update any scoped elements based on services after they were updated
+				this.$rootScope.$apply;
 			}
 		}));
 

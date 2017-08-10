@@ -30,7 +30,7 @@ export default class DeckStoreService {
 			this.drawCard(pl, drawDeck, this.playerModel.numDrawCards);
 		});
 
-		this.decksApi.update({ cards: drawDeck.cards }, drawDeck.id);
+		// this.decksApi.update({ cards: drawDeck.cards }, drawDeck.id);
 
 		// After all cards have been dealt, set the starting player
 		this.playersStore.nextPlayer(-1);
@@ -74,38 +74,41 @@ export default class DeckStoreService {
 	}
 
 	drawCard(pl, deck, count) {
-		let cards = this._.map(_.sampleSize(deck.cards, count), '_id'),
-			totalCards = pl.totalCards + count;
+		let cardsDrawn = _.sampleSize(deck.cards, count),
+			cardsMerge = cardsDrawn;
 
-		this.$log.info('drawCard()', pl, deck, totalCards, this);
+		this.$log.info('drawCard()', pl, deck, cardsDrawn, this);
 
 		if (!this._.isEmpty(pl.cardsInHand)) {
-			cards = this._.union(pl.cardsInHand, cards);
+			cardsMerge = this._.union(pl.cardsInHand, cardsDrawn);
 		}
 
-		this.$log.info('cards -> ', cards);
+		this.$log.info('cards:union -> ', cardsMerge);
 
 		let plData = {
-			cardsInHand: cards,
-			isFirstTurn: false,
-			totalCards: totalCards
+			cardsInHand: cardsMerge,
+			isFirstTurn: count === this.playerModel.numDrawCards ? true : false,
+			totalCards: cardsMerge.length
 		};
 
-		if (pl.id === this.playerModel.model.player.id) {
-			this.playersStore.update(pl.id, plData);
-		}
-		this._.pullAll(deck.cards, cards);
+		this.$log.info('deck.cards -> ', deck.cards);
+		this.$log.info('cardsDrawn -> ', cardsDrawn);
+		this._.pullAll(deck.cards, cardsDrawn);
 
-		// TODO: Update deck to remove card(s)
-		// this.decksApi.update({ cards: drawDeck.cards }, drawDeck.id);
-
-		this.playersApi
-			.update(plData, pl.id)
-			.then(res => {
-				this.$log.info('playersApi:update()', res, this);
+		this.decksApi
+			.update({ cards: deck.cards }, deck.id)
+			.then(() => {
+				this.playersApi
+					.update(plData, pl.id)
+					.then(res => {
+						this.$log.info('playersApi:update()', res, this);
+					})
+					.catch(err => {
+						this.$log.error('This is nuts! Error: ', err);
+					});
 			})
 			.catch(err => {
-				this.$log.error('This is nuts! Error: ', err);
+				this.$log.error(err);
 			});
 	}
 

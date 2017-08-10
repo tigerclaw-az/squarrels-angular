@@ -2,7 +2,7 @@ import controller from './deck.controller';
 
 export const DeckComponent = {
 	bindings: {
-		deckId: '=',
+		deckId: '@',
 		type: '@'
 	},
 	controller,

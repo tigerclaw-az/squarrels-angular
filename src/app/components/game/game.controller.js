@@ -18,6 +18,8 @@ export default class GameController {
 
 	$onInit() {
 		let onSuccess = (res => {
+				this.$log.info('onSuccess()', res, this);
+
 				if (res.status === 200) {
 					let gameData = res.data[0],
 						drawDeck = gameData.decks[0],
@@ -25,17 +27,15 @@ export default class GameController {
 
 					this.gameModel.update(gameData);
 
-					this.gameModel.model.drawDeckId = drawDeck;
-					this.gameModel.model.hoardDeckId = hoardDeck;
-
-					this.updateDeck(drawDeck);
-					this.updateDeck(hoardDeck);
+					this.insertDeck(drawDeck);
+					this.insertDeck(hoardDeck);
 				}
 			}),
 			onError = (res => {
 				this.$log.error(res);
 			});
 
+		this.$scope.decks = this.deckStore.model.deck;
 		this.$scope.model = this.gameModel.model;
 		this.$scope.playersModel = this.playersStore.model;
 
@@ -45,7 +45,14 @@ export default class GameController {
 			this.gameModel.update(data);
 		});
 
-		// Should only fire for clients that didn't click 'New Game'
+		// Should only fire for external clients
+		this.$rootScope.$on('websocket:decks:create', (event, data) => {
+			this.$log.info('$on -> websocket:decks:create', data);
+
+			this.insertDeck(data.id, data);
+		});
+
+		// Should only fire for external clients
 		this.$rootScope.$on('websocket:decks:update', (event, data) => {
 			this.$log.info('$on -> websocket:decks:update', data);
 
@@ -67,6 +74,18 @@ export default class GameController {
 		};
 	}
 
+	/**
+	 * TEMPORARY
+	 * Resets the current game
+	 */
+	reset() {
+		this.gamesApi
+			.remove(this.gameModel.model.game.id)
+			.then(() => {
+				window.location.reload();
+			});
+	}
+
 	create() {
 		var playersData = this.playersStore.get(),
 			players = [],
@@ -74,22 +93,20 @@ export default class GameController {
 				this.$log.info('onSuccess()', res, this);
 
 				if (res.status === 201) {
-					let gameData = res.data;
-
-					this.gameModel.model.drawDeckId = gameData.decks[0];
-					this.gameModel.model.hoardDeckId = gameData.decks[1];
+					let gameData = res.data,
+						deckUpdates = [];
 
 					// Will only fire for the client that clicked 'New Game'
 					this.gameModel.update(gameData);
 
-					this
-						.updateDeck(gameData.decks[0])
+					deckUpdates.push(this.insertDeck(gameData.decks[0]));
+					deckUpdates.push(this.insertDeck(gameData.decks[1]));
+
+					this.$q.all(deckUpdates)
 						.then(deck => {
 							this.$log.info('decksApi:update()', deck);
 
-							if (deck.deckType === 'main') {
-								this.deckStore.dealCards();
-							}
+							this.deckStore.dealCards();
 						})
 						.catch(err => {
 							this.$log.error(err);
@@ -109,7 +126,7 @@ export default class GameController {
 			.then(onSuccess, onError);
 	}
 
-	updateDeck(id) {
+	insertDeck(id) {
 		var deckPromise = this.$q.defer(),
 			onSuccessDeck = (res => {
 				this.$log.info('onSuccessDeck()', res, this);
@@ -118,6 +135,7 @@ export default class GameController {
 					let deckData = res.data[0];
 
 					this.deckStore.insert(deckData);
+					this.$scope.$apply;
 
 					deckPromise.resolve(deckData);
 				}

@@ -1,8 +1,8 @@
 <div
 	class="card-deck {{deckCtrl.type}}"
 	ng-class=""
-	ng-click="deckCtrl.type !== 'hoard' && deckCtrl.onClick()"
-	ng-attr-ng-drop="{{deckCtrl.type === 'hoard' ? true : false}}"
+	ng-click="deckCtrl.type !== 'discard' && deckCtrl.onClick()"
+	ng-attr-ng-drop="{{deckCtrl.type === 'discard' ? true : false}}"
 	ng-drop-success="deckCtrl.onDropComplete($data, $event)"
 	>
 		<div ng-show="deck.cards.length" class="card"></div>

@@ -85,7 +85,7 @@ export default class PlayersStoreService {
 		}
 
 		this.playersApi
-			.update({ isActive: true }, nextPlayerId)
+			.update({ isActive: true, isFirstTurn: true }, nextPlayerId)
 			.then(onSuccess, onError);
 	}
 

@@ -1,0 +1,15 @@
+.play-area {
+	deck {
+		width: rem-calc($card-width);
+
+		&[type='main'] {
+			@include make-xs-column(3);
+		}
+
+		&[type='discard'] {
+			@include make-xs-column(9);
+
+			border: 1px dashed get-color(black);
+		}
+	}
+}

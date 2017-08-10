@@ -3,6 +3,7 @@
 	ng-attr-ng-drop="{{deckCtrl.type === 'discard' ? true : false}}"
 	ng-drop-success="deckCtrl.onDropComplete($data, $event)"
 >
+	<div class="count" ng-show="deckCtrl.type === 'main'">{{deck.cards.length}}</div>
 	<a
 		class="card"
 		href="#"

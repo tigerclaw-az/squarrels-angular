@@ -34,34 +34,41 @@ export default class DeckController {
 	}
 
 	isDisabled() {
-		let player = this.playerModel.player,
-			canDraw = player.isActive && player.isCurrent &&
-					(player.isFirstTurn || player.totalCards < 7),
-			canHoard = !player.isActive;
+		this.$log.info('isDisabled()', this.canDraw(), this.canHoard(), this);
 
-		this.$log.info('isDisabled()', player, canDraw, canHoard, this);
-
-		return (this.type === 'main' && !canDraw) || (this.type === 'discard' && !canHoard);
+		return (this.type === 'main' && !this.canDraw()) || (this.type === 'discard' && !this.canHoard());
 	}
 
 	canDiscard() {
 		let player = this.playerModel.player;
 
-		return player.isActive && player.isCurrent && !player.isFirstTurn;
+		if (player) {
+			return player.isActive && player.isCurrent && !player.isFirstTurn;
+		}
+
+		return false;
 	}
 
 	canHoard() {
 		let player = this.playerModel.player;
 
 		// FIXME: Add logic to test for 'Hoard' action card as well
-		return !player.isActive;
+		if (player) {
+			return !player.isActive;
+		}
+
+		return false;
 	}
 
 	canDraw() {
 		let player = this.playerModel.player;
 
-		return player.isActive && player.isCurrent &&
-			(player.isFirstTurn || player.totalCards < 7);
+		if (player) {
+			return player.isActive && player.isCurrent &&
+				(player.isFirstTurn || player.totalCards < 7);
+		}
+
+		return false;
 	}
 
 	collectHoard() {

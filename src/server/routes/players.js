@@ -96,7 +96,7 @@ players.post('/:id?', function(req, res, next) {
 						wss.broadcast(
 							{ type: 'players', action: 'update', nuts: doc },
 							req.session.id,
-							false
+							true
 						);
 					} else {
 						res.status(204).json([]);

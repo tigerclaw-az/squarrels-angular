@@ -1,10 +1,11 @@
 export default class DeckController {
-	constructor($rootScope, $scope, $log, gameModel, decksApi, deckStore, playerModel, playersStore) {
+	constructor($rootScope, $scope, $log, toastr, gameModel, decksApi, deckStore, playerModel, playersStore) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
 		this.$scope = $scope;
 		this.$log = $log;
+		this.toastr = toastr;
 
 		this.decksApi = decksApi;
 		this.deckStore = deckStore;
@@ -22,7 +23,6 @@ export default class DeckController {
 		this.deck = this.deckStore.model.deck[this.deckId];
 
 		this.$scope.deck = this.deck;
-		this.$scope.pModel = this.playerModel;
 
 		this.$log.info('$onInit()', this);
 	}
@@ -33,11 +33,28 @@ export default class DeckController {
 		};
 	}
 
+	isDisabled() {
+		let player = this.playerModel.player,
+			canDraw = player.isActive && player.isCurrent &&
+					(player.isFirstTurn || player.totalCards < 7),
+			canHoard = !player.isActive;
+
+		this.$log.info('isDisabled()', player, canDraw, canHoard, this);
+
+		return (this.type === 'main' && !canDraw) || (this.type === 'discard' && !canHoard);
+	}
+
 	canDiscard() {
 		let player = this.playerModel.player;
 
-		// TODO: Make sure the card isn't a Golden or Rotten (unless only card)
-		return player.isActive && player.selectedCard;
+		return player.isActive && player.isCurrent && !player.isFirstTurn;
+	}
+
+	canHoard() {
+		let player = this.playerModel.player;
+
+		// FIXME: Add logic to test for 'Hoard' action card as well
+		return !player.isActive;
 	}
 
 	canDraw() {
@@ -45,6 +62,11 @@ export default class DeckController {
 
 		return player.isActive && player.isCurrent &&
 			(player.isFirstTurn || player.totalCards < 7);
+	}
+
+	collectHoard() {
+		this.$log.info('You got the hoard!');
+		this.toastr.info('HOARD!');
 	}
 
 	discardCard() {
@@ -58,12 +80,8 @@ export default class DeckController {
 
 		this.$log.info('drawCard()', isActivePlayer, this);
 
-		if (this.type === 'main' && isActivePlayer) {
-			this.$log.info('You drew a card!');
-			this.deckStore.drawCard(this.playerModel.player, this.deck, 1);
-		} else if (this.action === 'hoard' && !isActivePlayer) {
-			this.$log.info('You got the hoard!');
-		}
+		this.$log.info('You drew a card!');
+		this.deckStore.drawCard(this.playerModel.player, this.deck, 1);
 	}
 
 	onClick() {
@@ -71,8 +89,10 @@ export default class DeckController {
 
 		if (this.type === 'main' && this.canDraw()) {
 			this.drawCard();
-		} else if (this.type === 'discard' && this.canDiscard()) {
-			this.discardCard();
+		} else if (this.type === 'discard' && this.canHoard()) {
+			this.collectHoard();
+		} else {
+			this.toastr.warning('This is nuts!');
 		}
 	}
 
@@ -83,6 +103,8 @@ export default class DeckController {
 		this.$log.info('onDropComplete()', data, cardId, event, this);
 
 		// TODO: Don't allow 'golden' or 'rotten' cards unless ONLY card left
-		this.deckStore.discard(cardId);
+		if (this.canDiscard()) {
+			this.deckStore.discard(cardId);
+		}
 	}
 };

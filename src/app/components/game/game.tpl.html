@@ -1,15 +1,15 @@
 <span>Game Started at {{model.game.createdAt}} :: Round {{model.game.round}}</span>
 <div class="row">
-	<div class="col-sm-3">
-		<div class="play-area clearfix" ng-if="model.isGameStarted">
-			<deck
-				ng-repeat="deck in decks"
-				type="{{deck.deckType}}"
-				deck-id="{{deck.id}}"
-			></deck>
+	<div class="col-sm-12">
+		<div class="play-area" ng-if="model.isGameStarted">
+			<div class="row">
+				<deck type="{{deck.deckType}}" deck-id="{{deck.id}}" ng-repeat="deck in decks">></deck>
+			</div>
 		</div>
 	</div>
-	<div class="col-sm-9">
+</div>
+<div class="row">
+	<div class="col-sm-12">
 		<players></players>
 	</div>
 </div>

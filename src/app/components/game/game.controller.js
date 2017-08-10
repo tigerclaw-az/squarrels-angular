@@ -135,7 +135,6 @@ export default class GameController {
 					let deckData = res.data[0];
 
 					this.deckStore.insert(deckData);
-					this.$scope.$apply;
 
 					deckPromise.resolve(deckData);
 				}

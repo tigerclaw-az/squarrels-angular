@@ -1,5 +1,5 @@
 export default class DeckStoreService {
-	constructor($log, $http, $q, _, decksApi, playerModel, playersApi, playersStore) {
+	constructor($log, $http, $q, _, toastr, decksApi, playerModel, playersApi, playersStore) {
 		'ngInject';
 
 		var self = this;
@@ -22,18 +22,28 @@ export default class DeckStoreService {
 	}
 
 	dealCards() {
-		let drawDeck = this.getByType('main');
+		let drawDeck = this.getByType('main'),
+			dealPromises = [];
 
 		this.$log.info('dealCards()', drawDeck, this);
 
 		_.forEach(this.playersStore.model.players, (pl) => {
-			this.drawCard(pl, drawDeck, this.playerModel.numDrawCards);
+			// Loop through each player and draw random set of cards, which will
+			// return a promise so we can wait for all cards to be dealt before
+			// the round starts.
+			dealPromises.push(this.drawCard(pl, drawDeck, this.playerModel.numDrawCards));
 		});
 
-		// this.decksApi.update({ cards: drawDeck.cards }, drawDeck.id);
-
-		// After all cards have been dealt, set the starting player
-		this.playersStore.nextPlayer(-1);
+		this.$q
+			.all(dealPromises)
+			.then(() => {
+				// After all cards have been dealt, set the starting player
+				this.playersStore.nextPlayer(-1);
+			})
+			.catch(err => {
+				this.$log.info('ERROR:', err);
+				this.toastr.error('Problem dealing cards', err);
+			});
 	}
 
 	discard(id) {
@@ -75,7 +85,8 @@ export default class DeckStoreService {
 
 	drawCard(pl, deck, count) {
 		let cardsDrawn = _.sampleSize(deck.cards, count),
-			cardsMerge = cardsDrawn;
+			cardsMerge = cardsDrawn,
+			drawDefer = this.$q.defer();
 
 		this.$log.info('drawCard()', pl, deck, cardsDrawn, this);
 
@@ -102,14 +113,18 @@ export default class DeckStoreService {
 					.update(plData, pl.id)
 					.then(res => {
 						this.$log.info('playersApi:update()', res, this);
+						drawDefer.resolve(res);
 					})
 					.catch(err => {
 						this.$log.error('This is nuts! Error: ', err);
+						drawDefer.reject(err);
 					});
 			})
 			.catch(err => {
 				this.$log.error(err);
 			});
+
+		return drawDefer.promise;
 	}
 
 	get(id) {

@@ -87,7 +87,7 @@ module.exports = function(server, sessionParser, store) {
 
 		ws.on('close', function(connection) {
 			// close user connection
-			logger.info('Connection Closed:', connection, wss.clients);
+			logger.info('Connection Closed:', connection);
 		});
 	});
 

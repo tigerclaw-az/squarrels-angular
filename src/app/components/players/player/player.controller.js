@@ -25,4 +25,8 @@ default class PlayerController {
 			this.$log.info('destroy', this);
 		};
 	}
+
+	showStorage() {
+		this.$log.info('showStorage()', this);
+	}
 };

@@ -2,6 +2,7 @@
 
 .sq-player {
 	position: relative;
+	text-align: center;
 
 	&.current {
 		color: get-color(gold);
@@ -16,6 +17,20 @@
 	&.active {
 		color: get-color(mandy);
 		font-weight: $font-weight-bold;
+	}
+
+	.sq-player-info {
+		@include clearfix;
+		float: right;
+		left: -50%;
+		position: relative;
+
+		.sq-player-name,
+		.sq-player-storage {
+			font-size: 2rem;
+			left: 50%;
+			position: relative;
+		}
 	}
 
 	.sq-player-cards {

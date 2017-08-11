@@ -5,8 +5,15 @@
 	}">
 	<div class="row">
 		<div class="col-sm-3">
-			<img class="sq-player-thumbnail img-circle" ng-src="{{player.img}}"/>
-			<div>{{player.name}}</div>
+			<div class="sq-player-thumbnail">
+				<img class="img-circle" ng-src="{{player.img}}"/>
+			</div>
+			<div class="sq-player-info">
+				<span class="sq-player-name">{{player.name}}</span>
+				<span class="sq-player-storage" ng-click="playerCtrl.showStorage()">
+					<i class="icon icon-acorns glyphicon glyphicon-leaf"></i>
+				</span>
+			</div>
 		</div>
 		<div class="col-sm-9">
 			<div class="sq-player-cards" ng-show="playerCtrl.gameModel.isGameStarted">
@@ -23,15 +30,6 @@
 						ng-repeat="n in playerCtrl._.range(0, player.totalCards)"
 						card-id="{{null}}"
 						card-type="hand"
-						player="player">
-					</card>
-				</div>
-				<div class="storage">
-					<card
-						ng-show="card"
-						ng-repeat="card in player.cardsInStorage"
-						card-id="{{card}}"
-						card-type="storage"
 						player="player">
 					</card>
 				</div>

@@ -50,9 +50,19 @@ export default class CardController {
 		return !this.cardId || this.cardType === 'storage' || !this.player.isActive;
 	}
 
-	onClick($e) {
-		this.$log.info('onClick()', this);
+	onClick(e) {
+		this.$log.info('onClick()', this, this.cardId);
 
-		$e.preventDefault();
+		let $el = angular.element(e.currentTarget).parent();
+
+		e.preventDefault();
+
+		if ($el.hasClass('selected')) {
+			$el.removeClass('selected');
+			this._.pull(this.playerModel.player.cardsSelected, this.cardId);
+		} else {
+			$el.addClass('selected');
+			this.playerModel.player.cardsSelected.push(this.cardId);
+		}
 	}
 };

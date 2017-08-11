@@ -8,8 +8,14 @@
 		color: get-color(gold);
 
 		card {
-			&:hover {
+			&:hover,
+			&.selected {
 				top: -25px;
+			}
+
+			&.selected {
+				border: 2px solid get-color('zest');
+				border-radius: .75rem;
 			}
 		}
 	}
@@ -59,11 +65,6 @@
 					}
 					$position: $position + 40;
 				}
-			}
-
-			&.storage {
-				border: 2px dotted get-color(black);
-				width: rem-calc($card-width);
 			}
 		}
 	}

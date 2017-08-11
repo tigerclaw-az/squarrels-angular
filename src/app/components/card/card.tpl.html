@@ -1,13 +1,16 @@
 <a
-	class="card {{cardData.cardType || 'blank'}}--{{cardData.name}}"
-	data-card-id="{{cardCtrl.cardId}}"
 	href="#"
 	role="button"
 	ng-class="{
 		disabled: cardCtrl.isDisabled()
 	}"
-	ng-attr-ng-drag="{{cardCtrl.canDrag() ? true : false}}"
-	ng-drag-data="cardCtrl.cardId"
-	ng-drag-stop="cardCtrl.onDragStop()"
+	ng-click="cardCtrl.onClick($event)"
 >
+	<span
+		class="card {{cardData.cardType || 'blank'}}--{{cardData.name}}"
+		ng-attr-ng-drag="{{cardCtrl.canDrag() ? true : false}}"
+		ng-drag-data="cardCtrl.cardId"
+		ng-drag-stop="cardCtrl.onDragStop()"
+	>
+	</span>
 </a>

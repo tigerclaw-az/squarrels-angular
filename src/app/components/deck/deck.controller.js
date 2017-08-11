@@ -42,8 +42,6 @@ export default class DeckController {
 	}
 
 	isDisabled() {
-		this.$log.info('isDisabled()', this.canDraw(), this.canHoard(), this);
-
 		return (this.type === 'main' && !this.canDraw()) || (this.type === 'discard' && !this.canHoard());
 	}
 

@@ -15,7 +15,11 @@
 		"eol-last": ["error", "always"],
 		"indent": ["error", "tab"],
 		"quotes": ["error", "single"],
+		"max-len": ["warn", {
+			"code": 90
+		}],
 		"no-mixed-requires": ["off"],
+		"no-warning-comments": ["warn", { "terms": ["todo", "fixme"], "location": "start" }],
 		"no-underscore-dangle": ["off"]
 	},
 	"parserOptions": {

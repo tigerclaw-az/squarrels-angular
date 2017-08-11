@@ -2,6 +2,30 @@ $card-height: 270;
 $card-width: 200;
 $num-cards: 14;
 
+$card-images: (
+	'blank--',
+	'number--1',
+	'number--2',
+	'number--3',
+	'number--4',
+	'number--5',
+	'action--ambush',
+	'action--hoard',
+	'action--quarrel',
+	'action--whirlwind',
+	'action--winter',
+	'special--golden',
+	'special--rotten'
+);
+
+@mixin generate-cards {
+	@each $name in $card-images {
+		&.#{$name} {
+			background-image: url('../images/#{$name}.png');
+		}
+	}
+}
+
 %playing-cards {
 	height: rem-calc($card-height);
 	position: relative;
@@ -9,9 +33,10 @@ $num-cards: 14;
 
 	.card {
 		@include user-select(none);
+		@include generate-cards;
 
-		background-image: url('../images/card-back.jpg');
 		background-repeat: no-repeat;
+		background-size: 125px 168px; // FIXME
 		color: get-color(white);
 		display: block;
 		font-size: 4rem;
@@ -23,7 +48,7 @@ $num-cards: 14;
 		}
 	}
 
-	[role="button"] {
+	[role='button'] {
 		display: block;
 		height: 100%;
 	}

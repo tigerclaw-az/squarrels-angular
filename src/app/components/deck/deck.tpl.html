@@ -1,16 +1,17 @@
 <div
 	class="deck"
-	ng-attr-ng-drop="{{deckCtrl.type === 'discard' ? true : false}}"
+	ng-init="isDiscard = deckCtrl.type === 'discard'"
+	ng-attr-ng-drop="{{isDiscard}}"
 	ng-drop-success="deckCtrl.onDropComplete($data, $event)"
 >
-	<div class="count" ng-show="deckCtrl.type === 'main'">{{deckCtrl.getDeck().cards.length}}</div>
+	<div class="count" ng-show="!isDiscard">{{deckCtrl.getTotalCards()}}</div>
 	<a
-		class="card"
 		href="#"
 		role="button"
 		ng-class="{ disabled: deckCtrl.isDisabled() }"
 		ng-click="!deckCtrl.isDisabled() && deckCtrl.onClick()"
-		ng-show="deckCtrl.getDeck().cards.length"
+		ng-show="deckCtrl.getTotalCards()"
 	>
+		<span ng-repeat="card in deckCtrl.getDeck().cards | limitTo: deckCtrl.cardLimit()" class="card"></span>
 	</a>
 </div>

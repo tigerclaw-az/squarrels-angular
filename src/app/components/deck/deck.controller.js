@@ -29,8 +29,16 @@ export default class DeckController {
 		};
 	}
 
+	cardLimit() {
+		return this.type === 'discard' ? this.getDeck().cards.length : 1;
+	}
+
 	getDeck() {
 		return this.deckStore.model.deck[this.deckId];
+	}
+
+	getTotalCards() {
+		return this.getDeck().cards.length;
 	}
 
 	isDisabled() {

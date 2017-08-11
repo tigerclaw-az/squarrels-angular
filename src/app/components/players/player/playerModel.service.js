@@ -20,7 +20,8 @@ export class PlayerModelService {
 	insert(data) {
 		let pl = Object.assign({}, {
 					isCurrent: true,
-					cardsInHand: []
+					cardsInHand: [],
+					cardsSelected: []
 				}, data
 			);
 

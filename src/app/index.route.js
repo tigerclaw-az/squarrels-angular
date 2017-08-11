@@ -16,6 +16,5 @@ export function routerConfig($stateProvider, $urlRouterProvider) {
 		})
 		.state('app.home', {
 			url: '/'
-		})
-		;
+		});
 }

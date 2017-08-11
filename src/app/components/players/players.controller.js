@@ -3,8 +3,6 @@ default class PlayersController {
 	constructor($rootScope, $scope, $localStorage, $log, _, utils, websocket, playersApi, playersStore, playerModel) {
 		'ngInject';
 
-		var self = this;
-
 		this.$rootScope = $rootScope;
 		this.$scope = $scope;
 		this.$localStorage = $localStorage;
@@ -21,8 +19,7 @@ default class PlayersController {
 	}
 
 	$onInit() {
-		var self = this,
-			playerStorage = this.$localStorage.player,
+		var playerStorage = this.$localStorage.player,
 			onSuccess = (res => {
 				this.$log.info('onSuccess()', res, playerStorage, this);
 
@@ -128,4 +125,4 @@ default class PlayersController {
 			.update(data)
 			.then(onSuccess, onError);
 	}
-};
+}

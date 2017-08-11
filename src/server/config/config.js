@@ -9,7 +9,7 @@ module.exports = {
 
 		return {
 			error: err
-		}
+		};
 	},
 
 	getRandom(from, to) {
@@ -26,5 +26,5 @@ module.exports = {
 
 	server: 'localhost',
 
-	playerImage: 'http://www.fillmurray.com/120/120'
+	playerImage: 'https://placeimg.com/120/120/animals'
 }

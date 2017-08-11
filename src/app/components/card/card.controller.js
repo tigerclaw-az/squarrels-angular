@@ -65,4 +65,4 @@ export default class CardController {
 			this.playerModel.player.cardsSelected.push(this.cardId);
 		}
 	}
-};
+}

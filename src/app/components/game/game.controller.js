@@ -152,4 +152,4 @@ export default class GameController {
 
 		return deckPromise.promise;
 	}
-};
+}

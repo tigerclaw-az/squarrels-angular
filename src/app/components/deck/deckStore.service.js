@@ -2,8 +2,6 @@ export default class DeckStoreService {
 	constructor($log, $http, $q, _, toastr, decksApi, playerModel, playersApi, playersStore) {
 		'ngInject';
 
-		var self = this;
-
 		this.$log = $log;
 		this.$http = $http;
 		this.$q = $q;
@@ -53,8 +51,6 @@ export default class DeckStoreService {
 				this.$log.info('onSuccess()', res, this);
 
 				if (res.status === 200) {
-					let data = res.data;
-
 					this.playerModel
 						.discard(id)
 						.then(() => {

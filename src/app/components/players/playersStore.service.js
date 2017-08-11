@@ -2,8 +2,6 @@ export default class PlayersStoreService {
 	constructor($log, $http, $localStorage, _, websocket, playersApi, playerModel) {
 		'ngInject';
 
-		var self = this;
-
 		this.$log = $log;
 		this.$http = $http;
 		this.$localStorage = $localStorage;
@@ -36,9 +34,8 @@ export default class PlayersStoreService {
 
 	insert(data) {
 		let pl = Object.assign({}, {
-					isCurrent: false
-				}, data
-			);
+			isCurrent: false
+		}, data);
 
 		this.$log.info('insert()', pl, this);
 

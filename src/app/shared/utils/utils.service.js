@@ -44,4 +44,4 @@ export class UtilsService {
 			return v.toString(16);
 		});
 	}
-};
+}

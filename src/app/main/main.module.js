@@ -6,8 +6,7 @@ let deps = [
 	'angular-logger'
 ];
 
-export
-	default angular
-		.module('main', deps)
-		.controller('mainController', MainController)
-	;
+export default angular
+	.module('main', deps)
+	.controller('mainController', MainController)
+;

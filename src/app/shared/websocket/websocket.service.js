@@ -52,8 +52,7 @@ export class WebSocketService {
 	onMessage(msg) {
 		var data = JSON.parse(msg.data),
 			action = data.action || 'none',
-			type = data.type || 'global',
-			broadcast;
+			type = data.type || 'global';
 
 		this.$log.info('onMessage()', data, type, action, this);
 

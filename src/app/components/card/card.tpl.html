@@ -1,5 +1,5 @@
 <a
-	class="card {{cardData.cardType}}--{{cardData.name}}"
+	class="card {{cardData.cardType || 'blank'}}--{{cardData.name}}"
 	data-card-id="{{cardCtrl.cardId}}"
 	href="#"
 	role="button"
@@ -8,6 +8,6 @@
 	}"
 	ng-attr-ng-drag="{{cardCtrl.canDrag() ? true : false}}"
 	ng-drag-data="cardCtrl.cardId"
-	ng-drag-stop="cardCtrl.onDragStop()">
-	{{cardData.name}}
+	ng-drag-stop="cardCtrl.onDragStop()"
+>
 </a>

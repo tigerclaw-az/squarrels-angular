@@ -1,9 +1,12 @@
-<span>Game Started at {{model.game.createdAt}} :: Round {{model.game.round}}</span>
+<header>
+	<span>Started at {{model.game.createdAt}}</span>
+	<span>Round: {{model.game.round}}</span>
+</header>
 <div class="row">
 	<div class="col-sm-12">
 		<div class="play-area" ng-if="model.isGameStarted">
 			<div class="row">
-				<deck type="{{deck.deckType}}" deck-id="{{deck.id}}" ng-repeat="deck in decks">></deck>
+				<deck type="{{deck.deckType}}" deck-id="{{deck.id}}" ng-repeat="deck in decks"></deck>
 			</div>
 		</div>
 	</div>

@@ -41,12 +41,13 @@ app.use(sessionParser({
 
 require('./config/mongoose')()
 	.then(function() {
-		let mongooseSeed = require('mongoose-seed-db');
+		let mongooseSeed = require('mongoose-seed-db'),
+			populateOpts = { populateExisting: false };
 
 		logger.info('mongodb connection successful');
 
 		mongooseSeed.loadModels(path.join(__dirname, '/models/seeds'));
-		mongooseSeed.populate(path.join(__dirname, '/config/seeds'));
+		mongooseSeed.populate(path.join(__dirname, '/config/seeds'), populateOpts);
 	})
 	.catch(function(err) {
 		logger.error('mongodb connection error', err);

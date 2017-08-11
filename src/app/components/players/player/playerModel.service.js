@@ -19,11 +19,10 @@ export class PlayerModelService {
 
 	insert(data) {
 		let pl = Object.assign({}, {
-					isCurrent: true,
-					cardsInHand: [],
-					cardsSelected: []
-				}, data
-			);
+			isCurrent: true,
+			cardsInHand: [],
+			cardsSelected: []
+		}, data);
 
 		this.$log.info('insert()', pl, this);
 

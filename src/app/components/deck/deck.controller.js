@@ -110,8 +110,7 @@ export default class DeckController {
 	}
 
 	onDropComplete(data, event) {
-		let $el = event.element,
-			cardId = data;
+		let cardId = data;
 
 		this.$log.info('onDropComplete()', data, cardId, event, this);
 
@@ -120,4 +119,4 @@ export default class DeckController {
 			this.deckStore.discard(cardId);
 		}
 	}
-};
+}

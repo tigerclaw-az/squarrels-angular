@@ -6,7 +6,6 @@
 	"disallowEmptyBlocks": true,
 	"disallowIdentifierNames": [],
 	"disallowImplicitTypeConversion": [],
-	"disallowKeywordsInComments": [ "TODO", "FIXME" ],
 	"disallowKeywordsOnNewLine": [ "else" ],
 	"disallowKeywords": [ "with" ],
 	"disallowMixedSpacesAndTabs": true,
@@ -62,16 +61,6 @@
 	"disallowTrailingWhitespace": true,
 	"disallowYodaConditions": true,
 	"maxErrors": -1,
-	"maximumLineLength": {
-		"value": 90,
-		"tabSize": 1,
-		"allExcept": [
-			"regex",
-			"comments",
-			"urlComments",
-			"functionSignature"
-		]
-	},
 	"requireBlocksOnNewline": true,
 	"requireCamelCaseOrUpperCaseIdentifiers": "ignoreProperties",
 	"requireCapitalizedConstructors": true,

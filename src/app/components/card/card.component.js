@@ -4,7 +4,7 @@ export const CardComponent = {
 	bindings: {
 		cardId: '@',
 		cardType: '@',
-		player: '='
+		player: '<'
 	},
 	controller,
 	controllerAs: 'cardCtrl',

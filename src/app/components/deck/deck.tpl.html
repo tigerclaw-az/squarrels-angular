@@ -3,14 +3,14 @@
 	ng-attr-ng-drop="{{deckCtrl.type === 'discard' ? true : false}}"
 	ng-drop-success="deckCtrl.onDropComplete($data, $event)"
 >
-	<div class="count" ng-show="deckCtrl.type === 'main'">{{deck.cards.length}}</div>
+	<div class="count" ng-show="deckCtrl.type === 'main'">{{deckCtrl.getDeck().cards.length}}</div>
 	<a
 		class="card"
 		href="#"
 		role="button"
 		ng-class="{ disabled: deckCtrl.isDisabled() }"
 		ng-click="!deckCtrl.isDisabled() && deckCtrl.onClick()"
-		ng-show="deck.cards.length"
+		ng-show="deckCtrl.getDeck().cards.length"
 	>
 	</a>
 </div>

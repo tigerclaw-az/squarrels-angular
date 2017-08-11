@@ -20,10 +20,6 @@ export default class DeckController {
 	}
 
 	$onInit() {
-		this.deck = this.deckStore.model.deck[this.deckId];
-
-		this.$scope.deck = this.deck;
-
 		this.$log.info('$onInit()', this);
 	}
 
@@ -31,6 +27,10 @@ export default class DeckController {
 		return () => {
 			this.$log.info('$onDestroy()', this);
 		};
+	}
+
+	getDeck() {
+		return this.deckStore.model.deck[this.deckId];
 	}
 
 	isDisabled() {
@@ -88,7 +88,7 @@ export default class DeckController {
 		this.$log.info('drawCard()', isActivePlayer, this);
 
 		this.$log.info('You drew a card!');
-		this.deckStore.drawCard(this.playerModel.player, this.deck, 1);
+		this.deckStore.drawCard(this.playerModel.player, this.getDeck(), 1);
 	}
 
 	onClick() {

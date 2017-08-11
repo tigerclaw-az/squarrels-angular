@@ -12,6 +12,6 @@
 		ng-click="!deckCtrl.isDisabled() && deckCtrl.onClick()"
 		ng-show="deckCtrl.getTotalCards()"
 	>
-		<span ng-repeat="card in deckCtrl.getDeck().cards | limitTo: deckCtrl.cardLimit()" class="card"></span>
+		<span ng-repeat="card in deckCtrl.getDeck().cards | limitTo: deckCtrl.cardLimit()" class="card blank--"></span>
 	</a>
 </div>

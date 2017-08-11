@@ -95,7 +95,8 @@ gulp.task('scripts:lint', function() {
 		.pipe($.jscsStylish())
 		.pipe($.eslint())
 		.pipe($.eslint.format())
-		.pipe($.eslint.failOnError());
+		.pipe($.eslint.failAfterError())
+		.on('error', $.notify.onError({ message: 'eslint errors!' }));
 });
 
 gulp.task('scripts', ['inject', 'scripts:lint'], function() {
@@ -110,7 +111,7 @@ gulp.task('scripts:test', ['inject'], function() {
 	return compileScripts();
 });
 
-gulp.task('scripts:test-watch', function(callback) {
+gulp.task('scripts:test-watch', function() {
 	options.browserify.entries = getScripts(true);
 
 	return compileScripts();

@@ -42,7 +42,7 @@
 					&:nth-child(#{$i}) {
 						left: #{$position}px;
 					}
-					$position: $position + 25;
+					$position: $position + 40;
 				}
 			}
 

@@ -1,8 +1,45 @@
 @import '../card/card';
 
-.deck {
-	@extend %playing-cards;
+deck {
+	&[type='main'] {
+		@include make-xs-column(3);
+	}
 
-	display: block;
-	width: 100% !important;
+	&[type='discard'] {
+		@include make-xs-column(3);
+
+		border: 1px dashed get-color(black);
+
+		.deck {
+			border: 2px dashed transparent;
+
+			&.drag-enter {
+				border-color: get-color('zest');
+			}
+
+			.card {
+				height: rem-calc($card-height);
+				position: absolute;
+				width: rem-calc($card-width);
+
+				$rotate: 0;
+
+				@for $i from 0 through 20 {
+					&:nth-child(#{$i}) {
+						transform: rotate(#{$rotate}deg);
+					}
+
+					$rotate: $rotate + 3;
+				}
+			}
+		}
+	}
+
+	.deck {
+		@extend %playing-cards;
+
+		display: block;
+		margin: 0 auto;
+		text-align: center;
+	}
 }

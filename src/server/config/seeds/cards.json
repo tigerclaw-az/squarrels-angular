@@ -1,6 +1,5 @@
 {
 	"model": "Card",
-	"populate": false,
 	"data": [{
 		"name": "1",
 		"amount": 1,

@@ -35,6 +35,7 @@ export default class GameController {
 				this.$log.error(res);
 			});
 
+		// FIXME: This won't work when starting new game
 		this.$scope.decks = this.deckStore.model.deck;
 		this.$scope.model = this.gameModel.model;
 		this.$scope.playersModel = this.playersStore.model;
@@ -52,7 +53,7 @@ export default class GameController {
 			this.insertDeck(data.id, data);
 		});
 
-		// Should only fire for external clients
+		// Will fire for ALL clients
 		this.$rootScope.$on('websocket:decks:update', (event, data) => {
 			this.$log.info('$on -> websocket:decks:update', data);
 

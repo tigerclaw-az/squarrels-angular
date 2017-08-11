@@ -55,8 +55,6 @@ export default class DeckStoreService {
 				if (res.status === 200) {
 					let data = res.data;
 
-					this.update(data.id, data);
-
 					this.playerModel
 						.discard(id)
 						.then(() => {
@@ -74,9 +72,6 @@ export default class DeckStoreService {
 		this.$log.info('discard()', id, hoardDeck, this);
 
 		cards.push(id);
-
-		// Remove card from cached deck
-		// this._.pull(hoardDeck.cards, id);
 
 		this.decksApi
 			.update({ cards }, hoardDeck.id)

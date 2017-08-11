@@ -50,8 +50,7 @@ decks.post('/:id', function(req, res, next) {
 
 				wss.broadcast(
 					{ type: 'decks', action: 'update', nuts: doc },
-					req.session.id,
-					false
+					req.session.id
 				);
 			} else {
 				res.status(204).json([]);

@@ -1,6 +1,5 @@
 <div class="sq-players-wrapper">
 	<webcam channel="webcam"></webcam>
-	Total Rodents: {{model.players.length}}
 	<div class="sq-players">
 		<player ng-repeat="p in model.players | orderBy:'!isCurrent'" player="p"></player>
 	</div>

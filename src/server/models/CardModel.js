@@ -18,7 +18,13 @@ var mongoose = require('mongoose'),
 		}
 	}, {
 		collection: 'cards',
-		timestamps: false
+		timestamps: false,
+		toObject: {
+			virtuals: true
+		},
+		toJSON: {
+			virtuals: true
+		}
 	});
 
 module.exports = {

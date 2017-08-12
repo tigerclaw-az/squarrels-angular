@@ -10,13 +10,14 @@
 			</div>
 			<div class="sq-player-info">
 				<span class="sq-player-name">{{player.name}}</span>
-				<span class="sq-player-storage" ng-click="playerCtrl.showStorage()">
+				<span class="sq-player-storage" ng-click="playerCtrl.onStorageClick($event)">
 					<i class="icon icon-acorns glyphicon glyphicon-leaf"></i>
 				</span>
 			</div>
+			<div class="sq-player-score">{{player.score}}</div>
 		</div>
 		<div class="col-sm-9">
-			<div class="sq-player-cards" ng-show="playerCtrl.gameModel.isGameStarted">
+			<div class="sq-player-cards" ng-show="playerCtrl.game.isGameStarted">
 				<div class="cards-group hand">
 					<card
 						ng-show="isCurrent && player.cardsInHand.length"

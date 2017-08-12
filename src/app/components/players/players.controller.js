@@ -1,6 +1,6 @@
 export
 default class PlayersController {
-	constructor($rootScope, $scope, $localStorage, $log, _, utils, websocket, playersApi, playersStore, playerModel) {
+	constructor($rootScope, $scope, $localStorage, $log, toastr, _, utils, websocket, playersApi, playersStore, playerModel) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
@@ -13,6 +13,7 @@ default class PlayersController {
 		this.playerModel = playerModel;
 		this.playersApi = playersApi;
 		this.playersStore = playersStore;
+		this.toastr = toastr;
 		this.ws = websocket;
 
 		this.$log.info('constructor()', this);
@@ -72,6 +73,10 @@ default class PlayersController {
 				if (this._.isEmpty(this.playerModel.player)) {
 					this.playerModel.insert(player);
 					player = this.playerModel.model.player;
+				}
+
+				if (player.isActive) {
+					this.toastr.success('Your Turn!');
 				}
 
 				this.playersStore.update(player.id, player);

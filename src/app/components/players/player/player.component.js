@@ -2,6 +2,7 @@ import controller from './player.controller';
 
 export const PlayerComponent = {
 	bindings: {
+		game: '<',
 		player: '<'
 	},
 	controller,

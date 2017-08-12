@@ -70,7 +70,7 @@ export default class DeckStoreService {
 		cards.push(id);
 
 		this.decksApi
-			.update({ cards }, hoardDeck.id)
+			.update(hoardDeck.id, { cards })
 			.then(onSuccess, onError);
 	}
 
@@ -98,10 +98,10 @@ export default class DeckStoreService {
 		this._.pullAll(deck.cards, cardsDrawn);
 
 		this.decksApi
-			.update({ cards: deck.cards }, deck.id)
+			.update(deck.id, { cards: deck.cards })
 			.then(() => {
 				this.playersApi
-					.update(plData, pl.id)
+					.update(pl.id, plData)
 					.then(res => {
 						this.$log.info('playersApi:update()', res, this);
 						drawDefer.resolve(res);

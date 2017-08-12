@@ -1,10 +1,10 @@
 import BaseApiService from '../../shared/api/baseApi.service';
 
 export default class DecksApiService extends BaseApiService {
-	constructor($http, $log, appConfig, websocket) {
+	constructor($http, $log, appConfig) {
 		'ngInject';
 
-		super($http, $log, appConfig, websocket, 'decks');
+		super($http, $log, appConfig, 'decks');
 
 		this.$log.info('constructor()', this);
 	}

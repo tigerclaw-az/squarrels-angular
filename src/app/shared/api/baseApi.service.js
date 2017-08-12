@@ -1,17 +1,22 @@
 export default class BaseApiService {
-	constructor($http, $log, appConfig, websocket, path) {
+	constructor($http, $log, appConfig, path) {
 		'ngInject';
 
 		this.$http = $http;
 		this.$log = $log;
 
 		this._ = _;
-		this.websocket = websocket;
 
 		this.host = `${appConfig.host}:3000`;
-		this.url = `http://${this.host}/api/${path}`;
+		this.url = `//${this.host}/api/${path}`;
 
 		this.$log.info('constructor()', this);
+	}
+
+	create(data) {
+		this.$log.info('api:create()', data, this);
+
+		return this.$http.post(`${this.url}`, data);
 	}
 
 	get(query = '') {
@@ -21,13 +26,13 @@ export default class BaseApiService {
 	}
 
 	remove(id) {
-		this.$log.info('api:remove', id, this);
+		this.$log.info('api:remove()', id, this);
 
 		return this.$http.delete(`${this.url}/${id}`);
 	}
 
-	update(data, id = '') {
-		this.$log.info('api:update', data, id, this);
+	update(id, data) {
+		this.$log.info('api:update()', id, data, this);
 
 		return this.$http.post(`${this.url}/${id}`, data);
 	}

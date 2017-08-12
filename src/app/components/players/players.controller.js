@@ -122,7 +122,7 @@ default class PlayersController {
 		}
 
 		this.playersApi
-			.update(data)
+			.create(data)
 			.then(onSuccess, onError);
 	}
 }

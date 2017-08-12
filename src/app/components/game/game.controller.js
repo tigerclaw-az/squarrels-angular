@@ -123,7 +123,7 @@ export default class GameController {
 		});
 
 		this.gamesApi
-			.update(players)
+			.create(players)
 			.then(onSuccess, onError);
 	}
 

@@ -76,12 +76,12 @@ export default class PlayersStoreService {
 			activePlayer = this.model.players[activePlayerIndex];
 
 			this.playersApi
-				.update({ isActive: false }, activePlayer.id)
+				.update(activePlayer.id, { isActive: false })
 				.then(onSuccess, onError);
 		}
 
 		this.playersApi
-			.update({ isActive: true, isFirstTurn: true }, nextPlayerId)
+			.update(nextPlayerId, { isActive: true, isFirstTurn: true })
 			.then(onSuccess, onError);
 	}
 

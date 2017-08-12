@@ -45,7 +45,7 @@ export class PlayerModelService {
 
 		this.$log.info('playerModel:cards -> ', plData);
 
-		return this.playersApi.update(plData, this.model.player.id);
+		return this.playersApi.update(this.model.player.id, plData);
 	}
 
 	update(data) {

@@ -32,7 +32,6 @@ $card-images: (
 	width: rem-calc($card-width);
 
 	.card {
-		@include user-select(none);
 		@include generate-cards;
 
 		background-repeat: no-repeat;

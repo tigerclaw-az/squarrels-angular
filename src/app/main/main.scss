@@ -1,3 +1,7 @@
+* {
+	@include user-select(none);
+}
+
 a {
 	&.disabled {
 		cursor: default;

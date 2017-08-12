@@ -91,10 +91,8 @@ gulp.task('inject', function() {
 
 gulp.task('scripts:lint', function() {
 	return gulp.src(paths.scripts.source.all)
-		.pipe($.jscs())
-		.pipe($.jscsStylish())
 		.pipe($.eslint())
-		.pipe($.eslint.format())
+		.pipe($.eslint.format('stylish'))
 		.pipe($.eslint.failAfterError())
 		.on('error', $.notify.onError({ message: 'eslint errors!' }));
 });

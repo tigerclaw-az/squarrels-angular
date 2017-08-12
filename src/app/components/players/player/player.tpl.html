@@ -12,9 +12,9 @@
 				<span class="sq-player-name">{{player.name}}</span>
 				<span class="sq-player-storage" ng-click="playerCtrl.onStorageClick($event)">
 					<i class="icon icon-acorns glyphicon glyphicon-leaf"></i>
+					<sup class="sq-player-score">{{player.score}}</sup>
 				</span>
 			</div>
-			<div class="sq-player-score">{{player.score}}</div>
 		</div>
 		<div class="col-sm-9">
 			<div class="sq-player-cards" ng-show="playerCtrl.game.isGameStarted">

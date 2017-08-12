@@ -27,11 +27,26 @@ default class PlayerController {
 	}
 
 	onStorageClick(evt) {
-		this.$log.info('onStorageClick()', evt, this);
-
 		let cardsSelected = this.player.cardsSelected,
 			cardsInStorage = this.player.cardsInStorage,
 			cardsInHand = this.player.cardsInHand,
+			// HACK! I tried using _.every(cardsSelected, 'amount') to no avail
+			cardsMatch = this._.reduce(cardsSelected, (prev, current, index, array) => {
+				let len = array.length,
+					sameCard = prev.amount === current.amount;
+
+				this.$log.info('reduce()', prev, current, index, len);
+
+				if (!prev) {
+					// If the previous object is 'false', then cards don't match
+					return false;
+				} else if (sameCard && index === len - 1) {
+					// Reached the end of the array and all values matched
+					return true;
+				}
+
+				return sameCard ? current : false;
+			}),
 			onSuccess = (res => {
 				if (res.status == 200) {
 					this.$log.info(res);
@@ -39,17 +54,26 @@ default class PlayerController {
 			}),
 			onError = (err => {
 				this.$log.error(err);
+			}),
+			cardIds;
+
+		this.$log.info('onStorageClick()', evt, this);
+		this.$log.info('cardsMatch -> ', cardsSelected, cardsMatch);
+
+		if (this.player.isActive && cardsSelected.length === 3 && cardsMatch) {
+			cardIds = this._.map(cardsSelected, (obj) => {
+				return obj.id;
 			});
 
-		if (this.player.isActive && cardsSelected.length === 3) {
-			this.$log.info('Storing your cards: ', cardsSelected);
+			this.$log.info('Storing your cards: ', cardIds);
 
-			cardsInStorage.push(cardsSelected[0]);
-			this._.pullAll(cardsInHand, cardsSelected);
+			cardsInStorage.push(cardIds[0]);
+			this._.pullAll(cardsInHand, cardIds);
 
 			let plData = {
 				cardsInHand: cardsInHand,
 				cardsInStorage: cardsInStorage,
+				score: this.player.score + cardsSelected[0].amount,
 				totalCards: cardsInHand.length
 			};
 

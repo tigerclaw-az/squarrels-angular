@@ -34,6 +34,10 @@ export default class CardController {
 				.get(this.cardId)
 				.then(onSuccess, onError);
 		}
+
+		// Reset selected cards when player draws a new card
+		angular.element(document).find('card').removeClass('selected');
+		this.player.cardsSelected = [];
 	}
 
 	$onDestroy() {
@@ -59,10 +63,10 @@ export default class CardController {
 
 		if ($el.hasClass('selected')) {
 			$el.removeClass('selected');
-			this._.pull(this.playerModel.player.cardsSelected, this.cardId);
+			this.player.cardsSelected = this._.filter(this.player.cardsSelected, (o) => { return o.id !== this.cardId });
 		} else {
 			$el.addClass('selected');
-			this.playerModel.player.cardsSelected.push(this.cardId);
+			this.player.cardsSelected.push(this.$scope.cardData);
 		}
 	}
 }

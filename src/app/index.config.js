@@ -13,9 +13,12 @@ export function config(logEnhancerProvider, $httpProvider, toastrConfig, appConf
 	// Set options third-party lib
 	angular.extend(toastrConfig, {
 		allowHtml: true,
-		closeButton: true,
+		closeButton: false,
+		extendedTimeOut: 0,
 		positionClass: 'toast-top-right',
 		preventDuplicates: true,
-		progressBar: false
+		progressBar: false,
+		tapToDismiss: true,
+		timeOut: 0
 	});
 }

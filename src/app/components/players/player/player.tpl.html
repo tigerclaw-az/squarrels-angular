@@ -21,7 +21,7 @@
 				<div class="cards-group hand">
 					<card
 						ng-show="isCurrent && player.cardsInHand.length"
-						ng-repeat="card in player.cardsInHand"
+						ng-repeat="card in player.cardsInHand track by $index"
 						card-id="{{card}}"
 						card-type="hand"
 						player="player"

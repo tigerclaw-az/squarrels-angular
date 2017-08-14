@@ -8,6 +8,7 @@ export default class BaseApiService {
 		this._ = _;
 
 		this.host = `${appConfig.host}:3000`;
+		this.path = path;
 		this.url = `//${this.host}/api/${path}`;
 
 		this.$log.info('constructor()', this);
@@ -20,9 +21,15 @@ export default class BaseApiService {
 	}
 
 	get(query = '') {
+		let httpObj = {
+			method: 'GET',
+			url: `${this.url}/${query}`,
+			cache: this.path === 'cards' ? true : false
+		}
+
 		this.$log.info('api:get()', query, this);
 
-		return this.$http.get(`${this.url}/${query}`);
+		return this.$http(httpObj);
 	}
 
 	remove(id) {

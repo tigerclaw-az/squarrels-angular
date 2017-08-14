@@ -65,7 +65,6 @@ module.exports = function(server, sessionParser, store) {
 						.then(function(list) {
 							let nuts = { action: 'whoami', type: 'players', nuts: list };
 
-							logger.info(nuts);
 							ws.send(JSON.stringify(nuts));
 						})
 						.catch(function(err) {

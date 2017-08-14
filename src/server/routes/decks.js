@@ -44,8 +44,6 @@ decks.post('/:id', function(req, res) {
 		.findOneAndUpdate(deck, req.body, options)
 		.populate('cards')
 		.then(function(doc) {
-			logger.info('decksPost -> ', doc);
-
 			if (doc) {
 				res.status(200).json(doc);
 

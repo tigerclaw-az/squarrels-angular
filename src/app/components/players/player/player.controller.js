@@ -1,6 +1,5 @@
-export
-default class PlayerController {
-	constructor($rootScope, $scope, $localStorage, $log, _, playersApi, playersStore, playerModel, websocket) {
+export default class PlayerController {
+	constructor($rootScope, $scope, $log, _, playersApi, playerModel, websocket) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
@@ -8,9 +7,8 @@ default class PlayerController {
 		this.$log = $log;
 
 		this._ = _;
-		this.playerModel = playerModel;
+		this.playerModel = playerModel; // Used in template
 		this.playersApi = playersApi;
-		this.playersStore = playersStore;
 		this.ws = websocket;
 
 		this.$log.info('constructor()', this);

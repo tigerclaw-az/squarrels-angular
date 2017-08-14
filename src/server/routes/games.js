@@ -7,7 +7,7 @@ const DeckModel = require('../models/DeckModel').model;
 const GameModel = require('../models/GameModel').model;
 const PlayerModel = require('../models/PlayerModel').model;
 
-games.delete('/:id', function(req, res, next) {
+games.delete('/:id', function(req, res) {
 	let id = req.params.id;
 
 	GameModel
@@ -40,14 +40,14 @@ games.delete('/:id', function(req, res, next) {
 								})
 								.catch(function(err) {
 									logger.error(err);
-									res.status(500).json(apiError(err));
+									res.status(500).json(config.apiError(err));
 								})
 						});
 				});
 		});
 });
 
-games.get('/:id?', function(req, res, next) {
+games.get('/:id?', function(req, res) {
 	var query = {};
 
 	logger.info('GET /games/:id -> ', query, req.session.id);
@@ -71,7 +71,7 @@ games.get('/:id?', function(req, res, next) {
 		});
 });
 
-games.post('/', function(req, res, next) {
+games.post('/', function(req, res) {
 	logger.info('POST /games/ -> ', req.session.id);
 
 	const CardModel = require('../models/CardModel').model,
@@ -86,13 +86,12 @@ games.post('/', function(req, res, next) {
 				}),
 				hoardDeck = new DeckModel({
 					deckType: 'discard'
-				});
-
-			// Create both decks, and store promises to be used later
-			deckPromises = [
-				DeckModel.create(mainDeck),
-				DeckModel.create(hoardDeck)
-			];
+				}),
+				// Create both decks, and store promises to be used later
+				deckPromises = [
+					DeckModel.create(mainDeck),
+					DeckModel.create(hoardDeck)
+				];
 
 			Promise
 				.all(deckPromises)
@@ -109,6 +108,7 @@ games.post('/', function(req, res, next) {
 						.then(function() {
 							logger.info('Game.create()', game);
 
+							/* eslint-disable no-undef */
 							wss.broadcast(
 								{ type: 'games', action: 'create', nuts: game },
 								req.session.id,
@@ -126,6 +126,7 @@ games.post('/', function(req, res, next) {
 								req.session.id,
 								false
 							);
+							/* eslint-enable no-undef */
 
 							res.status(201).json(game);
 						})

@@ -10,6 +10,7 @@ export default class GameModelService {
 		this.ws = websocket;
 
 		this.model = {
+			isGameStarted: false,
 			game: {}
 		};
 	}

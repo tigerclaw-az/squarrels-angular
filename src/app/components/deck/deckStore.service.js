@@ -1,5 +1,5 @@
 export default class DeckStoreService {
-	constructor($log, $http, $q, _, toastr, decksApi, playerModel, playersApi, playersStore) {
+	constructor($log, $http, $q, _, toastr, decksApi, gameModel, playerModel, playersApi, playersStore) {
 		'ngInject';
 
 		this.$log = $log;
@@ -8,6 +8,7 @@ export default class DeckStoreService {
 
 		this._ = _;
 		this.decksApi = decksApi;
+		this.gameModel = gameModel;
 		this.playerModel = playerModel;
 		this.playersApi = playersApi;
 		this.playersStore = playersStore;
@@ -17,43 +18,6 @@ export default class DeckStoreService {
 		};
 
 		this.$log.info('constructor()', this);
-	}
-
-	dealCards() {
-		let drawDeck = this.getByType('main'),
-			dealPromises = [];
-
-		this.$log.info('dealCards()', drawDeck, this);
-
-		_.forEach(this.playersStore.model.players, (pl) => {
-			let blankCards = Array.apply(null, Array(7)).map(() => { return null; });
-
-			// Give each player a set of blank cards until the actual cards are dealt
-			this.playersApi
-				.update(pl.id, { cardsInHand: blankCards })
-				.then(() => {
-
-				})
-				.catch(err => {
-					this.$log.error(err);
-				});
-
-			// Loop through each player and draw random set of cards, which will
-			// return a promise so we can wait for all cards to be dealt before
-			// the round starts.
-			dealPromises.push(this.drawCard(pl, drawDeck, this.playerModel.numDrawCards));
-		});
-
-		this.$q
-			.all(dealPromises)
-			.then(() => {
-				// After all cards have been dealt, set the starting player
-				this.playersStore.nextPlayer(-1);
-			})
-			.catch(err => {
-				this.$log.info('ERROR:', err);
-				this.toastr.error('Problem dealing cards', err);
-			});
 	}
 
 	discard(id) {

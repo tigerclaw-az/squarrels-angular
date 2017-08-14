@@ -3,9 +3,26 @@
 	<div class="sq-players">
 		<player ng-repeat="p in model.players | orderBy:'!isCurrent'" game="playersCtrl.game" player="p"></player>
 	</div>
-	<button
-		class="btn btn-primary"
-		ng-show="!playerData.player && model.players.length !== 6"
-		ng-click="playersCtrl.create()">Join
-	</button>
+	<form ng-show="!playerData.player && model.players.length !== 6" class="form-horizontal" name="playerForm">
+		<div class="form-group form-group-md row">
+			<div class="col-xs-12 col-sm-5">
+				<input ng-model="pName"
+						ng-maxlength="24"
+						ng-minlength="3"
+						class="form-control sq-input-player-name"
+						name="pName"
+						placeholder="Name"
+						type="text"
+						maxlength="24"/>
+			</div>
+			<div class="col-xs-12 col-sm-7">
+				<button
+					class="btn btn-primary"
+					ng-click="playersCtrl.create({
+						name: pName
+					})">Join
+				</button>
+			</div>
+		</div>
+	</div>
 </div>

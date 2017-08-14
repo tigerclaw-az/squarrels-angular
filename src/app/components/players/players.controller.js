@@ -94,13 +94,13 @@ default class PlayersController {
 		};
 	}
 
-	create() {
-		var data = {
-				name: this.utils.getRandomStr(8)
+	create(data) {
+		var canvas = angular.element('<canvas/>')[0],
+			ctx = canvas.getContext('2d'),
+			playerDefaults = {
+				name: this.utils.getRandomStr(12)
 				// img will be set to default on server
 			},
-			canvas = angular.element('<canvas/>')[0],
-			ctx = canvas.getContext('2d'),
 			video = this.$scope.webcam.video,
 			onSuccess = (res => {
 				this.$log.info('onSuccess()', res, this);
@@ -116,6 +116,10 @@ default class PlayersController {
 				this.$log.error(res);
 			});
 
+		this.$log.info('create()', data, this);
+
+		let plData = Object.assign({}, playerDefaults, data);
+
 		canvas.width = 120;
 		canvas.height = 120;
 
@@ -125,7 +129,7 @@ default class PlayersController {
 		}
 
 		this.playersApi
-			.create(data)
+			.create(plData)
 			.then(onSuccess, onError);
 	}
 }

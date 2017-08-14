@@ -1,5 +1,5 @@
 export default class CardController {
-	constructor($rootScope, $scope, $log, _, playerModel, cardsApi) {
+	constructor($rootScope, $scope, $log, _, cardsApi) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
@@ -8,7 +8,6 @@ export default class CardController {
 
 		this._ = _;
 		this.cardsApi = cardsApi;
-		this.playerModel = playerModel.model;
 
 		this.$log.info('constructor()', this);
 	}

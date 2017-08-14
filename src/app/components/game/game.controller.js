@@ -1,5 +1,5 @@
 export default class GameController {
-	constructor($rootScope, $scope, $log, $q, deckStore, decksApi, gamesApi, gameModel, playerModel, playersApi, playersStore) {
+	constructor($rootScope, $scope, $log, $q, _, deckStore, decksApi, gamesApi, gameModel, playerModel, playersApi, playersStore) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
@@ -7,6 +7,7 @@ export default class GameController {
 		this.$log = $log;
 		this.$q = $q;
 
+		this._ = _;
 		this.deckStore = deckStore;
 		this.decksApi = decksApi;
 		this.gamesApi = gamesApi;
@@ -38,7 +39,6 @@ export default class GameController {
 			});
 
 		// FIXME: This won't work when starting new game
-		this.$scope.decks = this.deckStore.model.deck;
 		this.$scope.model = this.gameModel.model;
 		this.$scope.playersModel = this.playersStore.model;
 
@@ -135,20 +135,6 @@ export default class GameController {
 		this.$log.info('dealCards()', this);
 
 		_.forEach(this.playersStore.model.players, (pl) => {
-			// FIXME: This won't work because of track by $index, need to update values in the array
-			// let blankCards = Array.apply(null, Array(7)).map(() => { return null; });
-
-			// Give each player a set of blank cards until the actual cards are dealt
-			// this.playersApi
-			// 	.update(pl.id, { cardsInHand: blankCards })
-			// 	.then(() => {
-
-			// 	})
-			// 	.catch(err => {
-			// 		this.$log.error(err);
-			// 	});
-			// 	END: FIXME
-
 			// Loop through each player and draw random set of cards, which will
 			// return a promise so we can wait for all cards to be dealt before
 			// the round starts.
@@ -165,6 +151,12 @@ export default class GameController {
 				this.$log.info('ERROR:', err);
 				this.toastr.error('Problem dealing cards', err);
 			});
+	}
+
+	getDecks() {
+		let decks = this._.orderBy(this.deckStore.model.deck, ['deckType'], ['desc']);
+
+		return decks;
 	}
 
 	insertDeck(id) {

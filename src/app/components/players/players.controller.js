@@ -20,8 +20,9 @@ default class PlayersController {
 	}
 
 	$onInit() {
-		var playerStorage = this.$localStorage.player,
-			onSuccess = (res => {
+		var onSuccess = (res => {
+				let playerStorage = this.$localStorage.player;
+
 				this.$log.info('onSuccess()', res, playerStorage, this);
 
 				if (res.status === 200) {
@@ -65,6 +66,8 @@ default class PlayersController {
 		}));
 
 		this.$rootScope.$on('websocket:players:whoami', ((event, data) => {
+			let playerStorage = this.$localStorage.player;
+
 			this.$log.info('$on -> websocket:players:whoami', data);
 
 			if (data.length && data[0].id === playerStorage.id) {
@@ -75,10 +78,6 @@ default class PlayersController {
 					player = this.playerModel.model.player;
 				}
 
-				if (player.isActive) {
-					this.toastr.success('Your Turn!');
-				}
-
 				this.playersStore.update(player.id, player);
 			}
 		}));
@@ -87,7 +86,7 @@ default class PlayersController {
 			.get()
 			.then(onSuccess, onError);
 
-		this.$log.info('$onInit()', playerStorage, this);
+		this.$log.info('$onInit()', this);
 	}
 
 	$onDestroy() {

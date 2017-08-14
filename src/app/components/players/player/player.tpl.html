@@ -1,4 +1,4 @@
-<div class="sq-player" ng-init="pModel = playerCtrl.playerModel.model; player = playerCtrl.player; isCurrent = player.id === pModel.player.id"
+<div class="sq-player" ng-init="pModel = playerCtrl.getCurrentPlayer(); player = playerCtrl.player; isCurrent = player.id === pModel.id"
 	ng-class="{
 		'active': player.isActive,
 		'current': isCurrent

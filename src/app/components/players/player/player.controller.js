@@ -24,6 +24,10 @@ export default class PlayerController {
 		};
 	}
 
+	getCurrentPlayer() {
+		return this.playerModel.model.player;
+	}
+
 	onStorageClick(evt) {
 		let cardsSelected = this.player.cardsSelected,
 			cardsInStorage = this.player.cardsInStorage,

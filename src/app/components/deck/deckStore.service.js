@@ -66,7 +66,7 @@ export default class DeckStoreService {
 
 		let plData = {
 			cardsInHand: cardsMerge,
-			isFirstTurn: count === this.playerModel.numDrawCards || pl.isValidationRunning ? true : false,
+			isFirstTurn: count === this.playerModel.numDrawCards ? true : false,
 			totalCards: cardsMerge.length
 		};
 

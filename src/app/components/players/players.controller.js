@@ -1,6 +1,6 @@
 export
 default class PlayersController {
-	constructor($rootScope, $scope, $localStorage, $log, toastr, _, utils, cardsApi, deckStore, playersApi, playersStore, playerModel) {
+	constructor($rootScope, $scope, $localStorage, $log, toastr, _, utils, websocket, playersApi, playersStore, playerModel) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
@@ -10,13 +10,11 @@ default class PlayersController {
 
 		this._ = _;
 		this.utils = utils;
-
-		this.cardsApi = cardsApi;
-		this.deckStore = deckStore;
 		this.playerModel = playerModel;
 		this.playersApi = playersApi;
 		this.playersStore = playersStore;
 		this.toastr = toastr;
+		this.ws = websocket;
 
 		this.$log.info('constructor()', this);
 	}
@@ -77,10 +75,6 @@ default class PlayersController {
 					player = this.playerModel.model.player;
 				}
 
-				if (player.score === 0 && !this._.isEmpty(player.cardsInHand) && !this.playerModel.isValidationRunning) {
-					this.validateCards();
-				}
-
 				if (player.isActive) {
 					this.toastr.success('Your Turn!');
 				}
@@ -135,72 +129,5 @@ default class PlayersController {
 		this.playersApi
 			.create(data)
 			.then(onSuccess, onError);
-	}
-
-	replaceCards(actionCards) {
-		let player = this.playerModel.model.player,
-			onRemoveCardsSuccess = (() => {
-				this.deckStore
-					.drawCard(player, actionCards.length)
-					.then(() => {
-						// TODO: Insert actionCards back into main deck
-
-						// This shouldn't be needed since it will be run after new cards have
-						// been drawn and the 'whoami' call is made
-						// this.validateCards();
-						this.isValidationRunning = false;
-					})
-					.catch(err => {
-						this.$log.info(err);
-					});
-			}),
-			onRemoveCardsError = (err => {
-				this.$log.error(err);
-			});
-
-		this.$log.info('actionCards -> ', actionCards);
-		this._.pullAll(player.cardsInHand, actionCards);
-
-
-		this.playersApi
-			.update(player.id, { cardsInHand: player.cardsInHand })
-			.then(onRemoveCardsSuccess, onRemoveCardsError);
-
-		this.$log.info('cardsInHand -> ', this.playerModel.model.player.cardsInHand);
-	}
-
-	validateCards() {
-		let player = this.playerModel.model.player,
-			cards = player.cardsInHand,
-			cardIds = cards.join(','),
-			active = player.isActive,
-			onSuccess = (res => {
-				let cardData = res.data,
-					actionCards = this._.reject(cardData, { cardType: 'number' }).map(obj => { return obj.id; });
-
-				this.$log.info('onValidateSuccess()', cardData, this);
-
-				if (actionCards.length) {
-					this.replaceCards(actionCards);
-				} else {
-					// Return player to previous 'active' state
-					this.playersStore.update(player.id, { isActive: active });
-				}
-			}),
-			onError = (err => {
-				this.$log.error(err);
-			});
-
-		this.$log.info('validateCards()', cards, active);
-
-		// Disable any actions the player could do until cards have been validated
-		this.playersStore.update(player.id, { isActive: false });
-
-		if (cards[0]) {
-			this.isValidationRunning = true;
-			this.cardsApi
-				.get(cardIds)
-				.then(onSuccess, onError);
-		}
 	}
 }

@@ -52,11 +52,12 @@ export default class DeckStoreService {
 
 	drawCard(pl, count) {
 		let deck = this.getByType('main'),
-			cardsDrawn = _.sampleSize(deck.cards, count),
+			cardsToDraw = count > 1 ? this._.filter(deck.cards, { cardType: 'number' }) : deck.cards,
+			cardsDrawn = this._.sampleSize(cardsToDraw, count).map(obj => { return obj.id }),
 			cardsMerge = cardsDrawn,
 			drawDefer = this.$q.defer();
 
-		this.$log.info('drawCard()', pl, deck, cardsDrawn, this);
+		this.$log.info('drawCard()', pl, deck, cardsToDraw, cardsDrawn, this);
 
 		if (!this._.isEmpty(pl.cardsInHand)) {
 			cardsMerge = this._.union(pl.cardsInHand, cardsDrawn);
@@ -72,11 +73,12 @@ export default class DeckStoreService {
 
 		this.$log.info('deck.cards -> ', deck.cards);
 		this.$log.info('cardsDrawn -> ', cardsDrawn);
-		this._.pullAll(deck.cards, cardsDrawn);
 
 		this.decksApi
-			.update(deck.id, { cards: deck.cards })
+			.update(deck.id, { cards: this._.reject(deck.cards, cardsDrawn) })
 			.then(() => {
+				this.$log.info('decksApi:update()', this);
+
 				this.playersApi
 					.update(pl.id, plData)
 					.then(res => {
@@ -118,8 +120,12 @@ export default class DeckStoreService {
 	}
 
 	update(id, data) {
-		this.$log.info('update()', id, data, this);
+		let deck = this.model.deck[id];
 
-		this.model.deck[id] = data;
+		Object.assign(deck, data);
+
+		this.$log.info('update()', id, data, deck, this);
+
+		return deck;
 	}
 }

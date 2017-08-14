@@ -1,11 +1,10 @@
-var _ = require('lodash'),
-	logger = require('loggy'),
+var logger = require('loggy'),
 	config = require('../config/config'),
 	decks = require('express').Router();
 
 const DeckModel = require('../models/DeckModel').model;
 
-decks.get('/:id?', function(req, res, next) {
+decks.get('/:id?', function(req, res) {
 	var query = {},
 		deckId = req.params.id;
 
@@ -17,6 +16,7 @@ decks.get('/:id?', function(req, res, next) {
 
 	DeckModel
 		.find(query)
+		.populate('cards')
 		.exec()
 		.then(function(list) {
 			if (list.length === 0) {
@@ -33,7 +33,7 @@ decks.get('/:id?', function(req, res, next) {
 		});
 });
 
-decks.post('/:id', function(req, res, next) {
+decks.post('/:id', function(req, res) {
 	var deckId = req.params.id,
 		deck = { _id: deckId },
 		options = { new: true };
@@ -42,16 +42,19 @@ decks.post('/:id', function(req, res, next) {
 
 	DeckModel
 		.findOneAndUpdate(deck, req.body, options)
+		.populate('cards')
 		.then(function(doc) {
 			logger.info('decksPost -> ', doc);
 
 			if (doc) {
 				res.status(200).json(doc);
 
+				/* eslint-disable no-undef */
 				wss.broadcast(
 					{ type: 'decks', action: 'update', nuts: doc },
 					req.session.id
 				);
+				/* eslint-enable no-undef */
 			} else {
 				res.status(204).json([]);
 			}

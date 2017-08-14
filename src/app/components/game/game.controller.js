@@ -93,7 +93,7 @@ export default class GameController {
 		var playersData = this.playersStore.get(),
 			players = [],
 			onSuccess = (res => {
-				this.$log.info('onSuccess()', res, this);
+				this.$log.info('create:onSuccess()', res, this);
 
 				if (res.status === 201) {
 					let gameData = res.data,

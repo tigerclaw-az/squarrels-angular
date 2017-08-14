@@ -94,7 +94,7 @@ export default class DeckController {
 		this.$log.info('drawCard()', isActivePlayer, this);
 
 		this.$log.info('You drew a card!');
-		this.deckStore.drawCard(this.playerModel.player, this.getDeck(), 1);
+		this.deckStore.drawCard(this.playerModel.player, 1);
 	}
 
 	onClick() {

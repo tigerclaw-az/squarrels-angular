@@ -50,8 +50,9 @@ export default class DeckStoreService {
 			.then(onSuccess, onError);
 	}
 
-	drawCard(pl, deck, count) {
-		let cardsDrawn = _.sampleSize(deck.cards, count),
+	drawCard(pl, count) {
+		let deck = this.getByType('main'),
+			cardsDrawn = _.sampleSize(deck.cards, count),
 			cardsMerge = cardsDrawn,
 			drawDefer = this.$q.defer();
 

@@ -130,28 +130,29 @@ export default class GameController {
 	}
 
 	dealCards() {
-		let drawDeck = this.deckStore.getByType('main'),
-			dealPromises = [];
+		let dealPromises = [];
 
-		this.$log.info('dealCards()', drawDeck, this);
+		this.$log.info('dealCards()', this);
 
 		_.forEach(this.playersStore.model.players, (pl) => {
-			let blankCards = Array.apply(null, Array(7)).map(() => { return null; });
+			// FIXME: This won't work because of track by $index, need to update values in the array
+			// let blankCards = Array.apply(null, Array(7)).map(() => { return null; });
 
 			// Give each player a set of blank cards until the actual cards are dealt
-			this.playersApi
-				.update(pl.id, { cardsInHand: blankCards })
-				.then(() => {
+			// this.playersApi
+			// 	.update(pl.id, { cardsInHand: blankCards })
+			// 	.then(() => {
 
-				})
-				.catch(err => {
-					this.$log.error(err);
-				});
+			// 	})
+			// 	.catch(err => {
+			// 		this.$log.error(err);
+			// 	});
+			// 	END: FIXME
 
 			// Loop through each player and draw random set of cards, which will
 			// return a promise so we can wait for all cards to be dealt before
 			// the round starts.
-			dealPromises.push(this.deckStore.drawCard(pl, drawDeck, this.playerModel.numDrawCards));
+			dealPromises.push(this.deckStore.drawCard(pl, this.playerModel.numDrawCards));
 		});
 
 		this.$q

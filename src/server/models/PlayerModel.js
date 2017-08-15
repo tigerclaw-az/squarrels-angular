@@ -1,8 +1,11 @@
 var mongoose = require('mongoose'),
-	uuid = require('uuid/v1'),
-	Card = require('./CardModel'),
 	Schema = mongoose.Schema,
 	PlayerSchema = new Schema({
+		actionCard: {
+			type: Schema.Types.ObjectId,
+			ref: 'Card',
+			default: null
+		},
 		cardsInHand: {
 			type: [Schema.Types.ObjectId],
 			ref: 'Card',

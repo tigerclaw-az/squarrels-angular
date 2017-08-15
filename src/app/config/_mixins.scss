@@ -1,3 +1,9 @@
+@mixin center-horizontal {
+	left: 50%;
+	position: absolute;
+	transform: translateX(-50%);
+}
+
 // Mixin that will include the fall back px declaration as well as the calculated rem value.
 @mixin fallback-font-size($size) {
 	font-size: $size;

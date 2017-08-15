@@ -35,7 +35,9 @@ players.get('/:id?', function(req, res) {
 	logger.info('GET /players/:id -> ', query, req.session.id);
 
 	Player
-		.find(query).exec()
+		.find(query)
+		.populate('actionCard')
+		.exec()
 		.then(function(list) {
 			if (list.length === 0) {
 				res.status(204);
@@ -117,7 +119,9 @@ players.post('/:id?', function(req, res) {
 				return false;
 			}
 
-			Player.findOneAndUpdate(playerId, plData, options)
+			Player
+				.findOneAndUpdate(playerId, plData, options)
+				.populate('actionCard')
 				.then(function(doc) {
 					if (doc) {
 						res.status(200).json(doc);

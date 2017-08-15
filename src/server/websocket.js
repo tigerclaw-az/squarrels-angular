@@ -59,8 +59,10 @@ module.exports = function(server) {
 				case 'whoami':
 					logger.info('websocket:onmessage:whoami -> ', query, sid);
 
-					Player.find(query)
+					Player
+						.find(query)
 						.select('+sessionId +cardsInHand')
+						.populate('actionCard')
 						.exec()
 						.then(function(list) {
 							let nuts = { action: 'whoami', type: 'players', nuts: list };

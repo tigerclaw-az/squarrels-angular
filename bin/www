@@ -8,13 +8,11 @@ var appServe = require('../src/server/app-server'),
 	app = appServe.app,
 	sessionParser = appServe.sessionParser,
 	sessionStore = appServe.sessionStore,
-	config = require('../src/server/config/config'),
 	debug = require('debug')('Slide:server'),
 	http = require('http'),
-	log = require('loggy'),
+	logger = require('loggy'),
 	// Get port from environment and store in Express.
-	port = normalizePort(process.env.PORT || '3000'),
-	WebSocket = require('ws');
+	port = normalizePort(process.env.PORT || '3000');
 
 app.set('port', port);
 
@@ -66,12 +64,12 @@ function onError(error) {
 	// handle specific listen errors with friendly messages
 	switch (error.code) {
 		case 'EACCES':
-			console.error(bind + ' requires elevated privileges');
+			logger.error(bind + ' requires elevated privileges');
 			process.exit(1);
 			break;
 
 		case 'EADDRINUSE':
-			console.error(bind + ' is already in use');
+			logger.error(bind + ' is already in use');
 			process.exit(1);
 			break;
 

@@ -1,4 +1,4 @@
-module.exports = function(server, sessionParser, store) {
+module.exports = function(server) {
 	var	cookie = require('cookie'),
 		cookieParser = require('cookie-parser'),
 		WebSocket = require('ws'),

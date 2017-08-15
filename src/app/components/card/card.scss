@@ -27,10 +27,31 @@ $card-images: (
 	}
 }
 
+@keyframes spin {
+	to {
+		// opacity: 0;
+		transform: rotateY(120deg);
+	}
+}
+
+@keyframes spin-reverse {
+	to {
+		// opacity: 1;
+		transform: rotateY(0deg);
+	}
+}
+
 %playing-cards {
 	height: rem-calc($card-height);
 	position: relative;
 	width: rem-calc($card-width);
+
+	card,
+	.card {
+		height: 100%;
+		position: absolute;
+		width: rem-calc($card-width);
+	}
 
 	.card {
 		@include generate-cards;
@@ -51,5 +72,30 @@ $card-images: (
 	[role='button'] {
 		display: block;
 		height: 100%;
+	}
+}
+
+.action-card {
+	.card {
+		animation-fill-mode: forwards;
+		backface-visibility: hidden;
+	}
+
+	[card-type='blank'] {
+		.card {
+			animation-duration: 4s;
+			animation-name: spin;
+			animation-timing-function: linear;
+		}
+	}
+
+	[card-type='action'] {
+		.card {
+			animation-delay: 3s;
+			animation-duration: 1s;
+			animation-name: spin-reverse;
+			animation-timing-function: ease-out;
+			transform: rotateY(-90deg);
+		}
 	}
 }

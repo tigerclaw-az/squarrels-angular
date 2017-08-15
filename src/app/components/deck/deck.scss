@@ -18,10 +18,6 @@ deck {
 			}
 
 			.card {
-				height: rem-calc($card-height);
-				position: absolute;
-				width: rem-calc($card-width);
-
 				$rotate: 0;
 
 				@for $i from 0 through 20 {

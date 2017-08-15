@@ -23,8 +23,10 @@
 	}
 
 	&.active {
-		color: get-color(mandy);
-		font-weight: $font-weight-bold;
+		.sq-player-info {
+			color: get-color(mandy);
+			font-weight: $font-weight-bold;
+		}
 	}
 
 	.sq-player-info {
@@ -62,15 +64,7 @@
 			float: left;
 			width: 100%;
 
-			&.ng-hide {
-				display: none;
-			}
-
 			card {
-				height: 100%;
-				position: absolute;
-				width: rem-calc($card-width);
-
 				$position: 0;
 
 				@for $i from 0 through $num-cards {
@@ -80,6 +74,12 @@
 					$position: $position + 40;
 				}
 			}
+		}
+
+		.action-card {
+			@extend %playing-cards;
+
+			position: absolute;
 		}
 	}
 }

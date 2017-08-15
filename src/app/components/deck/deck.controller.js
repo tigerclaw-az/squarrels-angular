@@ -1,10 +1,12 @@
 export default class DeckController {
-	constructor($rootScope, $scope, $log, toastr, gameModel, decksApi, deckStore, playerModel, playersStore) {
+	constructor($rootScope, $scope, $log, toastr, _, gameModel, decksApi, deckStore, playerModel, playersStore) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
 		this.$scope = $scope;
 		this.$log = $log;
+
+		this._ = _;
 		this.toastr = toastr;
 
 		this.decksApi = decksApi;
@@ -52,7 +54,7 @@ export default class DeckController {
 			type = card.cardType;
 
 		if (player) {
-			allowDiscard = player.isActive && player.isCurrent && !player.isFirstTurn
+			allowDiscard = player.isActive && !player.isFirstTurn && this._.isEmpty(player.actionCard);
 
 			if (type === 'special' && allowDiscard) {
 				allowDiscard = totalCards === 1 ? true : false;
@@ -81,7 +83,8 @@ export default class DeckController {
 		let player = this.playerModel.player;
 
 		if (player) {
-			return player.isActive && player.isCurrent &&
+			// FIXME: Allows player to draw more cards after putting them in 'storage'
+			return player.isActive &&
 				(player.isFirstTurn || player.totalCards < 7);
 		}
 
@@ -100,12 +103,12 @@ export default class DeckController {
 	}
 
 	drawCard() {
-		let isActivePlayer = this.playerModel.player.isActive;
+		let player = this.playerModel.player;
 
-		this.$log.info('drawCard()', isActivePlayer, this);
+		this.$log.info('drawCard()', player, this);
 
 		this.$log.info('You drew a card!');
-		this.deckStore.drawCard(this.playerModel.player, 1);
+		this.deckStore.drawCard(player, 1);
 	}
 
 	onClick() {
@@ -123,7 +126,6 @@ export default class DeckController {
 	onDropComplete(data, event) {
 		this.$log.info('onDropComplete()', data, event, this);
 
-		// TODO: Don't allow 'golden' or 'rotten' cards unless ONLY card left
 		if (this.canDiscard(data)) {
 			this.deckStore.discard(data.id);
 		}

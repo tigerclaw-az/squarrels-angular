@@ -9,7 +9,7 @@
 	<span
 		class="card {{cardData.cardType || 'blank'}}--{{cardData.name}}"
 		ng-attr-ng-drag="{{cardCtrl.canDrag() ? true : false}}"
-		ng-drag-data="cardCtrl.cardId"
+		ng-drag-data="cardData"
 		ng-drag-stop="cardCtrl.onDragStop()"
 	>
 	</span>

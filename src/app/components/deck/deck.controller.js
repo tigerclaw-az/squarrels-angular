@@ -45,14 +45,25 @@ export default class DeckController {
 		return (this.type === 'main' && !this.canDraw()) || (this.type === 'discard' && !this.canHoard());
 	}
 
-	canDiscard() {
-		let player = this.playerModel.player;
+	canDiscard(card) {
+		let player = this.playerModel.player,
+			allowDiscard = false,
+			totalCards = player.cardsInHand.length,
+			type = card.cardType;
 
 		if (player) {
-			return player.isActive && player.isCurrent && !player.isFirstTurn;
+			allowDiscard = player.isActive && player.isCurrent && !player.isFirstTurn
+
+			if (type === 'special' && allowDiscard) {
+				allowDiscard = totalCards === 1 ? true : false;
+
+				if (!allowDiscard) {
+					this.toastr.error('NOPE!');
+				}
+			}
 		}
 
-		return false;
+		return allowDiscard;
 	}
 
 	canHoard() {
@@ -110,13 +121,11 @@ export default class DeckController {
 	}
 
 	onDropComplete(data, event) {
-		let cardId = data;
-
-		this.$log.info('onDropComplete()', data, cardId, event, this);
+		this.$log.info('onDropComplete()', data, event, this);
 
 		// TODO: Don't allow 'golden' or 'rotten' cards unless ONLY card left
-		if (this.canDiscard()) {
-			this.deckStore.discard(cardId);
+		if (this.canDiscard(data)) {
+			this.deckStore.discard(data.id);
 		}
 	}
 }

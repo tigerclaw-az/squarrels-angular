@@ -1,11 +1,11 @@
 var express = require('express'),
-	mongoose = require('mongoose'),
 	logger = require('loggy'),
 	config = require('../config/config'),
+	validator = require('validator'),
 	Player = require('../models/PlayerModel.js').model,
 	players = express.Router();
 
-players.delete('/:id?', function(req, res, next) {
+players.delete('/:id?', function(req, res) {
 	if (req.params.id) {
 		// Remove single player
 		Player.findByIdAndRemove(req.params.id)
@@ -14,7 +14,7 @@ players.delete('/:id?', function(req, res, next) {
 			})
 			.catch(function(err) {
 				logger.error(err);
-				res.status(500).json(apiError(err));
+				res.status(500).json(config.apiError(err));
 			});
 	} else {
 		// Remove ALL players
@@ -24,12 +24,12 @@ players.delete('/:id?', function(req, res, next) {
 			})
 			.catch(function(err) {
 				logger.error(err);
-				res.status(500).json(apiError(err));
+				res.status(500).json(config.apiError(err));
 			});
 	}
 });
 
-players.get('/:id?', function(req, res, next) {
+players.get('/:id?', function(req, res) {
 	var query = {};
 
 	logger.info('GET /players/:id -> ', query, req.session.id);
@@ -53,51 +53,82 @@ players.get('/:id?', function(req, res, next) {
 		});
 });
 
-players.post('/:id?', function(req, res, next) {
+players.post('/:id?', function(req, res) {
 	logger.info('POST /players/:id -> ', req.session.id);
 
 	let playerId = req.params.id,
-		addPlayer = function() {
+		validatePlayer = (pl) => {
+			if (pl.name) {
+				pl.name = validator.stripLow(validator.escape(pl.name));
+
+				if (pl.name.length > 24) {
+					let err = `The name you provided (${pl.name}) is longer than 24 chars!`;
+
+					res.status(500).json(config.apiError(err));
+					return false;
+				}
+			}
+
+			return pl;
+		},
+		addPlayer = () => {
 			let playerDefaults = {
 					sessionId: req.session.id,
 					name: config.getRandomStr(8),
 					img: config.playerImage
 				},
-				pData = Object.assign(playerDefaults, req.body),
-				pl = new Player(pData);
+				pData = Object.assign({}, playerDefaults, req.body);
 
-			logger.info('addPlayer() ');
+			logger.log('pData -> ', pData);
+
+			pData = validatePlayer(pData);
+
+			if (!pData) {
+				return false;
+			}
+
+			let pl = new Player(pData);
 
 			pl.save()
-				.then(function(doc) {
+				.then(() => {
 					logger.info('Player.save()', pl);
 
+					/* eslint-disable no-undef */
 					wss.broadcast(
 						{ type: 'players', action: 'create', nuts: pl },
 						req.session.id,
 						false
 					);
+					/* eslint-enable no-undef */
 
 					res.status(201).json(pl);
 				})
-				.catch(function(err) {
+				.catch(err => {
 					logger.error(err);
 					res.status(500).json(config.apiError(err));
 				});
 		},
-		updatePlayer = function(id) {
-			let player = { _id: id },
-				options = { new: true };
+		updatePlayer = (id) => {
+			let playerId = { _id: id },
+				options = { new: true },
+				plData = validatePlayer(req.body);
 
-			Player.findOneAndUpdate(player, req.body, options)
+			if (!plData) {
+				return false;
+			}
+
+			Player.findOneAndUpdate(playerId, plData, options)
 				.then(function(doc) {
 					if (doc) {
 						res.status(200).json(doc);
+
+						/* eslint-disable no-undef */
 						wss.broadcast(
 							{ type: 'players', action: 'update', nuts: doc },
 							req.session.id,
 							true
 						);
+						/* eslint-enable no-undef */
 					} else {
 						res.status(204).json([]);
 					}

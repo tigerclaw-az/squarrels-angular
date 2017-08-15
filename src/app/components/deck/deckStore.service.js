@@ -52,36 +52,53 @@ export default class DeckStoreService {
 
 	drawCard(pl, count) {
 		let deck = this.getByType('main'),
-			cardIds = deck.cards.map(obj => { return obj.id }),
-			cardsToDraw = count > 1 ? this._.filter(deck.cards, { cardType: 'number' }) : deck.cards,
-			cardsDrawn = this._.sampleSize(cardsToDraw, count).map(obj => { return obj.id }),
-			cardsMerge = cardsDrawn,
-			drawDefer = this.$q.defer();
+			cardsMerge = [],
+			cardsFromDeck = {
+				ids: deck.cards.map(obj => { return obj.id }),
+				toDraw: count > 1 ? this._.filter(deck.cards, { cardType: 'number' }) : deck.cards,
+			},
+			cardsDrawn = {
+				cards: this._.sampleSize(cardsFromDeck.toDraw, count)
+			},
+			isActionCard = cardsDrawn.cards[0].cardType === 'action',
+			drawDefer = this.$q.defer(),
+			plData = {
+				isFirstTurn: count === this.playerModel.numDrawCards ? true : false,
+			};
 
-		this.$log.info('drawCard()', pl, deck, cardIds, cardsToDraw, cardsDrawn, this);
+		cardsDrawn.ids = cardsDrawn.cards.map(obj => { return obj.id });
+		cardsMerge = cardsDrawn.ids;
 
-		if (!this._.isEmpty(pl.cardsInHand)) {
-			cardsMerge = this._.union(pl.cardsInHand, cardsDrawn);
-		}
+		this.$log.info('drawCard()', pl, deck, this);
 
-		this.$log.info('cards:union -> ', cardsMerge);
-
-		let plData = {
-			cardsInHand: cardsMerge,
-			isFirstTurn: count === this.playerModel.numDrawCards ? true : false,
-			totalCards: cardsMerge.length
-		};
-
-		this.$log.info('deck.cards -> ', deck.cards);
-		this.$log.info('cardIds -> ', cardIds);
+		this.$log.info('cardsFromDeck -> ', cardsFromDeck);
 		this.$log.info('cardsDrawn -> ', cardsDrawn);
 
-		this._.pullAll(cardIds, cardsDrawn);
+		if (!isActionCard) {
+			// Player drew a non-"action" card, so add to their hand and update
+			if (!this._.isEmpty(pl.cardsInHand)) {
+				cardsMerge = this._.union(pl.cardsInHand, cardsDrawn.ids);
+			}
 
-		this.$log.info('remainingCards -> ', cardIds);
+			this.$log.info('cards:union -> ', cardsMerge);
+
+			Object.assign(plData, {
+				cardsInHand: cardsMerge,
+				totalCards: cardsMerge.length
+			});
+		} else {
+			Object.assign(plData, {
+				actionCard: cardsDrawn.cards[0]
+			});
+		}
+
+		this._.pullAll(cardsFromDeck.ids, cardsDrawn.ids);
+
+		this.$log.info('plData -> ', plData);
+		this.$log.info('remainingCards -> ', cardsFromDeck.ids);
 
 		this.decksApi
-			.update(deck.id, { cards: cardIds })
+			.update(deck.id, { cards: cardsFromDeck.ids })
 			.then(() => {
 				this.$log.info('decksApi:update()', this);
 

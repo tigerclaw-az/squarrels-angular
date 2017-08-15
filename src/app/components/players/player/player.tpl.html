@@ -22,7 +22,7 @@
 					<card
 						ng-show="isCurrent && player.cardsInHand.length"
 						ng-repeat="card in player.cardsInHand"
-						card-id="{{card}}"
+						card-id="{{::card}}"
 						card-type="hand"
 						player="player"
 					></card>
@@ -31,6 +31,18 @@
 						ng-repeat="n in playerCtrl._.range(0, player.totalCards)"
 						card-id="{{null}}"
 						card-type="hand"
+						player="player">
+					</card>
+				</div>
+				<div class="action-card" ng-show="player.actionCard && true">
+					<card
+						card-id="{{null}}"
+						card-type="blank"
+						player="player">
+					</card>
+					<card
+						card-id="{{player.actionCard.id}}"
+						card-type="action"
 						player="player">
 					</card>
 				</div>

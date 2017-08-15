@@ -62,7 +62,7 @@ export default class PlayerController {
 		this.$log.info('onStorageClick()', evt, this);
 		this.$log.info('cardsMatch -> ', cardsSelected, cardsMatch);
 
-		if (this.player.isActive && cardsSelected.length === 3 && cardsMatch) {
+		if (this.player.isActive && this._.isEmpty(this.player.actionCard) && cardsSelected.length === 3 && cardsMatch) {
 			cardIds = this._.map(cardsSelected, (obj) => {
 				return obj.id;
 			});

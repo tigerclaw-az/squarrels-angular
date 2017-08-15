@@ -1,5 +1,5 @@
 export default class PlayersStoreService {
-	constructor($log, $http, $localStorage, _, websocket, playersApi, playerModel) {
+	constructor($log, $http, $localStorage, toastr, _, websocket, playersApi, playerModel) {
 		'ngInject';
 
 		this.$log = $log;
@@ -7,6 +7,7 @@ export default class PlayersStoreService {
 		this.$localStorage = $localStorage;
 
 		this._ = _;
+		this.toastr = toastr;
 		this.playerModel = playerModel;
 		this.playersApi = playersApi;
 		this.ws = websocket;
@@ -56,6 +57,10 @@ export default class PlayersStoreService {
 		return this.model.players[activeIndex].id;
 	}
 
+	handleActionCard(action) {
+		this.$log.info('handleActionCard()', action, this);
+	}
+
 	nextPlayer(index) {
 		let activePlayerIndex = index || this.get('isActive', true, true),
 			nextPlayerId = this.getNextPlayer(activePlayerIndex),
@@ -96,6 +101,12 @@ export default class PlayersStoreService {
 
 		if (player.isCurrent) {
 			this.playerModel.update(data);
+		}
+
+		if (!this._.isEmpty(data.actionCard)) {
+			this.toastr.warning(data.actionCard.action, 'ACTION');
+
+			this.handleActionCard(data.actionCard);
 		}
 
 		return player;

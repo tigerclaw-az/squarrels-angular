@@ -16,6 +16,7 @@ module.exports = function(server) {
 			},
 			server
 		}),
+		hoardPlayer = null,
 		CLIENTS = [];
 
 	wss.broadcast = function broadcast(data, sid, all = true) {
@@ -50,32 +51,62 @@ module.exports = function(server) {
 			var data = JSON.parse(message),
 				query = {
 					sessionId: sid
-				};
+				},
+				wsData = data;
 
 			// Process WebSocket message
 			logger.log('Message received: ', data);
+			logger.info(`websocket:onmessage:${data.action} -> `, query);
 
 			switch (data.action) {
-				case 'whoami':
-					logger.info('websocket:onmessage:whoami -> ', query, sid);
+				case 'hoard':
+					delete data.playerHoard.cardsInHand;
 
+					wsData = {
+						action: 'hoard',
+						type: 'player' + (!hoardPlayer ? 's' : ''),
+						nuts: data.playerHoard
+					};
+
+					if (!hoardPlayer) {
+						hoardPlayer = query;
+
+						// Remove actionCard from player
+						Player
+							.findOneAndUpdate({ _id: data.playerAction.id }, { actionCard: null }, { new: true })
+							.exec()
+							.then(data => {
+								logger.log('hoard:update -> ', data);
+								wss.broadcast(wsData, sid);
+								hoardPlayer = null;
+							})
+							.catch(err => {
+								logger.error(err);
+							})
+					} else {
+						ws.send(JSON.stringify(wsData));
+					}
+
+					break;
+
+				case 'whoami':
 					Player
 						.find(query)
 						.select('+sessionId +cardsInHand')
 						.populate('actionCard')
 						.exec()
-						.then(function(list) {
-							let nuts = { action: 'whoami', type: 'players', nuts: list };
+						.then(list => {
+							wsData = { action: 'whoami', type: 'players', nuts: list };
 
-							ws.send(JSON.stringify(nuts));
+							ws.send(JSON.stringify(wsData));
 						})
-						.catch(function(err) {
+						.catch(err => {
 							logger.error(err);
 						});
 					break;
 
 				default:
-					wss.broadcast(data);
+					wss.broadcast(wsData);
 					break;
 			}
 		});

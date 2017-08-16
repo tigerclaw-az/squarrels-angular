@@ -27,8 +27,9 @@ export class WebSocketService {
 
 		this.$log.info('ws', this.$ws);
 
-		this.$ws.onMessage(this.onMessage.bind(this));
+		this.$ws.onClose(this.onClose.bind(this));
 		this.$ws.onError(this.onError.bind(this));
+		this.$ws.onMessage(this.onMessage.bind(this));
 	}
 
 	getStatus() {
@@ -41,6 +42,10 @@ export class WebSocketService {
 		this.$log.info('send(obj)', message);
 
 		this.$ws.send(msg);
+	}
+
+	onClose(msg) {
+		this.$log.info('onClose()', msg);
 	}
 
 	onError(msg) {

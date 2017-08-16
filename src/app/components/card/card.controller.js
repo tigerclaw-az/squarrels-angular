@@ -9,10 +9,14 @@ export default class CardController {
 		this._ = _;
 		this.cardsApi = cardsApi;
 
-		this.$log.info('constructor()', this);
+		this.$log.debug('constructor()', this);
 	}
 
 	$onInit() {
+		this.$log.info('$onInit()', this);
+	}
+
+	$onChanges() {
 		let onSuccess = (res => {
 				this.$log.info('onSuccess()', res, this);
 
@@ -24,7 +28,7 @@ export default class CardController {
 				this.$log.error(err);
 			});
 
-		this.$log.info('$onInit()', this);
+		this.$log.info('$onChanges()', this);
 
 		this.$scope.cardData = {};
 

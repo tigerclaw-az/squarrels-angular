@@ -43,9 +43,6 @@
 		.sq-player-storage {
 			font-size: 5rem;
 
-			.icon {
-			}
-
 			.sq-player-score {
 				@include center-horizontal;
 				color: get-color('carnaby-tan');
@@ -65,14 +62,9 @@
 			width: 100%;
 
 			card {
-				$position: 0;
-
-				@for $i from 0 through $num-cards {
-					&:nth-child(#{$i}) {
-						left: #{$position}px;
-					}
-					$position: $position + 40;
-				}
+				float: left;
+				position: relative;
+				width: rem-calc($card-width-stack);
 			}
 		}
 

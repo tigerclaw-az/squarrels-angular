@@ -17,6 +17,7 @@ games.delete('/:id', function(req, res) {
 			let decks = game.decks,
 				players = game.players,
 				playerUpdate = {
+					actionCard: null,
 					cardsInHand: [],
 					cardsInStorage: [],
 					isFirstTurn: true,

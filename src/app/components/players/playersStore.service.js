@@ -43,6 +43,10 @@ export default class PlayersStoreService {
 		this.model.players.push(pl);
 	}
 
+	hasActionCard() {
+		return this._.find(this.model.players, 'actionCard');
+	}
+
 	getNextPlayer(activeIndex) {
 		this.$log.info('nextPlayer()', activeIndex, this);
 
@@ -57,8 +61,10 @@ export default class PlayersStoreService {
 		return this.model.players[activeIndex].id;
 	}
 
-	handleActionCard(action) {
-		this.$log.info('handleActionCard()', action, this);
+	handleActionCard(card) {
+		let player = this.playerModel.model.player;
+
+		this.$log.info('handleActionCard()', card, player, this);
 	}
 
 	nextPlayer(index) {
@@ -104,7 +110,7 @@ export default class PlayersStoreService {
 		}
 
 		if (!this._.isEmpty(data.actionCard)) {
-			this.toastr.warning(data.actionCard.action, 'ACTION');
+			this.toastr.warning('ACTION CARD!');
 
 			this.handleActionCard(data.actionCard);
 		}

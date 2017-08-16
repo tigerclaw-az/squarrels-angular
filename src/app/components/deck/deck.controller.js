@@ -71,12 +71,7 @@ export default class DeckController {
 	canHoard() {
 		let player = this.playerModel.player;
 
-		// FIXME: Add logic to test for 'Hoard' action card as well
-		if (player) {
-			return !player.isActive;
-		}
-
-		return false;
+		return !player.isActive && this.playersStore.get('actionCard');
 	}
 
 	canDraw() {
@@ -92,8 +87,15 @@ export default class DeckController {
 	}
 
 	collectHoard() {
-		this.$log.info('You got the hoard!');
-		this.toastr.info('HOARD!');
+		let actionCard = this.playersStore.get('actionCard');
+
+		this.$log.info('collectHoard()', actionCard, this);
+
+		if (actionCard.action === 'hoard') {
+			this.toastr.info('HOARD!');
+		} else {
+			this.$log.info(actionCard, this);
+		}
 	}
 
 	discardCard() {

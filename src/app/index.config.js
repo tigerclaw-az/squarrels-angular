@@ -16,7 +16,7 @@ export function config(logEnhancerProvider, $httpProvider, toastrConfig, appConf
 		closeButton: false,
 		extendedTimeOut: 0,
 		positionClass: 'toast-top-right',
-		preventDuplicates: true,
+		preventDuplicates: false,
 		progressBar: false,
 		tapToDismiss: true,
 		timeOut: 5000

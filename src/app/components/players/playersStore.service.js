@@ -25,26 +25,19 @@ export default class PlayersStoreService {
 		let method = index ? 'findIndex' : 'find';
 
 		if (prop) {
-			return this._[method](this.model.players, function(o) {
-				return o[prop] === value;
-			});
+			if (value) {
+				return this._[method](this.model.players, function(o) {
+					return o[prop] === value;
+				});
+			}
+
+			// If a 'value' wasn't given, then we're just looking for the given property
+			// and will return its value, or 'false' if property was null or not found
+			let obj = this._.find(this.model.players, prop);
+			return obj ? obj[prop] : false;
 		}
 
 		return this.model.players;
-	}
-
-	insert(data) {
-		let pl = Object.assign({}, {
-			isCurrent: false
-		}, data);
-
-		this.$log.info('insert()', pl, this);
-
-		this.model.players.push(pl);
-	}
-
-	hasActionCard() {
-		return this._.find(this.model.players, 'actionCard');
 	}
 
 	getNextPlayer(activeIndex) {
@@ -65,6 +58,16 @@ export default class PlayersStoreService {
 		let player = this.playerModel.model.player;
 
 		this.$log.info('handleActionCard()', card, player, this);
+	}
+
+	insert(data) {
+		let pl = Object.assign({}, {
+			isCurrent: false
+		}, data);
+
+		this.$log.info('insert()', pl, this);
+
+		this.model.players.push(pl);
 	}
 
 	nextPlayer(index) {

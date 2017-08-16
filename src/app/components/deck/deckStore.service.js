@@ -7,6 +7,8 @@ export default class DeckStoreService {
 		this.$q = $q;
 
 		this._ = _;
+		this.toastr = toastr;
+
 		this.decksApi = decksApi;
 		this.gameModel = gameModel;
 		this.playerModel = playerModel;
@@ -51,16 +53,17 @@ export default class DeckStoreService {
 	}
 
 	drawCard(pl, count) {
-		let deck = this.getByType('main'),
+		let mainDeck = this.getByType('main'),
+			hoardDeck = this.getByType('discard'),
 			cardsMerge = [],
 			cardsFromDeck = {
-				ids: deck.cards.map(obj => { return obj.id }),
-				toDraw: count > 1 ? this._.filter(deck.cards, { cardType: 'number' }) : deck.cards,
+				ids: mainDeck.cards.map(obj => { return obj.id }),
+				toDraw: count > 1 ? this._.filter(mainDeck.cards, { cardType: 'number' }) : mainDeck.cards,
 			},
 			cardsDrawn = {
 				cards: this._.sampleSize(cardsFromDeck.toDraw, count)
 			},
-			isActionCard = cardsDrawn.cards[0].cardType === 'action',
+			cardAction = cardsDrawn.cards[0].action,
 			drawDefer = this.$q.defer(),
 			plData = {
 				isFirstTurn: count === this.playerModel.numDrawCards ? true : false,
@@ -69,12 +72,12 @@ export default class DeckStoreService {
 		cardsDrawn.ids = cardsDrawn.cards.map(obj => { return obj.id });
 		cardsMerge = cardsDrawn.ids;
 
-		this.$log.info('drawCard()', pl, deck, this);
+		this.$log.info('drawCard()', pl, mainDeck, this);
 
 		this.$log.info('cardsFromDeck -> ', cardsFromDeck);
 		this.$log.info('cardsDrawn -> ', cardsDrawn);
 
-		if (!isActionCard) {
+		if (!cardAction) {
 			// Player drew a non-"action" card, so add to their hand and update
 			if (!this._.isEmpty(pl.cardsInHand)) {
 				cardsMerge = this._.union(pl.cardsInHand, cardsDrawn.ids);
@@ -87,9 +90,18 @@ export default class DeckStoreService {
 				totalCards: cardsMerge.length
 			});
 		} else {
-			Object.assign(plData, {
-				actionCard: cardsDrawn.cards[0]
-			});
+			this.toastr.info(`Action Card - ${cardAction}`);
+
+			// FIXME: Only handling 'hoard' cards right now
+			if (cardAction === 'hoard') {
+				if (hoardDeck.cards.length) {
+					Object.assign(plData, {
+						actionCard: cardsDrawn.cards[0]
+					});
+				} else {
+					this.toastr.info('No cards to Hoard');
+				}
+			}
 		}
 
 		this._.pullAll(cardsFromDeck.ids, cardsDrawn.ids);
@@ -98,7 +110,7 @@ export default class DeckStoreService {
 		this.$log.info('remainingCards -> ', cardsFromDeck.ids);
 
 		this.decksApi
-			.update(deck.id, { cards: cardsFromDeck.ids })
+			.update(mainDeck.id, { cards: cardsFromDeck.ids })
 			.then(() => {
 				this.$log.info('decksApi:update()', this);
 

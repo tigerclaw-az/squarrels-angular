@@ -19,6 +19,6 @@ export function config(logEnhancerProvider, $httpProvider, toastrConfig, appConf
 		preventDuplicates: true,
 		progressBar: false,
 		tapToDismiss: true,
-		timeOut: 3000
+		timeOut: 5000
 	});
 }

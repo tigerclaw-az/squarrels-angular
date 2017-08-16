@@ -31,10 +31,9 @@ export default class PlayersStoreService {
 				});
 			}
 
-			// If a 'value' wasn't given, then we're just looking for the given property
-			// and will return its value, or 'false' if property was null or not found
-			let obj = this._.find(this.model.players, prop);
-			return obj ? obj[prop] : false;
+			// If a 'value' wasn't given, then we're just looking for the player
+			// where the supplied 'prop' is !null/undefined
+			return this._.find(this.model.players, prop);
 		}
 
 		return this.model.players;
@@ -105,6 +104,9 @@ export default class PlayersStoreService {
 			player = this.model.players[playerIndex];
 
 		Object.assign(player, data);
+		if (!data.actionCard) {
+			player.actionCard = null;
+		}
 
 		this.$log.info('update()', id, data, player, this);
 

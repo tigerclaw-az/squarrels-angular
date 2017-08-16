@@ -1,5 +1,5 @@
 export default class DeckController {
-	constructor($rootScope, $scope, $log, toastr, _, gameModel, decksApi, deckStore, playerModel, playersStore) {
+	constructor($rootScope, $scope, $log, toastr, _, gameModel, decksApi, deckStore, playerModel, playersStore, websocket) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
@@ -13,6 +13,7 @@ export default class DeckController {
 		this.deckStore = deckStore;
 		this.playerModel = playerModel.model;
 		this.playersStore = playersStore;
+		this.ws = websocket;
 
 		// Comes from <deck>
 		// this.type
@@ -71,7 +72,11 @@ export default class DeckController {
 	canHoard() {
 		let player = this.playerModel.player;
 
-		return !player.isActive && this.playersStore.get('actionCard');
+		if (player) {
+			return !player.isActive && this.playersStore.get('actionCard');
+		}
+
+		return false;
 	}
 
 	canDraw() {
@@ -79,7 +84,7 @@ export default class DeckController {
 
 		if (player) {
 			// FIXME: Allows player to draw more cards after putting them in 'storage'
-			return player.isActive &&
+			return player.isActive && !player.actionCard &&
 				(player.isFirstTurn || player.totalCards < 7);
 		}
 
@@ -87,14 +92,18 @@ export default class DeckController {
 	}
 
 	collectHoard() {
-		let actionCard = this.playersStore.get('actionCard');
+		let playerWithAction = this.playersStore.get('actionCard');
 
-		this.$log.info('collectHoard()', actionCard, this);
+		this.$log.info('collectHoard()', playerWithAction, this);
 
-		if (actionCard.action === 'hoard') {
-			this.toastr.info('HOARD!');
+		if (playerWithAction && playerWithAction.actionCard.action === 'hoard') {
+			this.ws.send({
+				action: 'hoard',
+				playerAction: playerWithAction,
+				playerHoard: this.playerModel.player
+			});
 		} else {
-			this.$log.info(actionCard, this);
+			this.$log.warn('NOT HOARD CARD!');
 		}
 	}
 

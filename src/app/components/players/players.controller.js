@@ -1,6 +1,6 @@
 export
 default class PlayersController {
-	constructor($rootScope, $scope, $localStorage, $log, toastr, _, utils, playersApi, playersStore, playerModel) {
+	constructor($rootScope, $scope, $localStorage, $log, toastr, _, utils, decksApi, deckStore, playersApi, playersStore, playerModel) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
@@ -9,11 +9,14 @@ default class PlayersController {
 		this.$log = $log;
 
 		this._ = _;
+		this.toastr = toastr;
 		this.utils = utils;
+
+		this.decksApi = decksApi;
+		this.deckStore = deckStore;
 		this.playerModel = playerModel;
 		this.playersApi = playersApi;
 		this.playersStore = playersStore;
-		this.toastr = toastr;
 
 		this.$log.info('constructor()', this);
 	}
@@ -47,6 +50,14 @@ default class PlayersController {
 			this.$log.info('$on -> websocket', data);
 		});
 
+		// This is triggered when a player tries to click the 'Hoard' pile after
+		// another player has already collected it
+		this.$rootScope.$on('websocket:player:hoard', ((event, data) => {
+			this.$log.info('$on -> websocket:player:hoard', data);
+
+			this.toastr.error('NO HOARD FOR YOU!');
+		}));
+
 		this.$rootScope.$on('websocket:players:create', ((event, data) => {
 			let currentPlayer = this.playerModel.model.player;
 
@@ -54,6 +65,36 @@ default class PlayersController {
 
 			if (this._.isEmpty(currentPlayer) || currentPlayer.id !== data.id) {
 				this.playersStore.insert(data);
+			}
+		}));
+
+		// This is triggered when a player successfully collected the 'Hoard' pile
+		this.$rootScope.$on('websocket:players:hoard', ((event, data) => {
+			let currentPlayer = this.playerModel.model.player,
+				onSuccess = (data => {
+					this.$log.info('onSuccess()', data, this);
+				}),
+				onError = (err => {
+					this.$log.error(err);
+				}),
+				playerCards = currentPlayer.cardsInHand,
+				hoardDeck = this.deckStore.getByType('discard'),
+				cards = [];
+
+			this.$log.info('$on -> websocket:players:hoard', data);
+
+			this.toastr.warning(JSON.stringify(data), 'HOARD TAKEN');
+
+			cards = this._.union(playerCards, hoardDeck.cards);
+
+			if (data.id === currentPlayer.id) {
+				this.decksApi
+					.update(hoardDeck.id, { cards: [] })
+					.then(() => { }, () => { });
+
+				this.playersApi
+					.update(currentPlayer.id, { cardsInHand: cards, totalCards: cards.length })
+					.then(onSuccess, onError);
 			}
 		}));
 

@@ -2,8 +2,11 @@ var express = require('express'),
 	logger = require('loggy'),
 	config = require('../config/config'),
 	validator = require('validator'),
-	Player = require('../models/PlayerModel.js').model,
-	players = express.Router();
+	players = express.Router(),
+	playerMod = require('./modules/player'),
+	Player = require('../models/PlayerModel').model;
+
+logger.log(playerMod);
 
 players.delete('/:id?', function(req, res) {
 	if (req.params.id) {
@@ -66,8 +69,7 @@ players.post('/:id?', function(req, res) {
 				if (pl.name.length > 24) {
 					let err = `The name you provided (${pl.name}) is longer than 24 chars!`;
 
-					res.status(500).json(config.apiError(err));
-					return false;
+					return err;
 				}
 			}
 
@@ -109,38 +111,6 @@ players.post('/:id?', function(req, res) {
 					logger.error(err);
 					res.status(500).json(config.apiError(err));
 				});
-		},
-		updatePlayer = (id) => {
-			let playerId = { _id: id },
-				options = { new: true },
-				plData = validatePlayer(req.body);
-
-			if (!plData) {
-				return false;
-			}
-
-			Player
-				.findOneAndUpdate(playerId, plData, options)
-				.populate('actionCard')
-				.then(function(doc) {
-					if (doc) {
-						res.status(200).json(doc);
-
-						/* eslint-disable no-undef */
-						wss.broadcast(
-							{ type: 'players', action: 'update', nuts: doc },
-							req.session.id,
-							true
-						);
-						/* eslint-enable no-undef */
-					} else {
-						res.status(204).json([]);
-					}
-				})
-				.catch(function(err) {
-					logger.error(err);
-					res.status(500).json(config.apiError(err));
-				});
 		};
 
 	if (!req.session.id) {
@@ -150,7 +120,25 @@ players.post('/:id?', function(req, res) {
 	}
 
 	if (playerId) {
-		updatePlayer(playerId);
+		let plData = validatePlayer(req.body);
+
+		if (typeof plData !== 'object') {
+			res.status(500).json(config.apiError(plData));
+			return false;
+		}
+
+		playerMod
+			.update(playerId, plData, req.session.id)
+			.then(doc => {
+				let statusCode = doc ? 200 : 204,
+					data = doc ? doc : [];
+
+				res.status(statusCode).json(data);
+			})
+			.catch(err => {
+				logger.error(err);
+				res.status(500).json(config.apiError(err));
+			});
 	} else {
 		// Add new player, if the maximum players hasn't been reached
 		Player

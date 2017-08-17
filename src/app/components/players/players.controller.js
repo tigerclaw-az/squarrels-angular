@@ -83,7 +83,7 @@ default class PlayersController {
 
 			this.$log.info('$on -> websocket:players:hoard', data);
 
-			this.toastr.warning(JSON.stringify(data), 'HOARD TAKEN');
+			this.toastr.warning(data.name, 'HOARD TAKEN BY:');
 
 			cards = this._.union(playerCards, hoardDeck.cards);
 

@@ -50,5 +50,9 @@ export class PlayerModelService {
 
 	update(data) {
 		Object.assign(this.model.player, data);
+
+		if (!data.actionCard) {
+			this.model.player.actionCard = null;
+		}
 	}
 }

@@ -94,7 +94,7 @@ export default class DeckController {
 	collectHoard() {
 		let playerWithAction = this.playersStore.get('actionCard');
 
-		this.$log.info('collectHoard()', playerWithAction, this);
+		this.$log.info('collectHoard()', this.playerModel.player, playerWithAction, this);
 
 		if (playerWithAction && playerWithAction.actionCard.action === 'hoard') {
 			this.ws.send({

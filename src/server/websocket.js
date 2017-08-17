@@ -1,6 +1,7 @@
 module.exports = function(server) {
 	var	cookie = require('cookie'),
 		cookieParser = require('cookie-parser'),
+		playerMod = require('./routes/modules/player'),
 		WebSocket = require('ws'),
 		Player = require('./models/PlayerModel').model;
 
@@ -72,9 +73,8 @@ module.exports = function(server) {
 						hoardPlayer = query;
 
 						// Remove actionCard from player
-						Player
-							.findOneAndUpdate({ _id: data.playerAction.id }, { actionCard: null }, { new: true })
-							.exec()
+						playerMod
+							.update(data.playerAction.id, { actionCard: null }, sid)
 							.then(data => {
 								logger.log('hoard:update -> ', data);
 								wss.broadcast(wsData, sid);

@@ -332,13 +332,13 @@
 	{
 		"name": "golden",
 		"amount": 5,
-		"action": "golden",
+		"action": "",
 		"cardType": "special"
 	},
 	{
 		"name": "rotten",
 		"amount": 5,
-		"action": "rotten",
+		"action": "",
 		"cardType": "special"
 	},
 	{

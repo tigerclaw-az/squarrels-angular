@@ -46,10 +46,6 @@ default class PlayersController {
 		this.$scope.playerData = this.playerModel.model;
 		this.$scope.model = this.playersStore.model;
 
-		this.$rootScope.$on('websocket', (event, data) => {
-			this.$log.info('$on -> websocket', data);
-		});
-
 		// This is triggered when a player tries to click the 'Hoard' pile after
 		// another player has already collected it
 		this.$rootScope.$on('websocket:player:hoard', ((event, data) => {

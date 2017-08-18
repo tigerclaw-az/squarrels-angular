@@ -1,5 +1,5 @@
 export class MainController {
-	constructor ($scope, $state, $log, $timeout, websocket, utils) {
+	constructor ($scope, $state, $log, $timeout, websocket) {
 		'ngInject';
 
 		this.$log = $log;
@@ -8,7 +8,6 @@ export class MainController {
 
 		this.activate($timeout);
 
-		this.utils = utils;
 		this.websocket = websocket;
 
 		this.websocket.connect();
@@ -18,6 +17,12 @@ export class MainController {
 
 	$onInit() {
 		this.$log.info('$onInit()', this);
+
+		this.$scope.$on('websocket:message', (event, msg) => {
+			let action = msg.data.action;
+
+			this.$log.info('$on -> websocket', msg, action, this);
+		});
 	}
 
 	activate($timeout) {

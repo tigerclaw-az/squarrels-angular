@@ -101,13 +101,20 @@ exports.options = {
 		debug: true
 	},
 	browserSync: {
-		debugInfo: true,
+		ghostMode: false,
+		logLevel: 'debug',
+		logPrefix: 'BrowserSync squarrels',
 		minify: false,
+		online: true,
 		open: false,
 		port: 8181,
 		reloadOnRestart: true,
-		watchEvents: ['add', 'change'],
-		proxy: 'localhost:3000'
+		watchEvents: ['add', 'change', 'unlink'],
+		proxy: {
+			// cookies: { stripDomain: false },
+			target: 'uschdancn2n6acs:3000'
+			// ws: true
+		}
 	},
 	imagemin: {
 		optimizationLevel: 3,

@@ -83,9 +83,7 @@ export default class DeckController {
 		let player = this.playerModel.player;
 
 		if (player) {
-			// FIXME: Allows player to draw more cards after putting them in 'storage'
-			return player.isActive && !player.actionCard &&
-				(player.isFirstTurn || player.totalCards < 7);
+			return player.isActive && !player.actionCard && player.isFirstTurn;
 		}
 
 		return false;

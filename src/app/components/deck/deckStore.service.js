@@ -63,11 +63,10 @@ export default class DeckStoreService {
 			cardsDrawn = {
 				cards: this._.sampleSize(cardsFromDeck.toDraw, count)
 			},
-			cardAction = cardsDrawn.cards[0].action,
+			card = cardsDrawn.cards[0],
+			cardAction = card.action,
 			drawDefer = this.$q.defer(),
-			plData = {
-				isFirstTurn: count === this.playerModel.numDrawCards ? true : false,
-			};
+			plData = {};
 
 		cardsDrawn.ids = cardsDrawn.cards.map(obj => { return obj.id });
 		cardsMerge = cardsDrawn.ids;
@@ -89,18 +88,26 @@ export default class DeckStoreService {
 				cardsInHand: cardsMerge,
 				totalCards: cardsMerge.length
 			});
+
+			if (count === 1) {
+				plData.isFirstTurn = plData.totalCards < this.playerModel.numDrawCards;
+			}
 		} else {
 			this.toastr.info(`Action Card - ${cardAction}`);
 
 			// FIXME: Only handling 'hoard' cards right now
-			if (cardAction === 'hoard') {
-				if (hoardDeck.cards.length) {
-					Object.assign(plData, {
-						actionCard: cardsDrawn.cards[0]
-					});
-				} else {
-					this.toastr.info('No cards to Hoard');
-				}
+			switch (cardAction) {
+				case 'winter':
+					plData.isActive = false;
+				case 'hoard':
+					plData.actionCard = card;
+
+					if (!hoardDeck.cards.length) {
+						this.toastr.info('No cards to Hoard');
+						plData.actionCard = null;
+					}
+
+					break;
 			}
 		}
 

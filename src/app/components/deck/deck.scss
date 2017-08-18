@@ -6,12 +6,13 @@ deck {
 	}
 
 	&[type='discard'] {
-		@include make-xs-column(3);
+		@include make-xs-column(4);
 
 		border: 1px dashed get-color(black);
 
 		.deck {
 			border: 2px dashed transparent;
+			width: auto;
 
 			&.drag-enter {
 				border-color: get-color('zest');
@@ -20,7 +21,7 @@ deck {
 			.card {
 				$rotate: 0;
 
-				@for $i from 0 through 20 {
+				@for $i from 1 through 20 {
 					&:nth-child(#{$i}) {
 						transform: rotate(#{$rotate}deg);
 					}
@@ -37,5 +38,12 @@ deck {
 		display: block;
 		margin: 0 auto;
 		text-align: center;
+
+		.count {
+			@include center-horizontal;
+
+			font-size: 4rem;
+			z-index: 1;
+		}
 	}
 }

@@ -12,7 +12,6 @@ deck {
 
 		.deck {
 			border: 2px dashed transparent;
-			width: auto;
 
 			&.drag-enter {
 				border-color: get-color('zest');

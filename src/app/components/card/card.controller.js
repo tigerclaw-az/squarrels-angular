@@ -39,8 +39,8 @@ export default class CardController {
 		}
 
 		// Reset selected cards when player draws a new card
-		angular.element(document).find('card').removeClass('selected');
-		this.player.cardsSelected = [];
+		// angular.element(document).find('card').removeClass('selected');
+		// this.player.cardsSelected = [];
 	}
 
 	$onDestroy() {
@@ -50,7 +50,7 @@ export default class CardController {
 	}
 
 	canDrag() {
-		return this.player.isCurrent;
+		return this.cardType !== 'storage' && this.player.isCurrent;
 	}
 
 	isDisabled() {

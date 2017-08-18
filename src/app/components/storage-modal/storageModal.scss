@@ -1,0 +1,22 @@
+storage-modal {
+	.cards-group {
+		@extend %playing-cards;
+
+		float: left;
+		width: 40%;
+
+		card {
+			$rotate: -10;
+			$translate: 2.5;
+
+			@for $i from 1 through 3 {
+				&:nth-child(#{$i}) {
+					transform: rotate(#{$rotate}deg) translateX(#{$translate}rem);
+				}
+
+				$rotate: $rotate + 10;
+				$translate: $translate + 2.5;
+			}
+		}
+	}
+}

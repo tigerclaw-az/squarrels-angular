@@ -36,22 +36,18 @@ export class WebSocketService {
 		return this.$ws.readyState;
 	}
 
-	send(msg) {
-		var message = typeof msg === 'object' ? JSON.stringify(msg) : msg;
+	onClose(data) {
+		this.$log.error('onClose()', data);
 
-		this.$log.info('send(obj)', message);
-
-		this.$ws.send(msg);
-	}
-
-	onClose(msg) {
-		this.$log.info('onClose()', msg);
+		this.$rootScope.$broadcast('websocket:close', data);
 	}
 
 	onError(msg) {
 		this.$log.info('onError()', msg);
 
 		this.toastr.error('websocket:error', msg);
+
+		this.$rootScope.$broadcast('websocket:error', msg);
 	}
 
 	onMessage(msg) {
@@ -65,7 +61,15 @@ export class WebSocketService {
 			data = data.nuts;
 		}
 
-		this.$rootScope.$broadcast('websocket', msg);
+		this.$rootScope.$broadcast('websocket:message', msg);
 		this.$rootScope.$broadcast(`websocket:${type}:${action}`, data);
+	}
+
+	send(msg) {
+		var message = typeof msg === 'object' ? JSON.stringify(msg) : msg;
+
+		this.$log.info('send(obj)', message);
+
+		this.$ws.send(msg);
 	}
 }

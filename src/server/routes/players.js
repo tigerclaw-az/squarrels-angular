@@ -3,10 +3,9 @@ var express = require('express'),
 	config = require('../config/config'),
 	validator = require('validator'),
 	players = express.Router(),
-	playerMod = require('./modules/player'),
-	Player = require('../models/PlayerModel').model;
+	playerMod = require('./modules/player');
 
-logger.log(playerMod);
+const Player = require('../models/PlayerModel').model;
 
 players.delete('/:id?', function(req, res) {
 	if (req.params.id) {
@@ -35,8 +34,6 @@ players.delete('/:id?', function(req, res) {
 players.get('/:id?', function(req, res) {
 	var query = {};
 
-	logger.info('GET /players/:id -> ', query, req.session.id);
-
 	Player
 		.find(query)
 		.populate('actionCard')
@@ -59,9 +56,7 @@ players.get('/:id?', function(req, res) {
 });
 
 players.post('/:id?', function(req, res) {
-	logger.info('POST /players/:id -> ', req.session.id);
-
-	let playerId = req.params.id,
+	var playerId = req.params.id,
 		validatePlayer = (pl) => {
 			if (pl.name) {
 				pl.name = validator.stripLow(validator.escape(pl.name));
@@ -82,8 +77,6 @@ players.post('/:id?', function(req, res) {
 					img: config.playerImage
 				},
 				pData = Object.assign({}, playerDefaults, req.body);
-
-			logger.log('pData -> ', pData);
 
 			pData = validatePlayer(pData);
 
@@ -116,6 +109,7 @@ players.post('/:id?', function(req, res) {
 	if (!req.session.id) {
 		logger.error('!!Possible Attack!!', req);
 		res.status(500).json(config.apiError('ALERT: Missing required sessionId!!'));
+
 		return false;
 	}
 
@@ -124,6 +118,7 @@ players.post('/:id?', function(req, res) {
 
 		if (typeof plData !== 'object') {
 			res.status(500).json(config.apiError(plData));
+
 			return false;
 		}
 
@@ -143,10 +138,8 @@ players.post('/:id?', function(req, res) {
 		// Add new player, if the maximum players hasn't been reached
 		Player
 			.find({}).exec()
-			.then(function(list) {
-				var totalPlayers = list.length;
-
-				logger.info('Total Players:', totalPlayers);
+			.then(list => {
+				let totalPlayers = list.length;
 
 				if (totalPlayers === 6) {
 					logger.error('TOO MANY PLAYERS!');
@@ -157,7 +150,7 @@ players.post('/:id?', function(req, res) {
 
 				addPlayer();
 			})
-			.catch(function(err) {
+			.catch(err => {
 				logger.error(err);
 				res.status(500).json(config.apiError(err));
 			});

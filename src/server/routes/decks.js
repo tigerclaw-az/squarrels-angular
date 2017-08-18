@@ -8,8 +8,6 @@ decks.get('/:id?', function(req, res) {
 	var query = {},
 		deckId = req.params.id;
 
-	logger.info('GET /decks/:id -> ', query, req.session.id);
-
 	if (deckId) {
 		query = { _id: deckId };
 	}
@@ -37,8 +35,6 @@ decks.post('/:id', function(req, res) {
 	var deckId = req.params.id,
 		deck = { _id: deckId },
 		options = { new: true };
-
-	logger.info('POST /decks/:id -> ', deck, req.session.id);
 
 	DeckModel
 		.findOneAndUpdate(deck, req.body, options)

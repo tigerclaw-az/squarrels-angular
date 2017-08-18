@@ -1,15 +1,15 @@
 module.exports = function(server) {
 	var	cookie = require('cookie'),
 		cookieParser = require('cookie-parser'),
+		logger = require('loggy'),
 		playerMod = require('./routes/modules/player'),
-		WebSocket = require('ws'),
-		Player = require('./models/PlayerModel').model;
+		WebSocket = require('ws');
 
-	const logger = require('loggy');
+	const Player = require('./models/PlayerModel').model;
 
 	let wss = new WebSocket.Server({
 			verifyClient: function(info, done) {
-				logger.log('verifyClient() -> ', info.req.session, info.req.headers);
+				// logger.log('verifyClient() -> ', info.req.session, info.req.headers);
 
 				if (info.req.headers.cookie || info.req.session) {
 					done(info.req);
@@ -37,7 +37,6 @@ module.exports = function(server) {
 
 		logger.log('Connection accepted:', req.headers, req.session);
 		logger.log(`Clients Connected: ${wss.clients.size}`);
-
 		logger.log('sid -> ', sid);
 
 		// Save sessionID against the array of
@@ -57,7 +56,7 @@ module.exports = function(server) {
 
 			// Process WebSocket message
 			logger.log('Message received: ', data);
-			logger.info(`websocket:onmessage:${data.action} -> `, query);
+			logger.log(`websocket:onmessage:${data.action} -> `, query);
 
 			switch (data.action) {
 				case 'hoard':
@@ -75,8 +74,7 @@ module.exports = function(server) {
 						// Remove actionCard from player
 						playerMod
 							.update(data.playerAction.id, { actionCard: null }, sid)
-							.then(data => {
-								logger.log('hoard:update -> ', data);
+							.then(() => {
 								wss.broadcast(wsData, sid);
 								hoardPlayer = null;
 							})

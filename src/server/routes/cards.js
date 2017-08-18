@@ -1,14 +1,11 @@
-var _ = require('lodash'),
-	logger = require('loggy'),
+var logger = require('loggy'),
 	config = require('../config/config'),
 	cards = require('express').Router();
 
 const CardModel = require('../models/CardModel').model;
 
-cards.get('/:id', function(req, res, next) {
+cards.get('/:id', function(req, res) {
 	var ids = req.params.id.split(',');
-
-	logger.info('GET /cards/ -> ', ids, req.session.id);
 
 	CardModel
 		.find()

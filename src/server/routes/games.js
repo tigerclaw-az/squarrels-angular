@@ -26,8 +26,6 @@ games.delete('/:id', function(req, res) {
 					totalCards: 0
 				};
 
-			logger.info('game -> ', game);
-
 			DeckModel
 				.deleteMany({ '_id': { $in: decks } })
 				.then(() => {
@@ -51,8 +49,6 @@ games.delete('/:id', function(req, res) {
 games.get('/:id?', function(req, res) {
 	var query = {};
 
-	logger.info('GET /games/:id -> ', query, req.session.id);
-
 	GameModel
 		.find(query).exec()
 		.then(function(list) {
@@ -73,10 +69,8 @@ games.get('/:id?', function(req, res) {
 });
 
 games.post('/', function(req, res) {
-	logger.info('POST /games/ -> ', req.session.id);
-
-	const CardModel = require('../models/CardModel').model,
-		DeckModel = require('../models/DeckModel').model;
+	const CardModel = require('../models/CardModel').model;
+	const DeckModel = require('../models/DeckModel').model;
 
 	CardModel
 		.find({}).exec()
@@ -97,8 +91,6 @@ games.post('/', function(req, res) {
 			Promise
 				.all(deckPromises)
 				.then((decks) => {
-					logger.info('decks -> ', decks);
-
 					let game = new GameModel({
 						players: req.body,
 						decks: [decks[0].id, decks[1].id]
@@ -107,8 +99,6 @@ games.post('/', function(req, res) {
 					GameModel
 						.create(game)
 						.then(function() {
-							logger.info('Game.create()', game);
-
 							/* eslint-disable no-undef */
 							wss.broadcast(
 								{ type: 'games', action: 'create', nuts: game },

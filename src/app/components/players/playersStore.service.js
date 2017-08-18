@@ -112,9 +112,7 @@ export default class PlayersStoreService {
 
 		if (player.isCurrent) {
 			this.playerModel.update(data);
-		}
-
-		if (!this._.isEmpty(data.actionCard)) {
+		} else if (!this._.isEmpty(data.actionCard)) {
 			this.toastr.warning('ACTION CARD!');
 
 			this.handleActionCard(data.actionCard);

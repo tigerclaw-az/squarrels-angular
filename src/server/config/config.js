@@ -24,6 +24,9 @@ module.exports = {
 		}).join('').replace(/`/g, ' ');
 	},
 
+	logger: require('loggy'),
+	loglevel: 2,
+
 	server: 'localhost',
 
 	playerImage: 'https://placeimg.com/120/120/animals'

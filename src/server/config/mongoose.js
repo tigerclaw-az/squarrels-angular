@@ -3,7 +3,7 @@ var mongoose = require('mongoose'),
 	config = require('./config');
 
 mongoose.Promise = require('q').Promise;
-mongoose.set('debug', true);
+mongoose.set('debug', config.loglevel >= 1);
 
 module.exports = function() {
 	return mongooseSeed.connect(`mongodb://${config.server}/squarrels`);

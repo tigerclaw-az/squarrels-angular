@@ -1,7 +1,8 @@
 module.exports = function(server) {
 	var	cookie = require('cookie'),
 		cookieParser = require('cookie-parser'),
-		logger = require('loggy'),
+		config = require('./config/config'),
+		logger = config.logger('websocket'),
 		playerMod = require('./routes/modules/player'),
 		WebSocket = require('ws');
 
@@ -21,7 +22,7 @@ module.exports = function(server) {
 		CLIENTS = [];
 
 	wss.broadcast = function broadcast(data, sid, all = true) {
-		logger.log('broadcast() -> ', data, sid, all);
+		logger.debug('broadcast() -> ', data, sid, all);
 		wss.clients.forEach(function each(client) {
 			if (client.readyState === WebSocket.OPEN) {
 				if (all || client !== CLIENTS[sid]) {
@@ -35,9 +36,8 @@ module.exports = function(server) {
 		let parseCookie = cookie.parse(req.headers.cookie)['connect.sid'],
 			sid = cookieParser.signedCookie(parseCookie, '$eCuRiTy');
 
-		logger.log('Connection accepted:', req.headers, req.session);
-		logger.log(`Clients Connected: ${wss.clients.size}`);
-		logger.log('sid -> ', sid);
+		logger.info('Connection accepted:', sid);
+		logger.info('Clients Connected: %s', wss.clients.size);
 
 		// Save sessionID against the array of
 		// clients so we can reference later
@@ -55,7 +55,7 @@ module.exports = function(server) {
 				wsData = data;
 
 			// Process WebSocket message
-			logger.log('Message received: ', data);
+			logger.debug('Message received: ', data);
 			logger.log(`websocket:onmessage:${data.action} -> `, query);
 
 			switch (data.action) {
@@ -115,7 +115,7 @@ module.exports = function(server) {
 
 		ws.on('close', function(connection) {
 			// close user connection
-			logger.info('Connection Closed:', connection);
+			logger.warn('Connection Closed:', connection);
 		});
 	});
 

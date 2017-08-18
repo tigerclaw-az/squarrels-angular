@@ -1,6 +1,7 @@
-var _ = require('lodash');
+var _ = require('lodash'),
+	log = require('log4js');
 
-module.exports = {
+let config = {
 	/* eslint quotes: "off" */
 	apiError: function(err) {
 		if (!err) {
@@ -24,10 +25,25 @@ module.exports = {
 		}).join('').replace(/`/g, ' ');
 	},
 
-	logger: require('loggy'),
-	loglevel: 2,
+	logger(name) {
+		let mylog = log.getLogger(name || 'app');
+
+		return mylog;
+	},
+	loglevel: 'trace',
 
 	server: 'localhost',
 
 	playerImage: 'https://placeimg.com/120/120/animals'
 }
+
+log.configure({
+	appenders: {
+		console: { type: 'console' }
+	},
+	categories: {
+		default: { appenders: ['console'], level: config.loglevel }
+	}
+});
+
+module.exports = config;

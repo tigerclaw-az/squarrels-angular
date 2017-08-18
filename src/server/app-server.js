@@ -1,15 +1,14 @@
-var config = require('./config/config'),
-	express = require('express'),
+var express = require('express'),
 	bodyParser = require('body-parser'),
-	cookieParser = require('cookie-parser'),
 	sessionParser = require('express-session'),
-	MongodbSession = require('connect-mongodb-session')(sessionParser),
 	path = require('path'),
-	favicon = require('serve-favicon'),
-	logger = require('loggy');
+	config = require('./config/config'),
+	logger = config.logger(),
+	// log4js = require('log4js'),
+	MongodbSession = require('connect-mongodb-session')(sessionParser),
+	favicon = require('serve-favicon');
 
 let app = express(),
-// let app = require('express-ws-routes'),
 	secret = '$eCuRiTy',
 	sessionStore = new MongodbSession({
 		uri: `mongodb://${config.server}/squarrels_sessions`,
@@ -22,9 +21,10 @@ app.set('view engine', 'jade');
 
 app.set('trust proxy', 1);
 
+// app.use(log4js.connectLogger(log4js.getLogger('http'), { level: 'auto' }));
+
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
-// app.use(cookieParser(secret));
 
 // ----------
 // SESSION
@@ -58,7 +58,10 @@ app.use(favicon(path.join(__dirname, '../../public/serve', 'favicon.ico')));
 app.use(express.static(path.join(__dirname, '../../public/serve')));
 app.use(express.static(path.join(__dirname, '../app')));
 
-app.use('/bower_components', express.static(path.join(__dirname, '../../bower_components')));
+app.use(
+	'/bower_components',
+	express.static(path.join(__dirname, '../../bower_components'))
+);
 
 // ----------
 // ROUTING
@@ -73,7 +76,10 @@ let routes = {
 app.use(function(req, res, next) {
 	res.header('Access-Control-Allow-Credentials', true);
 	res.header('Access-Control-Allow-Origin', '*');
-	res.header('Access-Control-Allow-Headers', 'Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With');
+	res.header(
+		'Access-Control-Allow-Headers',
+		'Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With'
+	);
 	res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
 	return next();
 });
@@ -96,7 +102,7 @@ app.use(function(req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-	app.use(function(err, req, res, next) {
+	app.use(function(err, req, res) {
 		logger.log('Server is listening on port ' + app.get('port'));
 
 		res.status(err.status || 500);
@@ -109,7 +115,7 @@ if (app.get('env') === 'development') {
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function(err, req, res, next) {
+app.use(function(err, req, res) {
 	res.status(err.status || 500);
 	res.render('error', {
 		message: err.message,

@@ -7,5 +7,5 @@ export const PlayerComponent = {
 	},
 	controller,
 	controllerAs: 'playerCtrl',
-	templateUrl: 'components/players/player/player.tpl.html'
+	templateUrl: 'components/player/player.tpl.html'
 };

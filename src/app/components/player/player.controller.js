@@ -1,10 +1,11 @@
 export default class PlayerController {
-	constructor($rootScope, $scope, $log, _, playersApi, playerModel, websocket) {
+	constructor($rootScope, $scope, $log, $uibModal, _, playersApi, playerModel, websocket) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
 		this.$scope = $scope;
 		this.$log = $log;
+		this.$uibModal = $uibModal;
 
 		this._ = _;
 		this.playerModel = playerModel; // Used in template
@@ -40,9 +41,9 @@ export default class PlayerController {
 			return sameCard ? current : false;
 		});
 
-		return this.player.isActive &&
-			this._.isEmpty(this.player.actionCard) &&
-			cardsSelected.length === 3 && cardsMatch;
+		return cardsSelected && cardsSelected.length === 3 &&
+			this.player.isActive && this._.isEmpty(this.player.actionCard) &&
+			cardsMatch;
 	}
 
 	getCurrentPlayer() {
@@ -96,6 +97,27 @@ export default class PlayerController {
 	}
 
 	showStorage(pl) {
+		let onClose = (data => {
+				this.$log.info('onClose()', data, this);
+			}),
+			onError = (err => {
+				if (err !== 'backdrop click') {
+					this.$log.error(err);
+				}
+			});
+
 		this.$log.info('showStorage()', pl, this);
+
+		let modal = this.$uibModal.open({
+			appendTo: angular.element(document).find('game'),
+			component: 'storageModal',
+			resolve: {
+				player: () => {
+					return this.player;
+				}
+			}
+		});
+
+		modal.result.then(onClose, onError);
 	}
 }

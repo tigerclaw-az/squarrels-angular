@@ -73,7 +73,8 @@ games.post('/', function(req, res) {
 	const DeckModel = require('../models/DeckModel').model;
 
 	CardModel
-		.find({}).exec()
+		.find({})
+		.exec()
 		.then(cards => {
 			let mainDeck = new DeckModel({
 					deckType: 'main',
@@ -92,6 +93,7 @@ games.post('/', function(req, res) {
 				.all(deckPromises)
 				.then((decks) => {
 					let game = new GameModel({
+						isGameStarted: true,
 						players: req.body,
 						decks: [decks[0].id, decks[1].id]
 					});

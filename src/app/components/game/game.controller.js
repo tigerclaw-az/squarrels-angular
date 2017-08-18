@@ -1,9 +1,10 @@
 export default class GameController {
-	constructor($rootScope, $scope, $log, $q, _, deckStore, decksApi, gamesApi, gameModel, playerModel, playersApi, playersStore) {
+	constructor($rootScope, $scope, $state, $log, $q, _, deckStore, decksApi, gamesApi, gameModel, playerModel, playersApi, playersStore) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
 		this.$scope = $scope;
+		this.$state = $state;
 		this.$log = $log;
 		this.$q = $q;
 
@@ -85,6 +86,8 @@ export default class GameController {
 		this.gamesApi
 			.remove(this.gameModel.model.game.id)
 			.then(() => {
+				// FIXME: Should be using $state, but doesn't work due to services...
+				// this.$state.reload();
 				window.location.reload();
 			});
 	}
@@ -183,5 +186,9 @@ export default class GameController {
 			.then(onSuccessDeck, onErrorDeck);
 
 		return deckPromise.promise;
+	}
+
+	isGameStarted() {
+		return this.gameModel.isGameStarted();
 	}
 }

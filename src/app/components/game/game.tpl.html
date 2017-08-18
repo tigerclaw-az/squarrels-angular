@@ -4,10 +4,8 @@
 </header>
 <div class="row">
 	<div class="col-sm-12">
-		<div class="play-area" ng-if="model.isGameStarted">
-			<div class="row">
-				<deck type="{{::deck.deckType}}" deck-id="{{::deck.id}}" ng-repeat="deck in gameCtrl.getDecks()"></deck>
-			</div>
+		<div class="play-area" ng-if="gameCtrl.isGameStarted()">
+			<deck type="{{::deck.deckType}}" deck-id="{{::deck.id}}" ng-repeat="deck in gameCtrl.getDecks()"></deck>
 		</div>
 	</div>
 </div>
@@ -19,12 +17,12 @@
 <button
 	class="btn btn-primary new-game"
 	ng-click="gameCtrl.create()"
-	ng-show="!model.isGameStarted && playersModel.players.length >= 2">
+	ng-show="!gameCtrl.isGameStarted() && playersModel.players.length >= 2">
 	New Game
 </button>
 <button
 	class="btn btn-warning new-game"
 	ng-click="gameCtrl.reset()"
-	ng-show="false">
+	ng-show="gameCtrl.isGameStarted()">
 	RESET
 </button>

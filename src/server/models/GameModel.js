@@ -14,6 +14,10 @@ var mongoose = require('mongoose'),
 		decks: {
 			type: [Schema.Types.ObjectId],
 			ref: Deck.model
+		},
+		isGameStarted: {
+			type: Boolean,
+			default: false
 		}
 	}, {
 		collection: 'games',

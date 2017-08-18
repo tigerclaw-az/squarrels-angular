@@ -4,7 +4,7 @@
 	ng-attr-ng-drop="{{isDiscard}}"
 	ng-drop-success="deckCtrl.onDropComplete($data, $event)"
 >
-	<div class="count" ng-show="!isDiscard">{{deckCtrl.getTotalCards()}}</div>
+	<div class="count">{{deckCtrl.getTotalCards()}}</div>
 	<a
 		href="#"
 		role="button"

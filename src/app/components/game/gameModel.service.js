@@ -1,16 +1,13 @@
 export default class GameModelService {
-	constructor($log, $http, $localStorage, _, websocket) {
+	constructor($log, $http, $localStorage, _) {
 		'ngInject';
 
 		this.$log = $log;
 		this.$http = $http;
-		this.$localStorage = $localStorage;
 
 		this._ = _;
-		this.ws = websocket;
 
 		this.model = {
-			isGameStarted: false,
 			game: {}
 		};
 	}
@@ -20,9 +17,6 @@ export default class GameModelService {
 	}
 
 	update(data) {
-		data.isGameStarted = true;
-		this.model.isGameStarted = true;
-
 		Object.assign(this.model.game, data);
 	}
 }

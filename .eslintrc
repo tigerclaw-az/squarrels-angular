@@ -18,6 +18,7 @@
 		"max-len": ["warn", {
 			"code": 90
 		}],
+		"no-fallthrough": ["off"],
 		"no-mixed-requires": ["off"],
 		"no-warning-comments": ["warn", { "terms": ["todo", "fixme"], "location": "start" }],
 		"no-underscore-dangle": ["off"]

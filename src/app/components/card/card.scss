@@ -23,7 +23,7 @@ $card-images: (
 @mixin generate-cards {
 	@each $name in $card-images {
 		&.#{$name} {
-			background-image: url('../images/#{$name}.png');
+			background-image: url('../assets/images/#{$name}.png');
 		}
 	}
 }

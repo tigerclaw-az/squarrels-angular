@@ -7,8 +7,7 @@ var $ = require('gulp-load-plugins')({
 	}),
 	gulp = require('gulp');
 
-var glob = require('glob'),
-	path = require('path'),
+var path = require('path'),
 	wiredep = require('wiredep').stream;
 
 var conf = require('./config'),
@@ -16,16 +15,19 @@ var conf = require('./config'),
 	paths = conf.paths;
 
 gulp.task('partials', function() {
-	return gulp.src([
-		path.join(paths.app, '/**/*.html'),
-		path.join(paths.public, '/**/*.html')
-	])
-	.pipe($.htmlmin(conf.options.htmlmin))
-	.pipe($.angularTemplatecache('templateCacheHtml.js', {
-		module: conf.settings.projectName,
-		root: 'app'
-	}))
-	.pipe(gulp.dest(path.join(paths.serve.public, '/partials/')));
+	var files = [
+			path.join(paths.app, '/**/*.html'),
+			path.join(paths.public, '/**/*.html')
+		],
+		tplOptions = {
+			module: conf.settings.projectName,
+			root: 'app'
+		};
+
+	return gulp.src(files)
+		.pipe($.htmlmin(conf.options.htmlmin))
+		.pipe($.angularTemplatecache('templateCacheHtml.js', tplOptions))
+		.pipe(gulp.dest(path.join(paths.serve.public, '/partials/')));
 });
 
 gulp.task('html', ['wiredep', 'partials', 'scripts', 'styles'], function() {
@@ -38,13 +40,6 @@ gulp.task('html', ['wiredep', 'partials', 'scripts', 'styles'], function() {
 		.pipe($.size());
 });
 
-gulp.task('images', function() {
-	return gulp.src(paths.images.source)
-		.pipe($.cache($.imagemin(options.imagemin)))
-		.pipe(gulp.dest(paths.images.serve))
-		.pipe($.size());
-});
-
 gulp.task('fonts', function() {
 	return gulp.src($.mainBowerFiles().concat(paths.fonts.source))
 		.pipe($.filter('**/*.{eot,otf,svg,ttf,woff,woff2}'))
@@ -54,15 +49,17 @@ gulp.task('fonts', function() {
 
 gulp.task('extras', function() {
 	var fileFilter = $.filter(function(file) {
-		return file.stat.isFile();
-	});
+			return file.stat.isFile();
+		}),
+		files = [
+			path.join(conf.paths.src, '/**/*'),
+			path.join('!' + conf.paths.src, '/**/*.{html,css,js,scss}')
+		];
 
-	return gulp.src([
-		path.join(conf.paths.src, '/**/*'),
-		path.join('!' + conf.paths.src, '/**/*.{html,css,js,scss}')
-	])
-	.pipe(fileFilter)
-	.pipe(gulp.dest(paths.serve.public));
+	return gulp.src(files)
+		.pipe(fileFilter)
+		.pipe($.if('*.{png,jpg,gif}', $.cache($.imagemin(options.imagemin))))
+		.pipe(gulp.dest(paths.serve.public));
 });
 
 gulp.task('clean', function() {
@@ -78,7 +75,7 @@ gulp.task('wiredep', function() {
 
 gulp.task('preflight', ['scripts:lint']);
 
-gulp.task('produce', ['preflight', 'wiredep', 'scripts', 'styles', 'images', 'fonts']);
+gulp.task('produce', ['preflight', 'wiredep', 'scripts', 'styles', 'fonts']);
 
 gulp.task('package', ['produce', 'html', 'extras']);
 

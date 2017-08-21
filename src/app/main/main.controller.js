@@ -12,11 +12,11 @@ export class MainController {
 
 		this.websocket.connect();
 
-		this.$log.info('constructor()', this, $scope);
+		this.$log.debug('constructor()', this, $scope);
 	}
 
 	$onInit() {
-		this.$log.info('$onInit()', this);
+		this.$log.debug('$onInit()', this);
 
 		this.$scope.$on('websocket:message', (event, msg) => {
 			let action = msg.data.action;

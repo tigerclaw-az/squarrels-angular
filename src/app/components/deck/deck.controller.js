@@ -19,16 +19,16 @@ export default class DeckController {
 		// this.type
 		// this.deckId
 
-		this.$log.info('constructor()', this);
+		this.$log.debug('constructor()', this);
 	}
 
 	$onInit() {
-		this.$log.info('$onInit()', this);
+		this.$log.debug('$onInit()', this);
 	}
 
 	$onDestroy() {
 		return () => {
-			this.$log.info('$onDestroy()', this);
+			this.$log.debug('$onDestroy()', this);
 		};
 	}
 
@@ -108,9 +108,8 @@ export default class DeckController {
 	drawCard() {
 		let player = this.playerModel.player;
 
-		this.$log.info('drawCard()', player, this);
+		this.$log.debug('drawCard()', player, this);
 
-		this.$log.info('You drew a card!');
 		this.deckStore.drawCard(player, 1);
 	}
 
@@ -127,7 +126,7 @@ export default class DeckController {
 	}
 
 	onDropComplete(data, event) {
-		this.$log.info('onDropComplete()', data, event, this);
+		this.$log.debug('onDropComplete()', data, event, this);
 
 		if (this.canDiscard(data)) {
 			this.deckStore.discard(data.id);

@@ -17,7 +17,7 @@ export default class GameController {
 		this.playersApi = playersApi;
 		this.playersStore = playersStore;
 
-		this.$log.info('constructor()', this);
+		this.$log.debug('constructor()', this);
 	}
 
 	$onInit() {
@@ -74,12 +74,12 @@ export default class GameController {
 			.get()
 			.then(onSuccess, onError);
 
-		this.$log.info('$onInit()', this);
+		this.$log.debug('$onInit()', this);
 	}
 
 	$onDestroy() {
 		return () => {
-			this.$log.info('destroy', this);
+			this.$log.debug('destroy', this);
 		};
 	}
 
@@ -101,8 +101,6 @@ export default class GameController {
 		var playersData = this.playersStore.get(),
 			players = [],
 			onSuccess = (res => {
-				this.$log.info('create:onSuccess()', res, this);
-
 				if (res.status === 201) {
 					let gameData = res.data,
 						deckUpdates = [];
@@ -115,7 +113,7 @@ export default class GameController {
 
 					this.$q.all(deckUpdates)
 						.then(deck => {
-							this.$log.info('decksApi:update()', deck);
+							this.$log.debug('decksApi:update()', deck);
 
 							this.dealCards();
 						})
@@ -140,8 +138,6 @@ export default class GameController {
 	dealCards() {
 		let dealPromises = [];
 
-		this.$log.info('dealCards()', this);
-
 		_.forEach(this.playersStore.model.players, (pl) => {
 			// Loop through each player and draw random set of cards, which will
 			// return a promise so we can wait for all cards to be dealt before
@@ -156,7 +152,7 @@ export default class GameController {
 				this.playersStore.nextPlayer(-1);
 			})
 			.catch(err => {
-				this.$log.info('ERROR:', err);
+				this.$log.error(err);
 				this.toastr.error('Problem dealing cards', err);
 			});
 	}
@@ -170,7 +166,7 @@ export default class GameController {
 	insertDeck(id) {
 		var deckPromise = this.$q.defer(),
 			onSuccessDeck = (res => {
-				this.$log.info('onSuccessDeck()', res, this);
+				this.$log.debug('onSuccessDeck()', res, this);
 
 				if (res.status === 200) {
 					let deckData = res.data[0];

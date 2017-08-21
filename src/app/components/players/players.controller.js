@@ -18,14 +18,14 @@ default class PlayersController {
 		this.playersApi = playersApi;
 		this.playersStore = playersStore;
 
-		this.$log.info('constructor()', this);
+		this.$log.debug('constructor()', this);
 	}
 
 	$onInit() {
 		var onSuccess = (res => {
 				let playerStorage = this.$localStorage.player;
 
-				this.$log.info('onSuccess()', res, playerStorage, this);
+				this.$log.debug('onSuccess()', res, playerStorage, this);
 
 				if (res.status === 200) {
 					if (playerStorage) {
@@ -36,7 +36,7 @@ default class PlayersController {
 						this.playersStore.insert(pl);
 					});
 
-					this.$log.info('players', this.playersStore.model.players);
+					this.$log.debug('players', this.playersStore.model.players);
 				}
 			}),
 			onError = (res => {
@@ -68,7 +68,7 @@ default class PlayersController {
 		this.$rootScope.$on('websocket:players:hoard', ((event, data) => {
 			let currentPlayer = this.playerModel.model.player,
 				onSuccess = (data => {
-					this.$log.info('onSuccess()', data, this);
+					this.$log.debug('onSuccess()', data, this);
 				}),
 				onError = (err => {
 					this.$log.error(err);
@@ -125,12 +125,12 @@ default class PlayersController {
 			.get()
 			.then(onSuccess, onError);
 
-		this.$log.info('$onInit()', this);
+		this.$log.debug('$onInit()', this);
 	}
 
 	$onDestroy() {
 		return () => {
-			this.$log.info('destroy', this);
+			this.$log.debug('destroy', this);
 		};
 	}
 
@@ -143,7 +143,7 @@ default class PlayersController {
 			},
 			video = this.$scope.webcam.video,
 			onSuccess = (res => {
-				this.$log.info('onSuccess()', res, this);
+				this.$log.debug('onSuccess()', res, this);
 
 				if (res.status === 201) {
 					let player = res.data;
@@ -156,7 +156,7 @@ default class PlayersController {
 				this.$log.error(res);
 			});
 
-		this.$log.info('create()', data, this);
+		this.$log.debug('create()', data, this);
 
 		let plData = Object.assign({}, playerDefaults, data);
 

@@ -14,20 +14,20 @@ export default class StorageModalController {
 
 		this.cards = this.player.cardsInStorage;
 
-		this.$log.info('$onInit()', this);
+		this.$log.debug('$onInit()', this);
 	}
 
 	$onDestroy() {
 		return () => {
-			this.$log.info('destroy', this);
+			this.$log.debug('destroy', this);
 		};
 	}
 
 	ok() {
-		this.$log.info('ok()', this);
+		this.$log.debug('ok()', this);
 	}
 
 	cancel() {
-		this.$log.info('cancel()', this);
+		this.$log.debug('cancel()', this);
 	}
 }

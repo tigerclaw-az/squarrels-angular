@@ -13,7 +13,7 @@ export default class CardController {
 	}
 
 	$onInit() {
-		this.$log.info('$onInit()', this);
+		this.$log.debug('$onInit()', this);
 	}
 
 	$onChanges() {
@@ -28,7 +28,7 @@ export default class CardController {
 				this.$log.error(err);
 			});
 
-		this.$log.info('$onChanges()', this);
+		this.$log.debug('$onChanges()', this);
 
 		this.$scope.cardData = {};
 
@@ -45,7 +45,7 @@ export default class CardController {
 
 	$onDestroy() {
 		return () => {
-			this.$log.info('$onDestroy()', this);
+			this.$log.debug('$onDestroy()', this);
 		};
 	}
 

@@ -12,16 +12,16 @@ export default class PlayerController {
 		this.playersApi = playersApi;
 		this.ws = websocket;
 
-		this.$log.info('constructor()', this);
+		this.$log.debug('constructor()', this);
 	}
 
 	$onInit() {
-		this.$log.info('$onInit()', this);
+		this.$log.debug('$onInit()', this);
 	}
 
 	$onDestroy() {
 		return () => {
-			this.$log.info('destroy', this);
+			this.$log.debug('destroy', this);
 		};
 	}
 
@@ -77,8 +77,6 @@ export default class PlayerController {
 				return obj.id;
 			});
 
-		this.$log.debug('Storing Cards: ', cardIds);
-
 		cardsInStorage.push(cardIds[0]);
 		this._.pullAll(cardsInHand, cardIds);
 
@@ -98,7 +96,7 @@ export default class PlayerController {
 
 	showStorage(pl) {
 		let onClose = (data => {
-				this.$log.info('onClose()', data, this);
+				this.$log.debug('onClose()', data, this);
 			}),
 			onError = (err => {
 				if (err !== 'backdrop click') {
@@ -106,7 +104,7 @@ export default class PlayerController {
 				}
 			});
 
-		this.$log.info('showStorage()', pl, this);
+		this.$log.debug('showStorage()', pl, this);
 
 		let modal = this.$uibModal.open({
 			appendTo: angular.element(document).find('game'),

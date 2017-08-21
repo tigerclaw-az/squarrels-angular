@@ -1,7 +1,13 @@
-$card-height: 270;
-$card-width: 200;
+$card-height: (
+	small: 180,
+	medium: 270
+);
+$card-width: (
+	small: 100,
+	medium: 200
+);
 $card-width-stack: 60;
-$num-cards: 14;
+$num-cards: 20;
 
 $card-images: (
 	'blank--',
@@ -43,16 +49,7 @@ $card-images: (
 }
 
 %playing-cards {
-	height: rem-calc($card-height);
 	position: relative;
-	width: rem-calc($card-width);
-
-	card,
-	.card {
-		height: 100%;
-		position: absolute;
-		width: rem-calc($card-width);
-	}
 
 	.card {
 		@include generate-cards;
@@ -73,6 +70,34 @@ $card-images: (
 	[role='button'] {
 		display: block;
 		height: 100%;
+	}
+}
+
+@media (max-width: $screen-sm-max) {
+	%playing-cards {
+		height: rem-calc(map-get($card-height, 'medium'));
+		width: rem-calc(map-get($card-width, 'medium'));
+
+		card,
+		.card {
+			height: 100%;
+			position: absolute;
+			width: rem-calc(map-get($card-width, 'medium'));
+		}
+	}
+}
+
+@media (min-width: $screen-md-min) {
+	%playing-cards {
+		height: rem-calc(map-get($card-height, 'medium'));
+		width: rem-calc(map-get($card-width, 'medium'));
+
+		card,
+		.card {
+			height: 100%;
+			position: absolute;
+			width: rem-calc(map-get($card-width, 'medium'));
+		}
 	}
 }
 

@@ -1,19 +1,24 @@
 @import '../card/card';
 
 .sq-player {
+	margin-bottom: 2rem;
 	position: relative;
 	text-align: center;
 
 	&.current {
 		card {
-			&:hover,
-			&.selected {
-				top: -25px;
-			}
-
 			&.selected {
 				border: 2px solid get-color('zest');
 				border-radius: .75rem;
+				top: -25px;
+			}
+
+			.card {
+				top: 0;
+
+				&:hover {
+					top: -2rem;
+				}
 			}
 		}
 
@@ -26,6 +31,12 @@
 		.sq-player-info {
 			color: get-color(mandy);
 			font-weight: $font-weight-bold;
+		}
+	}
+
+	.sq-player-thumbnail {
+		img {
+			width: 10rem;
 		}
 	}
 

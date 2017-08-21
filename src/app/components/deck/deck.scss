@@ -3,6 +3,10 @@
 deck {
 	&[type='main'] {
 		@include make-xs-column(3);
+
+		.deck {
+			box-shadow: 4px 6px 1px get-color('pickled-bean');
+		}
 	}
 
 	&[type='discard'] {

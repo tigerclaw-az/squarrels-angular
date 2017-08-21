@@ -15,5 +15,7 @@ header {
 }
 
 .play-area {
+	@include clearfix;
 
+	margin-bottom: rem-calc(24);
 }

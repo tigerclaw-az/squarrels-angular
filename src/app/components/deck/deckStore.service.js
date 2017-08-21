@@ -25,6 +25,9 @@ export default class DeckStoreService {
 	discard(id) {
 		let hoardDeck = this.getByType('discard'),
 			cards = hoardDeck.cards,
+			sound = new window.Howl({
+				src: ['assets/sounds/hoard.mp3']
+			}),
 			onSuccess = (res => {
 				this.$log.info('onSuccess()', res, this);
 
@@ -46,6 +49,8 @@ export default class DeckStoreService {
 		this.$log.info('discard()', id, hoardDeck, this);
 
 		cards.push(id);
+
+		sound.play();
 
 		this.decksApi
 			.update(hoardDeck.id, { cards })

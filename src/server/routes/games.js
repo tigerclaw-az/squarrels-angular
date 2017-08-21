@@ -1,6 +1,6 @@
 var _ = require('lodash'),
-	logger = require('loggy'),
 	config = require('../config/config'),
+	logger = config.logger('routes:games'),
 	games = require('express').Router();
 
 const DeckModel = require('../models/DeckModel').model;
@@ -8,7 +8,10 @@ const GameModel = require('../models/GameModel').model;
 const PlayerModel = require('../models/PlayerModel').model;
 
 games.delete('/:id', function(req, res) {
-	let id = req.params.id;
+	let id = req.params.id,
+		sessionId = req.session.id;
+
+	logger.debug('games:delete -> ', id);
 
 	GameModel
 		.findById(id)
@@ -26,12 +29,30 @@ games.delete('/:id', function(req, res) {
 					totalCards: 0
 				};
 
+			logger.debug('decks -> ', decks);
+
 			DeckModel
 				.deleteMany({ '_id': { $in: decks } })
 				.then(() => {
+					/* eslint-disable no-undef */
+					wss.broadcast(
+						{ type: 'decks', action: 'remove' },
+						sessionId
+					);
+					/* eslint-enable no-undef */
+
+					logger.debug('players -> ', players);
+
 					PlayerModel
 						.updateMany({ '_id': { $in: players } }, playerUpdate)
 						.then(() => {
+							/* eslint-disable no-undef */
+							wss.broadcast(
+								{ type: 'players', action: 'update', nuts: playerUpdate },
+								sessionId
+							);
+							/* eslint-enable no-undef */
+
 							GameModel
 								.remove({ _id: game.id })
 								.then(function() {
@@ -42,6 +63,10 @@ games.delete('/:id', function(req, res) {
 									res.status(500).json(config.apiError(err));
 								})
 						});
+				})
+				.catch(err => {
+					logger.error(err);
+					res.status(500).json(config.apiError(err));
 				});
 		});
 });
@@ -69,6 +94,8 @@ games.get('/:id?', function(req, res) {
 });
 
 games.post('/', function(req, res) {
+	let sessionId = req.session.id;
+
 	const CardModel = require('../models/CardModel').model;
 	const DeckModel = require('../models/DeckModel').model;
 
@@ -91,7 +118,7 @@ games.post('/', function(req, res) {
 
 			Promise
 				.all(deckPromises)
-				.then((decks) => {
+				.then(decks => {
 					let game = new GameModel({
 						isGameStarted: true,
 						players: req.body,
@@ -100,30 +127,30 @@ games.post('/', function(req, res) {
 
 					GameModel
 						.create(game)
-						.then(function() {
+						.then(() => {
 							/* eslint-disable no-undef */
 							wss.broadcast(
 								{ type: 'games', action: 'create', nuts: game },
-								req.session.id,
+								sessionId,
 								false
 							);
 
 							wss.broadcast(
 								{ type: 'decks', action: 'create', nuts: mainDeck },
-								req.session.id,
+								sessionId,
 								false
 							);
 
 							wss.broadcast(
 								{ type: 'decks', action: 'create', nuts: hoardDeck },
-								req.session.id,
+								sessionId,
 								false
 							);
 							/* eslint-enable no-undef */
 
 							res.status(201).json(game);
 						})
-						.catch(function(err) {
+						.catch(err => {
 							logger.error(err);
 							res.status(500).json(config.apiError(err));
 						});

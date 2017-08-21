@@ -105,12 +105,6 @@ export default class DeckController {
 		}
 	}
 
-	discardCard() {
-		this.$log.info('discardCard()', this);
-
-		this.playersStore.nextPlayer();
-	}
-
 	drawCard() {
 		let player = this.playerModel.player;
 

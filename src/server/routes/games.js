@@ -166,4 +166,29 @@ games.post('/', function(req, res) {
 		});
 });
 
+games.post('/:id', function(req, res) {
+	let gameId = req.params.id,
+		sessionId = req.session.id;
+
+	GameModel
+		.findByIdAndUpdate(gameId, req.body, { new: true })
+		.then(doc => {
+			let statusCode = doc ? 200 : 204;
+
+			/* eslint-disable no-undef */
+			wss.broadcast(
+				{ type: 'games', action: 'update', nuts: doc },
+				sessionId,
+				false
+			);
+			/* eslint-disable no-undef */
+
+			res.status(statusCode).json(doc);
+		})
+		.catch(err => {
+			logger.error(err);
+			res.status(500).json(config.apiError(err));
+		})
+});
+
 module.exports = games;

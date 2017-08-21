@@ -55,4 +55,19 @@ export class PlayerModelService {
 			this.model.player.actionCard = null;
 		}
 	}
+
+	updateScore() {
+		let special = this._.filter(this.model.player.cardsInHand, { cardType: 'special' }),
+			score = this.model.player.score;
+
+		this.$log.info('updateScore()', special, this);
+
+		if (special.length) {
+			this._.forEach(special, (card) => {
+				score += card.amount;
+			});
+
+			return this.playersApi.update(this.model.player.id, { score: score });
+		}
+	}
 }

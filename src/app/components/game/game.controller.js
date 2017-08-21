@@ -49,6 +49,11 @@ export default class GameController {
 			this.gameModel.update(data);
 		});
 
+		this.$rootScope.$on('websocket:games:update', (event, data) => {
+			this.$log.info('$on -> websocket:games:update', data);
+			this.gameModel.update(data);
+		});
+
 		// Should only fire for external clients
 		this.$rootScope.$on('websocket:decks:create', (event, data) => {
 			this.$log.info('$on -> websocket:decks:create', data);
@@ -65,7 +70,7 @@ export default class GameController {
 			}
 		});
 
-		this.gamesApi
+		this.gameModel
 			.get()
 			.then(onSuccess, onError);
 

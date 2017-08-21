@@ -100,18 +100,25 @@ export default class DeckStoreService {
 		} else {
 			this.toastr.info(`Action Card - ${cardAction}`);
 
-			// FIXME: Only handling 'hoard' cards right now
+			plData.actionCard = card;
+
+			// FIXME: Only handling 'hoard' & 'winter' cards right now
 			switch (cardAction) {
 				case 'winter':
 					plData.isActive = false;
-				case 'hoard':
-					plData.actionCard = card;
+					this.gameModel.endGame();
+					break;
 
+				case 'hoard':
 					if (!hoardDeck.cards.length) {
 						this.toastr.info('No cards to Hoard');
 						plData.actionCard = null;
 					}
 
+					break;
+
+				default:
+					plData.actionCard = null;
 					break;
 			}
 		}

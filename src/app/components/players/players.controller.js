@@ -97,7 +97,10 @@ default class PlayersController {
 		this.$rootScope.$on('websocket:players:update', ((event, data) => {
 			this.$log.info('$on -> websocket:players:update', data);
 
-			this.playersStore.update(data.id, data);
+			if (data.id) {
+				this.playersStore.update(data.id, data);
+			}
+
 			this.playersStore.whoami();
 		}));
 

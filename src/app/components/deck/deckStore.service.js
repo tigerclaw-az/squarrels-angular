@@ -1,5 +1,5 @@
 export default class DeckStoreService {
-	constructor($log, $http, $q, _, toastr, decksApi, gameModel, playerModel, playersApi, playersStore) {
+	constructor($log, $http, $q, _, toastr, sounds, decksApi, gameModel, playerModel, playersApi, playersStore) {
 		'ngInject';
 
 		this.$log = $log;
@@ -7,6 +7,7 @@ export default class DeckStoreService {
 		this.$q = $q;
 
 		this._ = _;
+		this.sounds = sounds;
 		this.toastr = toastr;
 
 		this.decksApi = decksApi;
@@ -25,9 +26,6 @@ export default class DeckStoreService {
 	discard(id) {
 		let hoardDeck = this.getByType('discard'),
 			cards = hoardDeck.cards,
-			sound = new window.Howl({
-				src: ['assets/sounds/hoard.mp3']
-			}),
 			onSuccess = (res => {
 				this.$log.info('onSuccess()', res, this);
 
@@ -50,7 +48,7 @@ export default class DeckStoreService {
 
 		cards.push(id);
 
-		sound.play();
+		this.sounds.play('hoard');
 
 		this.decksApi
 			.update(hoardDeck.id, { cards })

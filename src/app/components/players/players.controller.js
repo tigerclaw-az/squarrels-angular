@@ -1,6 +1,6 @@
 export
 default class PlayersController {
-	constructor($rootScope, $scope, $localStorage, $log, toastr, _, utils, decksApi, deckStore, playersApi, playersStore, playerModel) {
+	constructor($rootScope, $scope, $localStorage, $log, toastr, _, utils, sounds, decksApi, deckStore, playersApi, playersStore, playerModel) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
@@ -14,9 +14,12 @@ default class PlayersController {
 
 		this.decksApi = decksApi;
 		this.deckStore = deckStore;
+		this.sounds = sounds;
 		this.playerModel = playerModel;
 		this.playersApi = playersApi;
 		this.playersStore = playersStore;
+
+		this.newTurn = false;
 
 		this.$log.debug('constructor()', this);
 	}
@@ -83,13 +86,18 @@ default class PlayersController {
 
 			cards = this._.union(playerCards, hoardDeck.cards);
 
+			let playerObj = {
+				cardsInHand: cards,
+				totalCards: cards.length
+			};
+
 			if (data.id === currentPlayer.id) {
 				this.decksApi
 					.update(hoardDeck.id, { cards: [] })
 					.then(() => { }, () => { });
 
 				this.playersApi
-					.update(currentPlayer.id, { cardsInHand: cards, totalCards: cards.length })
+					.update(currentPlayer.id, playerObj)
 					.then(onSuccess, onError);
 			}
 		}));
@@ -115,6 +123,15 @@ default class PlayersController {
 				if (this._.isEmpty(this.playerModel.player)) {
 					this.playerModel.insert(player);
 					player = this.playerModel.model.player;
+				}
+
+				// If the player's turn changed to 'active', play sound
+				if (player.isActive !== this.newTurn) {
+					this.newTurn = player.isActive;
+
+					if (player.isActive) {
+						this.sounds.play('active-player');
+					}
 				}
 
 				this.playersStore.update(player.id, player);

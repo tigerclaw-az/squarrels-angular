@@ -25,7 +25,8 @@
     "ngstorage": "^0.3.11",
     "angular-websocket": "^2.0.0",
     "angular-cookie": "^4.1.0",
-    "ngDraggable": "^0.1.11"
+    "ngDraggable": "^0.1.11",
+    "howler.js": "howler#^2.0.4"
   },
   "resolutions": {
     "angular": "1.6.5"

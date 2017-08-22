@@ -43,7 +43,7 @@ module.exports = function(server) {
 		// clients so we can reference later
 		CLIENTS[sid] = ws;
 
-		ws.send(JSON.stringify({ action: 'connected', type: 'global' }));
+		ws.send(JSON.stringify({ action: 'connect', type: 'global' }));
 
 		// This is the most important callback for us, we'll handle
 		// all messages from users here.

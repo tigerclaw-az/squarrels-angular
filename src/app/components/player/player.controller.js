@@ -107,7 +107,7 @@ export default class PlayerController {
 		this.$log.debug('showStorage()', pl, this);
 
 		let modal = this.$uibModal.open({
-			appendTo: angular.element(document).find('game'),
+			appendTo: angular.element(document).find('players'),
 			component: 'storageModal',
 			resolve: {
 				player: () => {

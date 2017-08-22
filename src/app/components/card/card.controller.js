@@ -37,10 +37,6 @@ export default class CardController {
 				.get(this.cardId)
 				.then(onSuccess, onError);
 		}
-
-		// Reset selected cards when player draws a new card
-		angular.element(document).find('card').removeClass('selected');
-		this.player.cardsSelected = [];
 	}
 
 	$onDestroy() {

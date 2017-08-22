@@ -48,6 +48,14 @@ export class PlayerModelService {
 		return this.playersApi.update(this.model.player.id, plData);
 	}
 
+	resetSelected() {
+		this.$log.info('resetSelected()', this);
+
+		// Reset selected cards when player draws a new card
+		angular.element(document).find('card').removeClass('selected');
+		this.model.player.cardsSelected = [];
+	}
+
 	update(data) {
 		Object.assign(this.model.player, data);
 

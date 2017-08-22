@@ -11,7 +11,8 @@ export default class DeckController {
 
 		this.decksApi = decksApi;
 		this.deckStore = deckStore;
-		this.playerModel = playerModel.model;
+		this.playerModel = playerModel;
+		this.pModel = playerModel.model;
 		this.playersStore = playersStore;
 		this.ws = websocket;
 
@@ -49,7 +50,7 @@ export default class DeckController {
 	}
 
 	canDiscard(card) {
-		let player = this.playerModel.player,
+		let player = this.pModel.player,
 			allowDiscard = false,
 			totalCards = player.cardsInHand.length,
 			type = card.cardType;
@@ -70,7 +71,7 @@ export default class DeckController {
 	}
 
 	canHoard() {
-		let player = this.playerModel.player;
+		let player = this.pModel.player;
 
 		if (player) {
 			return !player.isActive && this.playersStore.get('actionCard');
@@ -80,7 +81,7 @@ export default class DeckController {
 	}
 
 	canDraw() {
-		let player = this.playerModel.player;
+		let player = this.pModel.player;
 
 		if (player) {
 			return player.isActive && !player.actionCard && player.isFirstTurn;
@@ -92,13 +93,13 @@ export default class DeckController {
 	collectHoard() {
 		let playerWithAction = this.playersStore.get('actionCard');
 
-		this.$log.info('collectHoard()', this.playerModel.player, playerWithAction, this);
+		this.$log.info('collectHoard()', this.pModel.player, playerWithAction, this);
 
 		if (playerWithAction && playerWithAction.actionCard.action === 'hoard') {
 			this.ws.send({
 				action: 'hoard',
 				playerAction: playerWithAction,
-				playerHoard: this.playerModel.player
+				playerHoard: this.pModel.player
 			});
 		} else {
 			this.$log.warn('NOT HOARD CARD!');
@@ -106,11 +107,12 @@ export default class DeckController {
 	}
 
 	drawCard() {
-		let player = this.playerModel.player;
+		let player = this.pModel.player;
 
 		this.$log.debug('drawCard()', player, this);
 
 		this.deckStore.drawCard(player, 1);
+		this.playerModel.resetSelected();
 	}
 
 	onClick() {
@@ -131,5 +133,7 @@ export default class DeckController {
 		if (this.canDiscard(data)) {
 			this.deckStore.discard(data.id);
 		}
+
+		this.playerModel.resetSelected();
 	}
 }

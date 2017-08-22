@@ -15,6 +15,15 @@ export class WebSocketService {
 			reconnectIfNotNormalClose: true
 		};
 
+		this.$ws = null;
+
+		this.STATUS = {
+			CONNECTING: 0,
+			OPEN: 1,
+			CLOSING: 2,
+			CLOSED: 3
+		}
+
 		this.$log.debug('constructor()', this);
 	}
 

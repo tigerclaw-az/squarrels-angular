@@ -1,8 +1,8 @@
-import { GameComponent } from './game.component';
 import GameModelService from './gameModel.service';
+import GameController from './game.controller';
 
 export default angular
 	.module('game', [])
-	.component('game', GameComponent)
+	.controller('gameController', GameController)
 	.service('gameModel', GameModelService)
 ;

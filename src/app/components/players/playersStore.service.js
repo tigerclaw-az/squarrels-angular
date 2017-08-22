@@ -57,6 +57,12 @@ export default class PlayersStoreService {
 		let player = this.playerModel.model.player;
 
 		this.$log.info('handleActionCard()', card, player, this);
+
+		switch (card.name) {
+			case 'winter':
+				this.playerModel.updateScore();
+				break;
+		}
 	}
 
 	insert(data) {

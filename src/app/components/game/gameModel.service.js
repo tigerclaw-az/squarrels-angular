@@ -1,5 +1,5 @@
 export default class GameModelService {
-	constructor($log, $http, $localStorage, _, gamesApi, playerModel, playersStore) {
+	constructor($log, $http, $localStorage, _, gamesApi) {
 		'ngInject';
 
 		this.$log = $log;
@@ -7,8 +7,6 @@ export default class GameModelService {
 
 		this._ = _;
 		this.gamesApi = gamesApi;
-		this.playerModel = playerModel;
-		this.playersStore = playersStore;
 
 		this.model = {
 			game: {}
@@ -25,8 +23,6 @@ export default class GameModelService {
 			});
 
 		this.$log.info('endGame()', this);
-
-		this.playerModel.updateScore();
 
 		this.gamesApi
 			.update(this.model.game.id, { isGameStarted: false })

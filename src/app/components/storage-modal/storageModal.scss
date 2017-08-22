@@ -1,9 +1,14 @@
+.modal-dialog {
+	width: calc(100vw - 8rem);
+}
+
 storage-modal {
 	.cards-group {
 		@extend %playing-cards;
 
 		float: left;
-		width: 40%;
+		height: rem-calc(map-get($card-height, 'medium'));
+		width: 25%;
 
 		card {
 			$rotate: -10;

@@ -16,7 +16,7 @@
 		"indent": ["error", "tab", { "SwitchCase": 1 }],
 		"quotes": ["error", "single"],
 		"max-len": ["warn", {
-			"code": 90
+			"code": 102
 		}],
 		"no-fallthrough": ["off"],
 		"no-mixed-requires": ["off"],

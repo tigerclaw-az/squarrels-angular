@@ -51,40 +51,32 @@ $card-images: (
 	position: relative;
 	width: rem-calc(map-get($card-width, 'small'));
 
+	card,
+	.card {
+		height: 100%;
+		position: absolute;
+		width: rem-calc(map-get($card-width, 'small'));
+	}
+
 	.card {
 		@include generate-cards;
 
 		background-repeat: no-repeat;
-		background-size: rem-calc(map-get($card-width, 'small')) rem-calc(map-get($card-height, 'small'));
+		background-size: contain;
 		color: get-color(white);
 		display: block;
 		font-size: 4rem;
-		height: 100%;
+		height: inherit;
 		outline: none;
 
 		&:focus {
 			outline: none;
-		}
-
-		@media (min-width: $screen-md-min) {
-			background-size: rem-calc(map-get($card-width, 'medium')) rem-calc(map-get($card-height, 'medium'));
 		}
 	}
 
 	[role='button'] {
 		display: block;
 		height: 100%;
-	}
-}
-
-@media (max-width: $screen-sm-max) {
-	%playing-cards {
-		card,
-		.card {
-			height: 100%;
-			position: absolute;
-			width: rem-calc(map-get($card-width, 'medium'));
-		}
 	}
 }
 
@@ -95,8 +87,6 @@ $card-images: (
 
 		card,
 		.card {
-			height: 100%;
-			position: absolute;
 			width: rem-calc(map-get($card-width, 'medium'));
 		}
 	}

@@ -7,17 +7,14 @@
 
 	&.current {
 		card {
+			top: 0;
+
 			&.selected {
-				border: 2px solid get-color('zest');
-				border-radius: .75rem;
-				top: -25px;
-			}
+				top: -2rem;
 
-			.card {
-				top: 0;
-
-				&:hover {
-					top: -2rem;
+				.card {
+					border: 2px solid get-color('zest');
+					border-radius: .75rem;
 				}
 			}
 		}
@@ -71,7 +68,7 @@
 			@extend %playing-cards;
 
 			float: left;
-			width: 100%;
+			width: 80%; // Account for reduced size of 'card' element
 
 			card {
 				float: left;

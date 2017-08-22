@@ -29,29 +29,32 @@ export default class DeckStoreService {
 			onSuccess = (res => {
 				this.$log.info('onSuccess()', res, this);
 
-				if (res.status === 200) {
-					this.playerModel
-						.discard(id)
-						.then(() => {
-							this.playersStore.nextPlayer();
-						})
-						.catch(err => {
-							this.$log.error(err);
-						});
+				if (res[0].status === 200 && res[1].status === 200) {
+					this.playersStore.nextPlayer();
 				}
 			}),
 			onError = (err => {
 				this.$log.error(err);
-			});
+			}),
+			actions = [];
 
 		this.$log.info('discard()', id, hoardDeck, this);
+
+		if (this._.includes(cards, id)) {
+			this.toastr.error(id, 'CARD ALREADY DISCARDED');
+			return false;
+		}
 
 		cards.push(id);
 
 		this.sounds.play('hoard');
 
-		this.decksApi
-			.update(hoardDeck.id, { cards })
+		actions.push(
+			this.decksApi.update(hoardDeck.id, { cards }),
+			this.playerModel.discard(id)
+		);
+
+		this.$q.all(actions)
 			.then(onSuccess, onError);
 	}
 
@@ -87,10 +90,8 @@ export default class DeckStoreService {
 
 			this.$log.info('cards:union -> ', cardsMerge);
 
-			Object.assign(plData, {
-				cardsInHand: cardsMerge,
-				totalCards: cardsMerge.length
-			});
+			plData.cardsInHand = cardsMerge;
+			plData.totalCards = cardsMerge.length;
 
 			if (count === 1) {
 				plData.isFirstTurn = plData.totalCards < this.playerModel.numDrawCards;

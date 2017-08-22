@@ -6,6 +6,6 @@ export default class CardsApiService extends BaseApiService {
 
 		super($http, $log, appConfig, 'cards');
 
-		this.$log.info('constructor()', this);
+		this.$log.debug('constructor()', this);
 	}
 }

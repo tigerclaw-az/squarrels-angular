@@ -7,7 +7,7 @@ export class UtilsService {
 		this._ = _;
 		this.$log = $log;
 
-		this.$log.info('constructor()', this);
+		this.$log.debug('constructor()', this);
 	}
 
 	decode(str) {

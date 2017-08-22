@@ -6,6 +6,6 @@ export class PlayersApiService extends BaseApiService {
 
 		super($http, $log, appConfig, 'players');
 
-		this.$log.info('constructor()', this);
+		this.$log.debug('constructor()', this);
 	}
 }

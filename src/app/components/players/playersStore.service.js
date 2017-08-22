@@ -16,7 +16,7 @@ export default class PlayersStoreService {
 			players: []
 		};
 
-		this.$log.info('constructor()', this);
+		this.$log.debug('constructor()', this);
 	}
 
 	get(prop, value, index = false) {

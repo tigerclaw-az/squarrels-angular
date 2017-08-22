@@ -11,11 +11,11 @@ export default class BaseApiService {
 		this.path = path;
 		this.url = `//${this.host}/api/${path}`;
 
-		this.$log.info('constructor()', this);
+		this.$log.debug('constructor()', this);
 	}
 
 	create(data) {
-		this.$log.info('api:create()', data, this);
+		this.$log.debug('api:create()', data, this);
 
 		return this.$http.post(`${this.url}`, data);
 	}
@@ -27,19 +27,19 @@ export default class BaseApiService {
 			cache: this.path === 'cards' ? true : false
 		}
 
-		this.$log.info('api:get()', query, this);
+		this.$log.debug('api:get()', query, this);
 
 		return this.$http(httpObj);
 	}
 
 	remove(id) {
-		this.$log.info('api:remove()', id, this);
+		this.$log.debug('api:remove()', id, this);
 
 		return this.$http.delete(`${this.url}/${id}`);
 	}
 
 	update(id, data) {
-		this.$log.info('api:update()', id, data, this);
+		this.$log.debug('api:update()', id, data, this);
 
 		return this.$http.post(`${this.url}/${id}`, data);
 	}

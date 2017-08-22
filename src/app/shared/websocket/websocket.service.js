@@ -15,7 +15,7 @@ export class WebSocketService {
 			reconnectIfNotNormalClose: true
 		};
 
-		this.$log.info('constructor()', this);
+		this.$log.debug('constructor()', this);
 	}
 
 	close() {
@@ -25,7 +25,7 @@ export class WebSocketService {
 	connect() {
 		this.$ws = this.$websocket(`ws://${this.host}`, this.options);
 
-		this.$log.info('ws', this.$ws);
+		this.$log.debug('ws', this.$ws);
 
 		this.$ws.onClose(this.onClose.bind(this));
 		this.$ws.onError(this.onError.bind(this));
@@ -39,12 +39,10 @@ export class WebSocketService {
 	onClose(data) {
 		this.$log.error('onClose()', data);
 
-		this.$rootScope.$broadcast('websocket:close', data);
+		this.$rootScope.$broadcast('websocket:global:close', data);
 	}
 
 	onError(msg) {
-		this.$log.info('onError()', msg);
-
 		this.toastr.error('websocket:error', msg);
 
 		this.$rootScope.$broadcast('websocket:error', msg);
@@ -55,7 +53,7 @@ export class WebSocketService {
 			action = data.action || 'none',
 			type = data.type || 'global';
 
-		this.$log.info('onMessage()', data, type, action, this);
+		this.$log.debug('onMessage()', data, type, action, this);
 
 		if (data.nuts) {
 			data = data.nuts;
@@ -68,7 +66,7 @@ export class WebSocketService {
 	send(msg) {
 		var message = typeof msg === 'object' ? JSON.stringify(msg) : msg;
 
-		this.$log.info('send(obj)', message);
+		this.$log.debug('send()', message, this);
 
 		this.$ws.send(msg);
 	}

@@ -6,6 +6,6 @@ export default class DecksApiService extends BaseApiService {
 
 		super($http, $log, appConfig, 'decks');
 
-		this.$log.info('constructor()', this);
+		this.$log.debug('constructor()', this);
 	}
 }

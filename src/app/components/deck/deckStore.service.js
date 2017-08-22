@@ -20,7 +20,7 @@ export default class DeckStoreService {
 			deck: {}
 		};
 
-		this.$log.info('constructor()', this);
+		this.$log.debug('constructor()', this);
 	}
 
 	discard(id) {

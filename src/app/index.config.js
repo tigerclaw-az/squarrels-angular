@@ -1,4 +1,4 @@
-export function config(logEnhancerProvider, $httpProvider, toastrConfig, appConfig) {
+export function config(logEnhancerProvider, $httpProvider, $animateProvider, toastrConfig, appConfig) {
 	'ngInject';
 
 	// Enable log
@@ -9,6 +9,11 @@ export function config(logEnhancerProvider, $httpProvider, toastrConfig, appConf
 	// Setup http cache
 	$httpProvider.defaults.cache = false;
 	$httpProvider.useApplyAsync(true);
+
+	// Animation config
+	// This will fix performance issue with animations being fired for ALL elements
+	// See: https://goo.gl/FZH8u7
+	$animateProvider.classNameFilter( /\banimated\b/ );
 
 	// Set options third-party lib
 	angular.extend(toastrConfig, {

@@ -1,0 +1,21 @@
+@keyframes spin {
+	to {
+		transform: rotateY(120deg);
+	}
+}
+
+@keyframes spin-reverse {
+	to {
+		transform: rotateY(0deg);
+	}
+}
+
+@keyframes grow {
+	from {
+		transform: scale(0);
+	}
+
+	to {
+		transform: scale(1);
+	}
+}

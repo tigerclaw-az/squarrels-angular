@@ -20,8 +20,10 @@
 			<div class="sq-player-cards" ng-show="playerCtrl.game.isGameStarted">
 				<div class="cards-group hand">
 					<card
-						ng-show="isCurrent && player.cardsInHand.length"
+						ng-animate="animate"
+						ng-class="{ mine: isCurrent && player.cardsInHand.length}"
 						ng-repeat="card in player.cardsInHand"
+						ng-show="isCurrent && player.cardsInHand.length"
 						card-id="{{::card}}"
 						card-type="hand"
 						player="player"

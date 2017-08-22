@@ -1,5 +1,18 @@
 @import '../card/card';
 
+@keyframes lightSpeedIn {
+  0% {
+    transform: translate3d(100%, 0, 0) skewX(30deg);
+    transform: translate3d(100%, 0, 0) skewX(30deg);
+    transform: translate3d(100%, 0, 0) skewX(30deg);
+    opacity: 0;
+  }
+
+  100% {
+  	opacity: 1;
+  }
+}
+
 .sq-player {
 	margin-bottom: 2rem;
 	position: relative;
@@ -26,7 +39,7 @@
 
 	&.active {
 		.sq-player-info {
-			color: get-color(mandy);
+			color: get-color('mandy');
 			font-weight: $font-weight-bold;
 		}
 	}
@@ -74,6 +87,10 @@
 				float: left;
 				position: relative;
 				width: rem-calc($card-width-stack);
+
+				&.mine {
+					animation: .5s linear grow;
+				}
 			}
 		}
 

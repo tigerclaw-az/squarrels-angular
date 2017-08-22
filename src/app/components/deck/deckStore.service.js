@@ -119,6 +119,11 @@ export default class DeckStoreService {
 					plData.actionCard = null;
 					break;
 			}
+
+			// Don't allow player to draw more than 7 cards
+			if (plData.totalCards === this.playerModel.numDrawCards) {
+				plData.isFirstTurn = false;
+			}
 		}
 
 		this._.pullAll(cardsFromDeck.ids, cardsDrawn.ids);

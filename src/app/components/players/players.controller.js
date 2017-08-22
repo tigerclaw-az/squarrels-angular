@@ -82,8 +82,6 @@ default class PlayersController {
 
 			this.$log.info('$on -> websocket:players:hoard', data);
 
-			this.toastr.warning(data.name, 'HOARD TAKEN BY:');
-
 			cards = this._.union(playerCards, hoardDeck.cards);
 
 			let playerObj = {
@@ -99,6 +97,8 @@ default class PlayersController {
 				this.playersApi
 					.update(currentPlayer.id, playerObj)
 					.then(onSuccess, onError);
+			} else {
+				this.toastr.warning(data.name, 'HOARD TAKEN BY:');
 			}
 		}));
 

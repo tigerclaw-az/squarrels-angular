@@ -31,6 +31,13 @@ games.delete('/:id', function(req, res) {
 
 			logger.debug('decks -> ', decks);
 
+			/* eslint-disable no-undef */
+			wss.broadcast(
+				{ type: 'games', action: 'remove' },
+				sessionId
+			);
+			/* eslint-enable no-undef */
+
 			DeckModel
 				.deleteMany({ '_id': { $in: decks } })
 				.then(() => {

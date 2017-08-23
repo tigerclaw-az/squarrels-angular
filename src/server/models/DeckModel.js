@@ -1,6 +1,5 @@
 var mongoose = require('mongoose'),
 	Schema = mongoose.Schema,
-	Card = require('./CardModel'),
 	DeckSchema = new Schema({
 		deckType: {
 			type: String,

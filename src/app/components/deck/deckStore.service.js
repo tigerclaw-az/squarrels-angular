@@ -61,9 +61,9 @@ export default class DeckStoreService {
 	drawCard(pl, count) {
 		let mainDeck = this.getByType('main'),
 			hoardDeck = this.getByType('discard'),
-			cardsMerge = [],
 			cardsFromDeck = {
 				ids: mainDeck.cards.map(obj => { return obj.id }),
+				// Only draw 'number' cards for initial deal
 				toDraw: count > 1 ? this._.filter(mainDeck.cards, { cardType: 'number' }) : mainDeck.cards,
 			},
 			cardsDrawn = {
@@ -72,6 +72,7 @@ export default class DeckStoreService {
 			card = cardsDrawn.cards[0],
 			cardAction = card.action,
 			drawDefer = this.$q.defer(),
+			cardsMerge = [],
 			plData = {};
 
 		cardsDrawn.ids = cardsDrawn.cards.map(obj => { return obj.id });
@@ -128,9 +129,12 @@ export default class DeckStoreService {
 		}
 
 		this._.pullAll(cardsFromDeck.ids, cardsDrawn.ids);
+		mainDeck.cards = this._.reject(mainDeck.cards, (o) => {
+			return this._.includes(cardsDrawn.ids, o.id);
+		});
 
 		this.$log.info('plData -> ', plData);
-		this.$log.info('remainingCards -> ', cardsFromDeck.ids);
+		this.$log.info('remainingCards -> ', mainDeck.cards);
 
 		this.decksApi
 			.update(mainDeck.id, { cards: cardsFromDeck.ids })

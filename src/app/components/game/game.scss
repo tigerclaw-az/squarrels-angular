@@ -17,5 +17,7 @@ header {
 .play-area {
 	@include clearfix;
 
+	display: flex;
+	flex-direction: columns;
 	margin-bottom: rem-calc(24);
 }

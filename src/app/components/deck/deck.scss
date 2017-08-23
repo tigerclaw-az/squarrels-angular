@@ -1,7 +1,7 @@
 @import '../card/card';
 
 deck {
-	float: left;
+	flex: 1;
 	height: rem-calc(map-get($card-height, 'small'));
 	width: rem-calc(map-get($card-width, 'small'));
 
@@ -19,11 +19,6 @@ deck {
 
 			&.drag-enter {
 				border-color: get-color('zest');
-			}
-
-			.cards-group {
-				margin: 0 auto;
-				width: rem-calc(map-get($card-width, 'medium'));
 			}
 
 			.card {
@@ -59,10 +54,21 @@ deck {
 			font-size: 4rem;
 			z-index: 1;
 		}
+
+		.cards-group {
+			margin: 0 auto;
+			width: rem-calc(map-get($card-width, 'small'));
+		}
 	}
 
 	@media (min-width: $screen-md-min) {
 		height: rem-calc(map-get($card-height, 'medium'));
 		width: rem-calc(map-get($card-width, 'medium'));
+
+		.deck {
+			.cards-group {
+				width: rem-calc(map-get($card-width, 'medium'));
+			}
+		}
 	}
 }

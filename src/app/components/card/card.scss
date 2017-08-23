@@ -34,6 +34,19 @@ $card-images: (
 	}
 }
 
+.card {
+	@include generate-cards;
+
+	background-repeat: no-repeat;
+	background-size: contain;
+	height: inherit;
+	outline: none;
+
+	&:focus {
+		outline: none;
+	}
+}
+
 %playing-cards {
 	position: relative;
 
@@ -47,17 +60,9 @@ $card-images: (
 	.card {
 		@include generate-cards;
 
-		background-repeat: no-repeat;
-		background-size: contain;
 		color: get-color(white);
 		display: block;
 		font-size: 4rem;
-		height: inherit;
-		outline: none;
-
-		&:focus {
-			outline: none;
-		}
 	}
 
 	[role='button'] {

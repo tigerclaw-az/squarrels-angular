@@ -1,5 +1,5 @@
 export default class DeckStoreService {
-	constructor($log, $http, $q, _, toastr, sounds, decksApi, gameModel, playerModel, playersApi, playersStore) {
+	constructor($log, $http, $q, _, toastr, sounds, decksApi, playerModel, playersApi, playersStore) {
 		'ngInject';
 
 		this.$http = $http;
@@ -11,7 +11,6 @@ export default class DeckStoreService {
 		this.toastr = toastr;
 
 		this.decksApi = decksApi;
-		this.gameModel = gameModel;
 		this.playerModel = playerModel;
 		this.playersApi = playersApi;
 		this.playersStore = playersStore;
@@ -108,7 +107,6 @@ export default class DeckStoreService {
 			switch (cardAction) {
 				case 'winter':
 					plData.isActive = false;
-					this.gameModel.endGame();
 					break;
 
 				case 'hoard':

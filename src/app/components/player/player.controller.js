@@ -55,7 +55,7 @@ export default class PlayerController {
 
 		this.$log.debug('onStorageClick()', evt, cardsSelected, this);
 
-		if (this.canStoreCards(cardsSelected)) {
+		if (!this.player.isFirstTurn && this.canStoreCards(cardsSelected)) {
 			this.storeCards(cardsSelected);
 		} else {
 			this.showStorage(this.player);

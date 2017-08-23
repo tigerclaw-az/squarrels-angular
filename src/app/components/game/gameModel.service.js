@@ -1,9 +1,8 @@
 export default class GameModelService {
-	constructor($log, $http, $localStorage, _, gamesApi) {
+	constructor($log, $localStorage, _, gamesApi) {
 		'ngInject';
 
-		this.$log = $log;
-		this.$http = $http;
+		this.$log = $log.getInstance(this.constructor.name);
 
 		this._ = _;
 		this.gamesApi = gamesApi;

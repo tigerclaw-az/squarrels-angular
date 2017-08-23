@@ -4,7 +4,7 @@ export default class DeckController {
 
 		this.$rootScope = $rootScope;
 		this.$scope = $scope;
-		this.$log = $log;
+		this.$log = $log.getInstance(this.constructor.name);
 
 		this._ = _;
 		this.toastr = toastr;

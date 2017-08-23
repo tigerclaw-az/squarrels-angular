@@ -5,7 +5,7 @@ export default class GameController {
 		this.$rootScope = $rootScope;
 		this.$scope = $scope;
 		this.$state = $state;
-		this.$log = $log;
+		this.$log = $log.getInstance(this.constructor.name);
 		this.$q = $q;
 
 		this._ = _;

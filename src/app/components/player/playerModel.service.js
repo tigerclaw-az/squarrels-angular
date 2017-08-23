@@ -1,9 +1,8 @@
 export class PlayerModelService {
-	constructor($log, $http, $localStorage, $q, _, playersApi) {
+	constructor($log, $localStorage, $q, _, playersApi) {
 		'ngInject';
 
-		this.$log = $log;
-		this.$http = $http;
+		this.$log = $log.getInstance(this.constructor.name);
 		this.$localStorage = $localStorage;
 		this.$q = $q;
 
@@ -45,6 +44,7 @@ export class PlayerModelService {
 
 		this.$log.info('playerModel:cards -> ', plData);
 
+		this.update(plData);
 		return this.playersApi.update(this.model.player.id, plData);
 	}
 

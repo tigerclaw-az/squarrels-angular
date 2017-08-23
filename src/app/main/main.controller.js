@@ -2,9 +2,9 @@ export class MainController {
 	constructor ($scope, $state, $log, $timeout, websocket) {
 		'ngInject';
 
-		this.$log = $log;
 		this.$scope = $scope;
 		this.$state = $state;
+		this.$log = $log.getInstance(this.constructor.name);
 
 		this.activate($timeout);
 
@@ -37,6 +37,13 @@ export class MainController {
 
 			this.$state.go('app.start');
 		});
+
+		// WebSocket heartbeat
+		// window.setInterval(() => {
+		// 	let status = this.websocket.getStatus();
+
+		// 	this.$log.info('websocket:status -> ', status);
+		// }, 500);
 	}
 
 	activate($timeout) {

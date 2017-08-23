@@ -2,8 +2,8 @@ export class WebSocketService {
 	constructor($rootScope, $log, $websocket, appConfig, toastr, _) {
 		'ngInject';
 
-		this.$log = $log;
 		this.$rootScope = $rootScope;
+		this.$log = $log.getInstance(this.constructor.name);
 		this.$websocket = $websocket;
 
 		this._ = _;

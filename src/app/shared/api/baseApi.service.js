@@ -3,7 +3,7 @@ export default class BaseApiService {
 		'ngInject';
 
 		this.$http = $http;
-		this.$log = $log;
+		this.$log = $log.getInstance(this.constructor.name);
 
 		this._ = _;
 

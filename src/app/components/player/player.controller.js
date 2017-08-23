@@ -4,7 +4,7 @@ export default class PlayerController {
 
 		this.$rootScope = $rootScope;
 		this.$scope = $scope;
-		this.$log = $log;
+		this.$log = $log.getInstance(this.constructor.name);
 		this.$uibModal = $uibModal;
 
 		this._ = _;

@@ -6,7 +6,7 @@ default class PlayersController {
 		this.$rootScope = $rootScope;
 		this.$scope = $scope;
 		this.$localStorage = $localStorage;
-		this.$log = $log;
+		this.$log = $log.getInstance(this.constructor.name);
 
 		this._ = _;
 		this.toastr = toastr;

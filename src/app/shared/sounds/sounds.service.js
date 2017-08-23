@@ -2,7 +2,7 @@ export class SoundsService {
 	constructor($log) {
 		'ngInject';
 
-		this.$log = $log;
+		this.$log = $log.getInstance(this.constructor.name);
 
 		this.soundsPath = 'assets/sounds/';
 		this.soundEffects = {

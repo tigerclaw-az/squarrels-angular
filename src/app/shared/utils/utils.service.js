@@ -4,8 +4,9 @@ export class UtilsService {
 	constructor($log, _) {
 		'ngInject';
 
+		this.$log = $log.getInstance(this.constructor.name);
+
 		this._ = _;
-		this.$log = $log;
 
 		this.$log.debug('constructor()', this);
 	}

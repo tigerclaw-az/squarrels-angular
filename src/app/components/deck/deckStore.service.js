@@ -2,8 +2,8 @@ export default class DeckStoreService {
 	constructor($log, $http, $q, _, toastr, sounds, decksApi, gameModel, playerModel, playersApi, playersStore) {
 		'ngInject';
 
-		this.$log = $log;
 		this.$http = $http;
+		this.$log = $log.getInstance(this.constructor.name);
 		this.$q = $q;
 
 		this._ = _;

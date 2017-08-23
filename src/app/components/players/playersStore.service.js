@@ -1,10 +1,9 @@
 export default class PlayersStoreService {
-	constructor($log, $http, $localStorage, toastr, _, websocket, playersApi, playerModel) {
+	constructor($log, $localStorage, toastr, _, websocket, playersApi, playerModel) {
 		'ngInject';
 
-		this.$log = $log;
-		this.$http = $http;
 		this.$localStorage = $localStorage;
+		this.$log = $log.getInstance(this.constructor.name);
 
 		this._ = _;
 		this.toastr = toastr;

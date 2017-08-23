@@ -105,7 +105,7 @@ games.post('/', function(req, res) {
 		.then(cards => {
 			let mainDeck = new DeckModel({
 					deckType: 'main',
-					cards: _.shuffle(cards)
+					cards: _.shuffle(_.shuffle(cards))
 				}),
 				hoardDeck = new DeckModel({
 					deckType: 'discard'

@@ -19,7 +19,7 @@ export default class PlayersStoreService {
 	}
 
 	get(prop, value, index = false) {
-		this.$log.info('get()', prop, value, index, this);
+		this.$log.debug('get()', prop, value, index, this);
 
 		let method = index ? 'findIndex' : 'find';
 
@@ -39,7 +39,7 @@ export default class PlayersStoreService {
 	}
 
 	getNextPlayer(activeIndex) {
-		this.$log.info('nextPlayer()', activeIndex, this);
+		this.$log.debug('nextPlayer()', activeIndex, this);
 
 		if (activeIndex === -1) {
 			return _.sample(this.model.players).id;
@@ -55,7 +55,7 @@ export default class PlayersStoreService {
 	handleActionCard(card) {
 		let player = this.playerModel.model.player;
 
-		this.$log.info('handleActionCard()', card, player, this);
+		this.$log.debug('handleActionCard()', card, player, this);
 
 		switch (card.name) {
 			case 'winter':
@@ -66,12 +66,16 @@ export default class PlayersStoreService {
 
 	insert(data) {
 		let pl = Object.assign({}, {
-			isCurrent: false
-		}, data);
+				isCurrent: false
+			}, data),
+			existingPlayer = this._.some(this.model.players, { id: pl.id });
 
-		this.$log.info('insert()', pl, this);
+		this.$log.debug('insert()', pl, existingPlayer, this);
 
-		this.model.players.push(pl);
+		// Ensure that player doesn't already exist
+		if (!existingPlayer) {
+			this.model.players.push(pl);
+		}
 	}
 
 	nextPlayer(index) {
@@ -88,7 +92,7 @@ export default class PlayersStoreService {
 			}),
 			activePlayer;
 
-		this.$log.info('nextPlayer()', index, activePlayerIndex, nextPlayerId, this);
+		this.$log.debug('nextPlayer()', index, activePlayerIndex, nextPlayerId, this);
 
 		if (activePlayerIndex !== -1) {
 			activePlayer = this.model.players[activePlayerIndex];
@@ -113,7 +117,7 @@ export default class PlayersStoreService {
 			player.actionCard = null;
 		}
 
-		this.$log.info('update()', id, data, player, this);
+		this.$log.debug('update()', id, data, player, this);
 
 		if (player.isCurrent) {
 			this.playerModel.update(data);
@@ -130,7 +134,7 @@ export default class PlayersStoreService {
 	// DO NOT move into playerController as it would be called everytime
 	// a new player is added
 	whoami() {
-		this.$log.info('whoami()', this);
+		this.$log.debug('whoami()', this);
 
 		this.ws.send({ action: 'whoami' });
 	}

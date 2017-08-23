@@ -19,7 +19,7 @@ export default class StorageModalController {
 
 	$onDestroy() {
 		return () => {
-			this.$log.debug('destroy', this);
+			this.$log.debug('$onDestroy()', this);
 		};
 	}
 

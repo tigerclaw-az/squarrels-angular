@@ -147,7 +147,7 @@ default class PlayersController {
 
 	$onDestroy() {
 		return () => {
-			this.$log.debug('destroy', this);
+			this.$log.debug('$onDestroy()', this);
 		};
 	}
 

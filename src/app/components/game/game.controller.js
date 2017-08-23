@@ -54,6 +54,11 @@ export default class GameController {
 			this.gameModel.update(data);
 		});
 
+		this.$rootScope.$on('websocket:games:remove', (event, data) => {
+			this.$log.info('$on -> websocket:games:remove', data);
+			this.gameModel.clear(data);
+		});
+
 		// Should only fire for external clients
 		this.$rootScope.$on('websocket:decks:create', (event, data) => {
 			this.$log.info('$on -> websocket:decks:create', data);
@@ -70,6 +75,12 @@ export default class GameController {
 			}
 		});
 
+		this.$rootScope.$on('websocket:decks:remove', (event, data) => {
+			this.$log.info('$on -> websocket:decks:remove', data);
+
+			this.deckStore.empty();
+		});
+
 		this.gameModel
 			.get()
 			.then(onSuccess, onError);
@@ -79,7 +90,7 @@ export default class GameController {
 
 	$onDestroy() {
 		return () => {
-			this.$log.debug('destroy', this);
+			this.$log.debug('$onDestroy()', this);
 		};
 	}
 
@@ -89,12 +100,7 @@ export default class GameController {
 	 */
 	reset() {
 		this.gamesApi
-			.remove(this.gameModel.model.game.id)
-			.then(() => {
-				// FIXME: Should be using $state, but doesn't work due to services...
-				// this.$state.reload();
-				window.location.reload();
-			});
+			.remove(this.gameModel.model.game.id);
 	}
 
 	create() {

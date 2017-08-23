@@ -159,6 +159,10 @@ export default class DeckStoreService {
 		return drawDefer.promise;
 	}
 
+	empty() {
+		this.model.deck = {};
+	}
+
 	get(id) {
 		this.$log.info('get()', id, this);
 

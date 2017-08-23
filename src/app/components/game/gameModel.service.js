@@ -28,6 +28,10 @@ export default class GameModelService {
 			.then(onSuccess, onError);
 	}
 
+	clear() {
+		this.model.game = {};
+	}
+
 	get() {
 		return this.gamesApi.get();
 	}

@@ -110,19 +110,29 @@ games.post('/', function(req, res) {
 				hoardDeck = new DeckModel({
 					deckType: 'discard'
 				}),
-				// Create both decks, and store promises to be used later
-				deckPromises = [
-					DeckModel.create(mainDeck),
-					DeckModel.create(hoardDeck)
-				];
+				actionDeck = new DeckModel({
+					deckType: 'action'
+				}),
+				decks = [mainDeck, hoardDeck, actionDeck],
+				deckPromises = [];
+
+			decks.forEach(deck => {
+				// Create all decks, and store promises to be used later
+				deckPromises.push(DeckModel.create(deck));
+				return true;
+			});
 
 			Promise
 				.all(deckPromises)
-				.then(decks => {
+				.then(decksCreated => {
+					logger.info('decksCreated -> ', decksCreated);
+
 					let game = new GameModel({
 						isGameStarted: true,
 						players: req.body,
-						decks: [decks[0].id, decks[1].id]
+						decks: _.map(decksCreated, (deck => {
+							return deck.id
+						}))
 					});
 
 					GameModel
@@ -135,17 +145,13 @@ games.post('/', function(req, res) {
 								false
 							);
 
-							wss.broadcast(
-								{ type: 'decks', action: 'create', nuts: mainDeck },
-								sessionId,
-								false
-							);
-
-							wss.broadcast(
-								{ type: 'decks', action: 'create', nuts: hoardDeck },
-								sessionId,
-								false
-							);
+							decks.forEach(deck => {
+								wss.broadcast(
+									{ type: 'decks', action: 'create', nuts: deck },
+									sessionId,
+									false
+								);
+							})
 							/* eslint-enable no-undef */
 
 							res.status(201).json(game);

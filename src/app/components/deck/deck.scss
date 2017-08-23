@@ -1,22 +1,21 @@
 @import '../card/card';
 
 deck {
-	&[type='main'] {
-		@include make-xs-column(3);
+	float: left;
+	height: rem-calc(map-get($card-height, 'small'));
+	width: rem-calc(map-get($card-width, 'small'));
 
+	&[type='main'] {
 		.deck {
 			box-shadow: 4px 6px 1px get-color('pickled-bean');
 		}
 	}
 
 	&[type='discard'] {
-		@include make-xs-column(4);
-
 		border: 1px dashed get-color(black);
 
 		.deck {
 			border: 2px dashed transparent;
-			width: 100%;
 
 			&.drag-enter {
 				border-color: get-color('zest');
@@ -41,14 +40,18 @@ deck {
 		}
 	}
 
+	&[type='action'] {
+		border: 2px inset get-color('mandy');
+	}
+
 	.deck {
 		@extend %playing-cards;
 
 		display: block;
-		height: rem-calc(map-get($card-height, 'small'));
+		height: 100%;
 		margin: 0 auto;
 		text-align: center;
-		width: rem-calc(map-get($card-width, 'small'));
+		width: 100%;
 
 		.count {
 			@include center-horizontal;
@@ -56,10 +59,10 @@ deck {
 			font-size: 4rem;
 			z-index: 1;
 		}
+	}
 
-		@media (min-width: $screen-md-min) {
-			height: rem-calc(map-get($card-height, 'medium'));
-			width: rem-calc(map-get($card-width, 'medium'));
-		}
+	@media (min-width: $screen-md-min) {
+		height: rem-calc(map-get($card-height, 'medium'));
+		width: rem-calc(map-get($card-width, 'medium'));
 	}
 }

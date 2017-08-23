@@ -26,13 +26,13 @@ export default class GameController {
 
 				if (res.status === 200) {
 					let gameData = res.data[0],
-						drawDeck = gameData.decks[0],
-						hoardDeck = gameData.decks[1];
+						decks = gameData.decks;
 
 					this.gameModel.update(gameData);
 
-					this.insertDeck(drawDeck);
-					this.insertDeck(hoardDeck);
+					decks.forEach(deck => {
+						this.insertDeck(deck);
+					});
 				}
 			}),
 			onError = (res => {
@@ -103,13 +103,15 @@ export default class GameController {
 			onSuccess = (res => {
 				if (res.status === 201) {
 					let gameData = res.data,
+						decks = gameData.decks,
 						deckUpdates = [];
 
 					// Will only fire for the client that clicked 'New Game'
 					this.gameModel.update(gameData);
 
-					deckUpdates.push(this.insertDeck(gameData.decks[0]));
-					deckUpdates.push(this.insertDeck(gameData.decks[1]));
+					decks.forEach(deck => {
+						deckUpdates.push(this.insertDeck(deck));
+					});
 
 					this.$q.all(deckUpdates)
 						.then(deck => {

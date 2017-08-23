@@ -73,7 +73,9 @@ export default class DeckStoreService {
 			cardAction = card.action,
 			drawDefer = this.$q.defer(),
 			cardsMerge = [],
-			plData = {};
+			plData = {
+				totalCards: pl.totalCards
+			};
 
 		cardsDrawn.ids = cardsDrawn.cards.map(obj => { return obj.id });
 		cardsMerge = cardsDrawn.ids;

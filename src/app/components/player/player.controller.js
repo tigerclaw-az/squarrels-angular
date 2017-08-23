@@ -20,9 +20,7 @@ export default class PlayerController {
 	}
 
 	$onDestroy() {
-		return () => {
-			this.$log.debug('$onDestroy()', this);
-		};
+		this.$log.debug('$onDestroy()', this);
 	}
 
 	canStoreCards(cardsSelected) {

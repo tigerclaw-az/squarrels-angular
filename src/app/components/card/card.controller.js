@@ -40,9 +40,7 @@ export default class CardController {
 	}
 
 	$onDestroy() {
-		return () => {
-			this.$log.debug('$onDestroy()', this);
-		};
+		this.$log.debug('$onDestroy()', this);
 	}
 
 	canDrag() {

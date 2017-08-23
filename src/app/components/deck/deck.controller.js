@@ -28,9 +28,7 @@ export default class DeckController {
 	}
 
 	$onDestroy() {
-		return () => {
-			this.$log.debug('$onDestroy()', this);
-		};
+		this.$log.debug('$onDestroy()', this);
 	}
 
 	cardLimit() {

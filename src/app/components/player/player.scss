@@ -1,24 +1,29 @@
 @import '../card/card';
 
 @keyframes lightSpeedIn {
-  0% {
-    transform: translate3d(100%, 0, 0) skewX(30deg);
-    transform: translate3d(100%, 0, 0) skewX(30deg);
-    transform: translate3d(100%, 0, 0) skewX(30deg);
-    opacity: 0;
-  }
+	0% {
+		opacity: 0;
+		transform: translate3d(100%, 0, 0) skewX(30deg);
+		transform: translate3d(100%, 0, 0) skewX(30deg);
+		transform: translate3d(100%, 0, 0) skewX(30deg);
+	}
 
-  100% {
-  	opacity: 1;
-  }
+	100% {
+		opacity: 1;
+	}
 }
 
 .sq-player {
+	@include clearfix;
+
+	float: left;
 	margin-bottom: 2rem;
 	position: relative;
 	text-align: center;
 
 	&.current {
+		float: none;
+
 		card {
 			top: 0;
 
@@ -33,7 +38,6 @@
 		}
 
 		.sq-player-info {
-			color: get-color(gold);
 		}
 	}
 
@@ -45,6 +49,8 @@
 	}
 
 	.sq-player-thumbnail {
+		float: left;
+
 		img {
 			width: 10rem;
 		}
@@ -52,13 +58,30 @@
 
 	.sq-player-info {
 		@include clearfix;
-		left: -50%;
-		position: relative;
+		float: left;
 
-		.sq-player-name,
+		.sq-player-total-cards,
 		.sq-player-storage {
-			left: 50%;
 			position: relative;
+		}
+
+		.sq-player-total-cards {
+			display: inline-block;
+			font-size: 2rem;
+
+			.card {
+				height: 5rem;
+				position: relative;
+				width: 4rem;
+			}
+
+			.sq-player-card-count {
+				@include center-horizontal;
+
+				color: get-color(white);
+				position: absolute;
+				top: 0;
+			}
 		}
 
 		.sq-player-storage {
@@ -77,11 +100,10 @@
 	.sq-player-cards {
 		@include clearfix;
 
+		float: left;
+
 		.cards-group {
 			@extend %playing-cards;
-
-			float: left;
-			width: 80%; // Account for reduced size of 'card' element
 
 			card {
 				float: left;

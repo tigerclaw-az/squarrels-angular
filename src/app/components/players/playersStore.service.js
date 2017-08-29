@@ -1,9 +1,10 @@
 export default class PlayersStoreService {
-	constructor($log, $localStorage, toastr, _, websocket, playersApi, playerModel) {
+	constructor($rootScope, $log, $localStorage, toastr, _, websocket, playersApi, playerModel) {
 		'ngInject';
 
 		this.$localStorage = $localStorage;
 		this.$log = $log.getInstance(this.constructor.name);
+		this.$rootScope = $rootScope;
 
 		this._ = _;
 		this.toastr = toastr;
@@ -56,12 +57,6 @@ export default class PlayersStoreService {
 		let player = this.playerModel.model.player;
 
 		this.$log.debug('handleActionCard()', card, player, this);
-
-		switch (card.name) {
-			case 'winter':
-				this.playerModel.updateScore();
-				break;
-		}
 	}
 
 	insert(data) {
@@ -71,6 +66,10 @@ export default class PlayersStoreService {
 			existingPlayer = this._.some(this.model.players, { id: pl.id });
 
 		this.$log.debug('insert()', pl, existingPlayer, this);
+
+		if (!this._.isEmpty(pl.actionCard)) {
+			this.handleActionCard(pl.actionCard);
+		}
 
 		// Ensure that player doesn't already exist
 		if (!existingPlayer) {

@@ -1,5 +1,5 @@
 export default class CardController {
-	constructor($rootScope, $scope, $log, _, cardsApi) {
+	constructor($rootScope, $scope, $log, _, toastr, cardsApi, playersApi) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
@@ -7,7 +7,12 @@ export default class CardController {
 		this.$log = $log.getInstance(this.constructor.name);
 
 		this._ = _;
+		this.toastr = toastr;
+
 		this.cardsApi = cardsApi;
+		this.playersApi = playersApi;
+
+		this.cardData = {};
 
 		this.$log.debug('constructor()', this);
 	}
@@ -21,7 +26,16 @@ export default class CardController {
 				this.$log.info('onSuccess()', res, this);
 
 				if (res.status === 200) {
-					this.$scope.cardData = res.data[0];
+					this.cardData = res.data[0];
+
+					let type = this.cardData.cardType,
+						name = this.cardData.name;
+
+					if (type === 'action') {
+						if (name === 'winter') {
+							this.$rootScope.$broadcast('deck:action:winter');
+						}
+					}
 				}
 			}),
 			onError = (err => {
@@ -30,7 +44,7 @@ export default class CardController {
 
 		this.$log.debug('$onChanges()', this);
 
-		this.$scope.cardData = {};
+		this.cardData = {};
 
 		if (this.cardId) {
 			this.cardsApi
@@ -40,7 +54,7 @@ export default class CardController {
 	}
 
 	$onDestroy() {
-		this.$log.debug('$onDestroy()', this);
+		this.$log.debug('$onDestroy()', this, this.cardData);
 	}
 
 	canDrag() {
@@ -65,7 +79,7 @@ export default class CardController {
 			this.player.cardsSelected = this._.filter(this.player.cardsSelected, filterBy);
 		} else {
 			$el.addClass('selected');
-			this.player.cardsSelected.push(this.$scope.cardData);
+			this.player.cardsSelected.push(this.cardData);
 		}
 	}
 }

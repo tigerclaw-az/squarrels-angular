@@ -17,6 +17,14 @@ export default class PlayerController {
 
 	$onInit() {
 		this.$log.debug('$onInit()', this);
+
+		this.$rootScope.$on('deck:action:winter', () => {
+			this.$log.debug('deck:action:winter');
+
+			if (this.player.id === this.playerModel.model.player.id) {
+				this.playerModel.showSpecialCards();
+			}
+		});
 	}
 
 	$onDestroy() {

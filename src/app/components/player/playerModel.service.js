@@ -1,5 +1,5 @@
 export class PlayerModelService {
-	constructor($log, $localStorage, $q, _, playersApi) {
+	constructor($log, $localStorage, $q, _, cardsApi, playersApi) {
 		'ngInject';
 
 		this.$log = $log.getInstance(this.constructor.name);
@@ -7,6 +7,7 @@ export class PlayerModelService {
 		this.$q = $q;
 
 		this._ = _;
+		this.cardsApi = cardsApi;
 		this.playersApi = playersApi;
 
 		this.model = {
@@ -56,26 +57,42 @@ export class PlayerModelService {
 		this.model.player.cardsSelected = [];
 	}
 
+	showSpecialCards() {
+		let score = this.model.player.score,
+			onSuccess = (res => {
+				let cards = res.data,
+					special = this._.filter(cards, { cardType: 'special' }),
+					plUpdate = {
+						score: score,
+						cardsInHand: special.map(card => {
+							return card.id;
+						})
+					};
+
+				this.$log.info('showSpecialCards()', special, this);
+
+				if (special.length) {
+					this._.forEach(special, (card) => {
+						plUpdate.score += card.amount;
+					});
+				}
+
+				return this.playersApi.update(this.model.player.id, plUpdate);
+			}),
+			onError = (err => {
+				this.$log.error(err);
+			});
+
+		this.cardsApi
+			.get(this.model.player.cardsInHand)
+			.then(onSuccess, onError);
+	}
+
 	update(data) {
 		Object.assign(this.model.player, data);
 
 		if (!data.actionCard) {
 			this.model.player.actionCard = null;
-		}
-	}
-
-	updateScore() {
-		let special = this._.filter(this.model.player.cardsInHand, { cardType: 'special' }),
-			score = this.model.player.score;
-
-		this.$log.info('updateScore()', special, this);
-
-		if (special.length) {
-			this._.forEach(special, (card) => {
-				score += card.amount;
-			});
-
-			return this.playersApi.update(this.model.player.id, { score: score });
 		}
 	}
 }

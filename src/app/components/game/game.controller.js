@@ -43,6 +43,10 @@ export default class GameController {
 		this.$scope.model = this.gameModel.model;
 		this.$scope.playersModel = this.playersStore.model;
 
+		this.$rootScope.$on('deck:action:winter', () => {
+			this.gameModel.endGame();
+		});
+
 		// Should only fire for clients that didn't click 'New Game'
 		this.$rootScope.$on('websocket:games:create', (event, data) => {
 			this.$log.info('$on -> websocket:games:create', data);

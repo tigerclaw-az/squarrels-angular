@@ -46,13 +46,13 @@ export class WebSocketService {
 	}
 
 	onClose(data) {
-		this.$log.error('onClose()', data);
+		this.$log.warn('onClose()', data);
 
 		this.$rootScope.$broadcast('websocket:global:close', data);
 	}
 
 	onError(msg) {
-		this.toastr.error('websocket:error', msg);
+		this.toastr.error(msg, 'websocket:error');
 
 		this.$rootScope.$broadcast('websocket:error', msg);
 	}

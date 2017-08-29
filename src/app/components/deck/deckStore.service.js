@@ -22,6 +22,42 @@ export default class DeckStoreService {
 		this.$log.debug('constructor()', this);
 	}
 
+	dealCards(pl) {
+		let dealDefer = this.$q.defer(),
+			drawPromises = [];
+
+		for (let i = 0; i < this.playerModel.numDrawCards; i++) {
+			drawPromises.push(this.drawCard(true));
+		}
+
+		this.$q
+			.all(drawPromises)
+			.then(cards => {
+				let cardIds = cards.map(card => {
+					return card.id
+				});
+
+				this.$log.info('dealCards:then()', cards, cardIds, this);
+
+				this.playersApi
+					.update(pl.id, { cardsInHand: cardIds })
+					.then(res => {
+						this.$log.info('playersApi:update()', res, this);
+						dealDefer.resolve(cards);
+					})
+					.catch(err => {
+						this.$log.error('This is nuts! Error: ', err);
+					});
+			})
+			.catch(err => {
+				this.$log.error('This is nuts! Error: ', err);
+
+				dealDefer.reject(err);
+			});
+
+		return dealDefer.promise;
+	}
+
 	discard(id) {
 		let hoardDeck = this.getByType('discard'),
 			cards = hoardDeck.cards,
@@ -57,103 +93,36 @@ export default class DeckStoreService {
 			.then(onSuccess, onError);
 	}
 
-	drawCard(pl, count) {
+	drawCard(numbersOnly = false) {
 		let mainDeck = this.getByType('main'),
-			hoardDeck = this.getByType('discard'),
+			drawDefer = this.$q.defer(),
 			cardsFromDeck = {
 				ids: mainDeck.cards.map(obj => { return obj.id }),
-				// Only draw 'number' cards for initial deal
-				toDraw: count > 1 ? this._.filter(mainDeck.cards, { cardType: 'number' }) : mainDeck.cards,
+				toDraw: numbersOnly ? this._.filter(mainDeck.cards, { cardType: 'number' }) : mainDeck.cards,
 			},
-			cardsDrawn = {
-				cards: this._.sampleSize(cardsFromDeck.toDraw, count)
-			},
-			card = cardsDrawn.cards[0],
-			cardAction = card.action,
-			drawDefer = this.$q.defer(),
-			cardsMerge = [],
-			plData = {
-				totalCards: pl.totalCards
-			};
+			cardDrawn = this._.sampleSize(cardsFromDeck.toDraw)[0];
 
-		cardsDrawn.ids = cardsDrawn.cards.map(obj => { return obj.id });
-		cardsMerge = cardsDrawn.ids;
-
-		this.$log.info('drawCard()', pl, mainDeck, this);
+		this.$log.info('drawCard()', mainDeck, this);
 
 		this.$log.info('cardsFromDeck -> ', cardsFromDeck);
-		this.$log.info('cardsDrawn -> ', cardsDrawn);
+		this.$log.info('cardDrawn -> ', cardDrawn);
 
-		if (!cardAction) {
-			// Player drew a non-"action" card, so add to their hand and update
-			if (!this._.isEmpty(pl.cardsInHand)) {
-				cardsMerge = this._.union(pl.cardsInHand, cardsDrawn.ids);
-			}
-
-			this.$log.info('cards:union -> ', cardsMerge);
-
-			plData.cardsInHand = cardsMerge;
-			plData.totalCards = cardsMerge.length;
-
-			if (count === 1) {
-				plData.isFirstTurn = plData.totalCards < this.playerModel.numDrawCards;
-			}
-		} else {
-			this.toastr.info(`Action Card - ${cardAction}`);
-
-			plData.actionCard = card;
-
-			// FIXME: Only handling 'hoard' & 'winter' cards right now
-			switch (cardAction) {
-				case 'winter':
-					plData.isActive = false;
-					break;
-
-				case 'hoard':
-					if (!hoardDeck.cards.length) {
-						this.toastr.info('No cards to Hoard');
-						plData.actionCard = null;
-					}
-
-					break;
-
-				default:
-					plData.actionCard = null;
-					break;
-			}
-
-			// Don't allow player to draw more than 7 cards
-			if (plData.totalCards === this.playerModel.numDrawCards) {
-				plData.isFirstTurn = false;
-			}
-		}
-
-		this._.pullAll(cardsFromDeck.ids, cardsDrawn.ids);
+		this._.pull(cardsFromDeck.ids, cardDrawn.id);
 		mainDeck.cards = this._.reject(mainDeck.cards, (o) => {
-			return this._.includes(cardsDrawn.ids, o.id);
+			return cardDrawn.id === o.id;
 		});
 
-		this.$log.info('plData -> ', plData);
 		this.$log.info('remainingCards -> ', mainDeck.cards);
 
 		this.decksApi
 			.update(mainDeck.id, { cards: cardsFromDeck.ids })
 			.then(() => {
-				this.$log.info('decksApi:update()', this);
-
-				this.playersApi
-					.update(pl.id, plData)
-					.then(res => {
-						this.$log.info('playersApi:update()', res, this);
-						drawDefer.resolve(res);
-					})
-					.catch(err => {
-						this.$log.error('This is nuts! Error: ', err);
-						drawDefer.reject(err);
-					});
+				drawDefer.resolve(cardDrawn);
 			})
 			.catch(err => {
 				this.$log.error(err);
+
+				drawDefer.reject({ card: cardDrawn, error: err});
 			});
 
 		return drawDefer.promise;

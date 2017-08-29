@@ -152,7 +152,7 @@ export default class GameController {
 			// Loop through each player and draw random set of cards, which will
 			// return a promise so we can wait for all cards to be dealt before
 			// the round starts.
-			dealPromises.push(this.deckStore.drawCard(pl, this.playerModel.numDrawCards));
+			dealPromises.push(this.deckStore.dealCards(pl));
 		});
 
 		this.$q

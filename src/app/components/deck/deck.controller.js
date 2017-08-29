@@ -1,5 +1,5 @@
 export default class DeckController {
-	constructor($rootScope, $scope, $log, toastr, _, gameModel, decksApi, deckStore, playerModel, playersStore, websocket) {
+	constructor($rootScope, $scope, $log, toastr, _, deckStore, playerModel, playersApi, playersStore, websocket) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
@@ -9,10 +9,10 @@ export default class DeckController {
 		this._ = _;
 		this.toastr = toastr;
 
-		this.decksApi = decksApi;
 		this.deckStore = deckStore;
 		this.playerModel = playerModel;
 		this.pModel = playerModel.model;
+		this.playersApi = playersApi;
 		this.playersStore = playersStore;
 		this.ws = websocket;
 
@@ -54,7 +54,7 @@ export default class DeckController {
 			type = card.cardType;
 
 		if (player) {
-			allowDiscard = player.isActive && !player.isFirstTurn && this._.isEmpty(player.actionCard);
+			allowDiscard = player.isActive && this._.isEmpty(player.actionCard);
 
 			if (type === 'special' && allowDiscard) {
 				allowDiscard = totalCards === 1 ? true : false;
@@ -109,7 +109,73 @@ export default class DeckController {
 
 		this.$log.debug('drawCard()', player, this);
 
-		this.deckStore.drawCard(player, 1);
+		this.deckStore
+			.drawCard()
+			.then(cardDrawn => {
+				let hoardDeck = this.deckStore.getByType('discard'),
+					cardAction = cardDrawn.action,
+					cardsMerge = [],
+					plData = {
+						totalCards: player.totalCards
+					};
+
+				this.$log.info('deckStore:drawCard()', cardDrawn, cardAction, this);
+
+				if (!cardAction) {
+					// Player drew a non-"action" card, so add to their hand and update
+					if (!this._.isEmpty(player.cardsInHand)) {
+						cardsMerge = this._.union(player.cardsInHand, [cardDrawn.id]);
+					}
+
+					this.$log.info('cards:union -> ', cardsMerge);
+
+					plData.cardsInHand = cardsMerge;
+					plData.totalCards = cardsMerge.length;
+
+					plData.isFirstTurn = plData.totalCards < this.playerModel.numDrawCards;
+				} else {
+					this.toastr.info(`Action Card - ${cardAction}`);
+
+					plData.actionCard = cardDrawn;
+
+					// FIXME: Only handling 'hoard' & 'winter' cards right now
+					switch (cardAction) {
+						case 'winter':
+							plData.isActive = false;
+							break;
+
+						case 'hoard':
+							if (!hoardDeck.cards.length) {
+								this.toastr.info('No cards to Hoard');
+								plData.actionCard = null;
+							}
+
+							break;
+
+						default:
+							plData.actionCard = null;
+							break;
+					}
+
+					// Don't allow player to draw more than 7 cards
+					if (plData.totalCards === this.playerModel.numDrawCards) {
+						plData.isFirstTurn = false;
+					}
+				}
+
+				this.playersApi
+					.update(player.id, plData)
+					.then(res => {
+						this.$log.info('playersApi:update()', res, this);
+					})
+					.catch(err => {
+						this.$log.error('This is nuts! Error: ', err);
+					});
+			})
+			.catch(err => {
+				this.$log.error(err);
+			});
+
 		this.playerModel.resetSelected();
 	}
 

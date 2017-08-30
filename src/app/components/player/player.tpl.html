@@ -22,19 +22,12 @@
 			<card
 				ng-animate="animate"
 				ng-class="{ mine: isCurrent && player.cardsInHand.length}"
-				ng-repeat="card in player.cardsInHand"
+				ng-repeat="card in player.cardsInHand | orderBy: card.amount"
 				ng-show="isCurrent && player.cardsInHand.length"
 				card-id="{{::card}}"
 				card-type="hand"
 				player="player"
 			></card>
-			<!-- <card
-				ng-show="!isCurrent && player.totalCards"
-				ng-repeat="n in playerCtrl._.range(0, player.totalCards)"
-				card-id="{{null}}"
-				card-type="hand"
-				player="player">
-			</card> -->
 		</div>
 		<div class="action-card" ng-show="player.actionCard && true">
 			<card

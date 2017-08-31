@@ -1,11 +1,6 @@
 var mongoose = require('mongoose'),
 	Schema = mongoose.Schema,
 	PlayerSchema = new Schema({
-		actionCard: {
-			type: Schema.Types.ObjectId,
-			ref: 'Card',
-			default: null
-		},
 		cardsInHand: {
 			type: [Schema.Types.ObjectId],
 			ref: 'Card',

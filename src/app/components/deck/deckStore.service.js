@@ -26,7 +26,7 @@ export default class DeckStoreService {
 		let dealDefer = this.$q.defer(),
 			drawPromises = [];
 
-		for (let i = 0; i < this.playerModel.numDrawCards; i++) {
+		for (let i = 0; i < this.playerModel.numDrawCards; ++i) {
 			drawPromises.push(this.drawCard(true));
 		}
 
@@ -40,7 +40,7 @@ export default class DeckStoreService {
 				this.$log.info('dealCards:then()', cards, cardIds, this);
 
 				this.playersApi
-					.update(pl.id, { cardsInHand: cardIds })
+					.update(pl.id, { cardsInHand: cardIds, totalCards: cardIds.length })
 					.then(res => {
 						this.$log.info('playersApi:update()', res, this);
 						dealDefer.resolve(cards);

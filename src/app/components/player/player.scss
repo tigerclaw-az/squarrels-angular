@@ -58,7 +58,9 @@
 
 	.sq-player-info {
 		@include clearfix;
+
 		float: left;
+		margin-right: 1rem;
 
 		.sq-player-total-cards,
 		.sq-player-storage {
@@ -104,6 +106,17 @@
 
 		.cards-group {
 			@extend %playing-cards;
+
+			.empty {
+				@extend %playing-cards;
+
+				border: 2px dotted;
+				padding: 3.5rem;
+
+				&::after {
+					content: 'NO CARDS';
+				}
+			}
 
 			card {
 				float: left;

@@ -17,17 +17,18 @@
 			<span class="sq-player-score">{{player.score}}</span>
 		</span>
 	</div>
-	<div class="sq-player-cards">
+	<div ng-if="isCurrent" class="sq-player-cards">
 		<div class="cards-group hand">
 			<card
 				ng-animate="animate"
 				ng-class="{ mine: isCurrent && player.cardsInHand.length}"
+				ng-if="player.cardsInHand.length"
 				ng-repeat="card in player.cardsInHand | orderBy: card.amount"
-				ng-show="isCurrent && player.cardsInHand.length"
 				card-id="{{::card}}"
 				card-type="hand"
 				player="player"
 			></card>
+			<div ng-if="!player.cardsInHand.length" class="empty"></div>
 		</div>
 	</div>
 </div>

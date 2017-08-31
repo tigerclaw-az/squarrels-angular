@@ -80,28 +80,3 @@ $card-images: (
 		}
 	}
 }
-
-.action-card {
-	.card {
-		animation-fill-mode: forwards;
-		backface-visibility: hidden;
-	}
-
-	[card-type='blank'] {
-		.card {
-			animation-duration: 4s;
-			animation-name: spin;
-			animation-timing-function: linear;
-		}
-	}
-
-	[card-type='action'] {
-		.card {
-			animation-delay: 3s;
-			animation-duration: 1s;
-			animation-name: spin-reverse;
-			animation-timing-function: ease-out;
-			transform: rotateY(-90deg);
-		}
-	}
-}

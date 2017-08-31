@@ -37,6 +37,31 @@ deck {
 
 	&[type='action'] {
 		border: 2px inset get-color('mandy');
+
+		.action-card {
+			position: absolute;
+
+			.card {
+				animation-fill-mode: forwards;
+				backface-visibility: hidden;
+
+				&.blank-- {
+					animation-duration: 4s;
+					animation-name: spin;
+					animation-timing-function: linear;
+				}
+			}
+
+			[card-type='action'] {
+				.card {
+					animation-delay: 3s;
+					animation-duration: 1s;
+					animation-name: spin-reverse;
+					animation-timing-function: ease-out;
+					transform: rotateY(-90deg);
+				}
+			}
+		}
 	}
 
 	.deck {

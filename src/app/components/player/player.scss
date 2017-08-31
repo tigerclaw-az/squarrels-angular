@@ -115,11 +115,5 @@
 				}
 			}
 		}
-
-		.action-card {
-			@extend %playing-cards;
-
-			position: absolute;
-		}
 	}
 }

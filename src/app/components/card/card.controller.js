@@ -58,11 +58,19 @@ export default class CardController {
 	}
 
 	canDrag() {
-		return this.cardType !== 'storage' && this.player.isCurrent;
+		if (this.player) {
+			return this.cardType !== 'storage' && this.player.isCurrent;
+		}
+
+		return false;
 	}
 
 	isDisabled() {
-		return !this.cardId || this.cardType === 'storage' || !this.player.isActive;
+		if (this.player) {
+			return !this.cardId || this.cardType === 'storage' || !this.player.isActive;
+		}
+
+		return true;
 	}
 
 	onClick(e) {

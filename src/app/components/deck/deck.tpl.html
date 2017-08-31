@@ -1,5 +1,8 @@
 <div
 	class="deck"
+	ng-class="{
+		'draw-card': deckCtrl.type === 'main' && deckCtrl.canDraw()
+	}"
 	ng-init="isDiscard = deckCtrl.type === 'discard'"
 	ng-attr-ng-drop="{{isDiscard}}"
 	ng-drop-success="deckCtrl.onDropComplete($data, $event)"
@@ -14,14 +17,17 @@
 		ng-show="deckCtrl.getTotalCards()"
 	>
 		<span
-			ng-class="{ 'action-card': deckCtrl.type === 'action'}"
+			ng-if="deckCtrl.type !== 'action'"
+			class="card blank--"
 			ng-repeat="card in deckCtrl.getDeck().cards | limitTo: deckCtrl.cardLimit()">
-			<span class="card blank--" ng-show="deckCtrl.type !== 'action' || deckCtrl.game.actionCard"></span>
-			<card
-				ng-show="deckCtrl.type === 'action' && deckCtrl.game.actionCard"
-				card-id="{{card.id}}"
-				card-type="action">
-			</card>
+		</span>
+		<span
+			ng-if="deckCtrl.type === 'action'"
+			ng-class="{ 'action-card': deckCtrl.type === 'action'}"
+			ng-repeat="card in deckCtrl.getDeck().cards"
+		>
+			<span class="card blank--"></span>
+			<card card-id="{{card.id}}" card-type="action"></card>
 		</span>
 	</a>
 </div>

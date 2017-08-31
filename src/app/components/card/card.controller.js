@@ -32,6 +32,8 @@ export default class CardController {
 						name = this.cardData.name;
 
 					if (type === 'action') {
+						this.$log.info('ACTION CARD -> ', this.cardData);
+
 						if (name === 'winter') {
 							this.$rootScope.$broadcast('deck:action:winter');
 						}

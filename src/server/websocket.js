@@ -3,7 +3,6 @@ module.exports = function(server) {
 		cookieParser = require('cookie-parser'),
 		config = require('./config/config'),
 		logger = config.logger('websocket'),
-		playerMod = require('./routes/modules/player'),
 		WebSocket = require('ws');
 
 	const Player = require('./models/PlayerModel').model;
@@ -71,16 +70,20 @@ module.exports = function(server) {
 					if (!hoardPlayer) {
 						hoardPlayer = query;
 
-						// Remove actionCard from player
-						playerMod
-							.update(data.playerAction.id, { actionCard: null }, sid)
-							.then(() => {
-								wss.broadcast(wsData, sid);
-								hoardPlayer = null;
-							})
-							.catch(err => {
-								logger.error(err);
-							})
+						// Remove actionCard from game
+
+						// playerMod
+						// 	.update(data.playerAction.id, { actionCard: null }, sid)
+						// 	.then(() => {
+						// 	FIXME: HACK!!
+						setTimeout(() => {
+							wss.broadcast(wsData, sid);
+							hoardPlayer = null;
+						}, 250);
+						// 	})
+						// 	.catch(err => {
+						// 		logger.error(err);
+						// 	})
 					} else {
 						ws.send(JSON.stringify(wsData));
 					}

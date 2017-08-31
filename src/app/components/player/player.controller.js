@@ -48,7 +48,7 @@ export default class PlayerController {
 		});
 
 		return cardsSelected && cardsSelected.length === 3 &&
-			this.player.isActive && this._.isEmpty(this.player.actionCard) &&
+			this.player.isActive && !this.game.actionCard &&
 			cardsMatch;
 	}
 

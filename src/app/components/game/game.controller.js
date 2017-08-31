@@ -1,5 +1,5 @@
 export default class GameController {
-	constructor($rootScope, $scope, $state, $log, $q, _, deckStore, decksApi, gamesApi, gameModel, playerModel, playersApi, playersStore) {
+	constructor($rootScope, $scope, $state, $log, $q, toastr, _, deckStore, decksApi, gamesApi, gameModel, playerModel, playersApi, playersStore) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
@@ -9,6 +9,8 @@ export default class GameController {
 		this.$q = $q;
 
 		this._ = _;
+		this.toastr = toastr;
+
 		this.deckStore = deckStore;
 		this.decksApi = decksApi;
 		this.gamesApi = gamesApi;
@@ -47,6 +49,42 @@ export default class GameController {
 			this.gameModel.endGame();
 		});
 
+		// Should only fire for external clients
+		this.$rootScope.$on('websocket:decks:create', (event, data) => {
+			this.$log.info('$on -> websocket:decks:create', data);
+
+			this.insertDeck(data.id, data);
+		});
+
+		// Will fire for ALL clients
+		this.$rootScope.$on('websocket:decks:update', (event, data) => {
+			this.$log.info('$on -> websocket:decks:update', data);
+
+			if (data.id) {
+				this.deckStore.update(data.id, data);
+
+				if (data.deckType === 'action') {
+					let card = data.cards[data.cards.length - 1];
+
+					this.gamesApi
+						.update(this.gameModel.model.game.id, { actionCard: card.id })
+						.then(res => {
+							this.$log.info('games:update()', res);
+
+							this.handleActionCard(card);
+						}, err => {
+							this.$log.error(err);
+						});
+				}
+			}
+		});
+
+		this.$rootScope.$on('websocket:decks:remove', (event, data) => {
+			this.$log.info('$on -> websocket:decks:remove', data);
+
+			this.deckStore.empty();
+		});
+
 		// Should only fire for clients that didn't click 'New Game'
 		this.$rootScope.$on('websocket:games:create', (event, data) => {
 			this.$log.info('$on -> websocket:games:create', data);
@@ -61,28 +99,6 @@ export default class GameController {
 		this.$rootScope.$on('websocket:games:remove', (event, data) => {
 			this.$log.info('$on -> websocket:games:remove', data);
 			this.gameModel.clear(data);
-		});
-
-		// Should only fire for external clients
-		this.$rootScope.$on('websocket:decks:create', (event, data) => {
-			this.$log.info('$on -> websocket:decks:create', data);
-
-			this.insertDeck(data.id, data);
-		});
-
-		// Will fire for ALL clients
-		this.$rootScope.$on('websocket:decks:update', (event, data) => {
-			this.$log.info('$on -> websocket:decks:update', data);
-
-			if (data.id) {
-				this.deckStore.update(data.id, data);
-			}
-		});
-
-		this.$rootScope.$on('websocket:decks:remove', (event, data) => {
-			this.$log.info('$on -> websocket:decks:remove', data);
-
-			this.deckStore.empty();
 		});
 
 		this.gameModel
@@ -173,15 +189,51 @@ export default class GameController {
 		return decks;
 	}
 
+	handleActionCard(card) {
+		let hoardDeck = this.deckStore.getByType('discard'),
+			player = this.playerModel.model.player;
+
+		if (player.isActive) {
+			this.toastr.info(card.action, 'Action Card');
+		} else {
+			this.toastr.warning('ACTION CARD!');
+		}
+
+		// FIXME: Only handling 'hoard' & 'winter' cards right now
+		switch (card.action) {
+			case 'winter':
+				// plData.isActive = false;
+				break;
+
+			case 'hoard':
+				if (!hoardDeck.cards.length) {
+					this.toastr.info('No cards to Hoard');
+					this.gamesApi.update(this.gameModel.model.game.id, { actionCard: null });
+				}
+
+				break;
+
+			default:
+				this.gamesApi.update(this.gameModel.model.game.id, { actionCard: null });
+				break;
+		}
+	}
+
 	insertDeck(id) {
 		var deckPromise = this.$q.defer(),
 			onSuccessDeck = (res => {
+				let game = this.gameModel.model.game;
+
 				this.$log.debug('onSuccessDeck()', res, this);
 
 				if (res.status === 200) {
 					let deckData = res.data[0];
 
 					this.deckStore.insert(deckData);
+
+					if (deckData.deckType === 'action' && game.actionCard) {
+						this.handleActionCard(game.actionCard);
+					}
 
 					deckPromise.resolve(deckData);
 				}

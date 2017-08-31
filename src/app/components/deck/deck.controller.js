@@ -1,5 +1,5 @@
 export default class DeckController {
-	constructor($rootScope, $scope, $log, toastr, _, deckStore, playerModel, playersApi, playersStore, websocket) {
+	constructor($rootScope, $scope, $log, toastr, _, decksApi, deckStore, playerModel, playersApi, playersStore, websocket) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
@@ -9,6 +9,7 @@ export default class DeckController {
 		this._ = _;
 		this.toastr = toastr;
 
+		this.decksApi = decksApi;
 		this.deckStore = deckStore;
 		this.playerModel = playerModel;
 		this.pModel = playerModel.model;
@@ -16,9 +17,10 @@ export default class DeckController {
 		this.playersStore = playersStore;
 		this.ws = websocket;
 
-		// Comes from <deck>
-		// this.type
+		// Bindings from <deck> component
 		// this.deckId
+		// this.game
+		// this.type
 
 		this.$log.debug('constructor()', this);
 	}
@@ -44,7 +46,9 @@ export default class DeckController {
 	}
 
 	isDisabled() {
-		return (this.type === 'main' && !this.canDraw()) || (this.type === 'discard' && !this.canHoard());
+		return this.type === 'main' && !this.canDraw() ||
+			this.type === 'discard' && !this.canHoard() ||
+			this.type === 'action';
 	}
 
 	canDiscard(card) {
@@ -54,7 +58,7 @@ export default class DeckController {
 			type = card.cardType;
 
 		if (player) {
-			allowDiscard = player.isActive && this._.isEmpty(player.actionCard);
+			allowDiscard = player.isActive && this._.isEmpty(this.game.actionCard);
 
 			if (type === 'special' && allowDiscard) {
 				allowDiscard = totalCards === 1 ? true : false;
@@ -72,7 +76,7 @@ export default class DeckController {
 		let player = this.pModel.player;
 
 		if (player) {
-			return !player.isActive && this.playersStore.get('actionCard');
+			return !player.isActive && !this._.isEmpty(this.game.actionCard);
 		}
 
 		return false;
@@ -81,22 +85,21 @@ export default class DeckController {
 	canDraw() {
 		let player = this.pModel.player;
 
+		this.$log.debug('canDraw()', player, this);
+
 		if (player) {
-			return player.isActive && !player.actionCard && player.isFirstTurn;
+			return player.isActive && this._.isEmpty(this.game.actionCard) && player.isFirstTurn;
 		}
 
 		return false;
 	}
 
 	collectHoard() {
-		let playerWithAction = this.playersStore.get('actionCard');
+		this.$log.info('collectHoard()', this.pModel.player, this.game.actionCard, this);
 
-		this.$log.info('collectHoard()', this.pModel.player, playerWithAction, this);
-
-		if (playerWithAction && playerWithAction.actionCard.action === 'hoard') {
+		if (this.game.actionCard.action === 'hoard') {
 			this.ws.send({
 				action: 'hoard',
-				playerAction: playerWithAction,
 				playerHoard: this.pModel.player
 			});
 		} else {
@@ -112,7 +115,7 @@ export default class DeckController {
 		this.deckStore
 			.drawCard()
 			.then(cardDrawn => {
-				let hoardDeck = this.deckStore.getByType('discard'),
+				let actionDeck = this.deckStore.getByType('action'),
 					cardAction = cardDrawn.action,
 					cardsMerge = [],
 					plData = {
@@ -123,9 +126,7 @@ export default class DeckController {
 
 				if (!cardAction) {
 					// Player drew a non-"action" card, so add to their hand and update
-					if (!this._.isEmpty(player.cardsInHand)) {
-						cardsMerge = this._.union(player.cardsInHand, [cardDrawn.id]);
-					}
+					cardsMerge = this._.union(player.cardsInHand, [cardDrawn.id]);
 
 					this.$log.info('cards:union -> ', cardsMerge);
 
@@ -134,28 +135,14 @@ export default class DeckController {
 
 					plData.isFirstTurn = plData.totalCards < this.playerModel.numDrawCards;
 				} else {
-					this.toastr.info(`Action Card - ${cardAction}`);
-
-					plData.actionCard = cardDrawn;
-
-					// FIXME: Only handling 'hoard' & 'winter' cards right now
-					switch (cardAction) {
-						case 'winter':
-							plData.isActive = false;
-							break;
-
-						case 'hoard':
-							if (!hoardDeck.cards.length) {
-								this.toastr.info('No cards to Hoard');
-								plData.actionCard = null;
-							}
-
-							break;
-
-						default:
-							plData.actionCard = null;
-							break;
-					}
+					// FIXME
+					this.decksApi
+						.update(actionDeck.id, { cards: cardDrawn.id })
+						.then(res => {
+							this.$log.info('actionDeck -> ', res);
+						}, err => {
+							this.$log.error(err);
+						});
 
 					// Don't allow player to draw more than 7 cards
 					if (plData.totalCards === this.playerModel.numDrawCards) {

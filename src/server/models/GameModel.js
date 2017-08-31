@@ -3,6 +3,11 @@ var mongoose = require('mongoose'),
 	Deck = require('./DeckModel'),
 	Player = require('./PlayerModel'),
 	GameSchema = new Schema({
+		actionCard: {
+			type: Schema.Types.ObjectId,
+			ref: 'Card',
+			default: null
+		},
 		round: {
 			type: Number,
 			default: 1

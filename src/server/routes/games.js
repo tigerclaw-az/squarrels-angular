@@ -20,7 +20,6 @@ games.delete('/:id', function(req, res) {
 			let decks = game.decks,
 				players = game.players,
 				playerUpdate = {
-					actionCard: null,
 					cardsInHand: [],
 					cardsInStorage: [],
 					isFirstTurn: true,
@@ -82,7 +81,9 @@ games.get('/:id?', function(req, res) {
 	var query = {};
 
 	GameModel
-		.find(query).exec()
+		.find(query)
+		.populate('actionCard')
+		.exec()
 		.then(function(list) {
 			if (list.length === 0) {
 				res.status(204);
@@ -185,6 +186,7 @@ games.post('/:id', function(req, res) {
 
 	GameModel
 		.findByIdAndUpdate(gameId, req.body, { new: true })
+		.populate('actionCard')
 		.then(doc => {
 			let statusCode = doc ? 200 : 204;
 

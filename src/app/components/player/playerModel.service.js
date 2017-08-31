@@ -83,16 +83,14 @@ export class PlayerModelService {
 				this.$log.error(err);
 			});
 
-		this.cardsApi
-			.get(this.model.player.cardsInHand)
-			.then(onSuccess, onError);
+		if (!this._.isEmpty(this.model.player.cardsInHand)) {
+			this.cardsApi
+				.get(this.model.player.cardsInHand)
+				.then(onSuccess, onError);
+		}
 	}
 
 	update(data) {
 		Object.assign(this.model.player, data);
-
-		if (!data.actionCard) {
-			this.model.player.actionCard = null;
-		}
 	}
 }

@@ -36,7 +36,6 @@ players.get('/:id?', function(req, res) {
 
 	Player
 		.find(query)
-		.populate('actionCard')
 		.exec()
 		.then(function(list) {
 			if (list.length === 0) {

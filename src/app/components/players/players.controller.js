@@ -1,6 +1,6 @@
 export
 default class PlayersController {
-	constructor($rootScope, $scope, $localStorage, $log, toastr, _, utils, sounds, decksApi, deckStore, playersApi, playersStore, playerModel) {
+	constructor($rootScope, $scope, $localStorage, $log, toastr, _, utils, sounds, decksApi, deckStore, gamesApi, playersApi, playersStore, playerModel) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
@@ -14,6 +14,7 @@ default class PlayersController {
 
 		this.decksApi = decksApi;
 		this.deckStore = deckStore;
+		this.gamesApi = gamesApi;
 		this.sounds = sounds;
 		this.playerModel = playerModel;
 		this.playersApi = playersApi;
@@ -97,6 +98,9 @@ default class PlayersController {
 				this.playersApi
 					.update(currentPlayer.id, playerObj)
 					.then(onSuccess, onError);
+
+				this.gamesApi
+					.update(this.game.id, { actionCard: null });
 			} else {
 				this.toastr.warning(data.name, 'HOARD TAKEN BY:');
 			}

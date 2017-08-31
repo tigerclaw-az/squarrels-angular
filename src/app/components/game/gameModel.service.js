@@ -42,5 +42,9 @@ export default class GameModelService {
 
 	update(data) {
 		Object.assign(this.model.game, data);
+
+		if (!data.actionCard) {
+			this.model.game.actionCard = null;
+		}
 	}
 }

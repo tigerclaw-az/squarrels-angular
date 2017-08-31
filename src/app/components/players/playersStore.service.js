@@ -53,12 +53,6 @@ export default class PlayersStoreService {
 		return this.model.players[activeIndex].id;
 	}
 
-	handleActionCard(card) {
-		let player = this.playerModel.model.player;
-
-		this.$log.debug('handleActionCard()', card, player, this);
-	}
-
 	insert(data) {
 		let pl = Object.assign({}, {
 				isCurrent: false
@@ -66,10 +60,6 @@ export default class PlayersStoreService {
 			existingPlayer = this._.some(this.model.players, { id: pl.id });
 
 		this.$log.debug('insert()', pl, existingPlayer, this);
-
-		if (!this._.isEmpty(pl.actionCard)) {
-			this.handleActionCard(pl.actionCard);
-		}
 
 		// Ensure that player doesn't already exist
 		if (!existingPlayer) {
@@ -112,18 +102,11 @@ export default class PlayersStoreService {
 			player = this.model.players[playerIndex];
 
 		Object.assign(player, data);
-		if (!data.actionCard) {
-			player.actionCard = null;
-		}
 
 		this.$log.debug('update()', id, data, player, this);
 
 		if (player.isCurrent) {
 			this.playerModel.update(data);
-		} else if (!this._.isEmpty(data.actionCard)) {
-			this.toastr.warning('ACTION CARD!');
-
-			this.handleActionCard(data.actionCard);
 		}
 
 		return player;

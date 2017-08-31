@@ -34,7 +34,7 @@ export default class DeckController {
 	}
 
 	cardLimit() {
-		return this.type === 'discard' ? this.getDeck().cards.length : 1;
+		return this.type === 'main' ? 1 : this.getDeck().cards.length;
 	}
 
 	getDeck() {
@@ -84,8 +84,6 @@ export default class DeckController {
 
 	canDraw() {
 		let player = this.pModel.player;
-
-		this.$log.debug('canDraw()', player, this);
 
 		if (player) {
 			return player.isActive && this._.isEmpty(this.game.actionCard) && player.isFirstTurn;

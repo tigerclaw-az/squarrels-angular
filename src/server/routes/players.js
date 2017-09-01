@@ -1,6 +1,6 @@
 var express = require('express'),
-	logger = require('loggy'),
 	config = require('../config/config'),
+	logger = config.logger(),
 	validator = require('validator'),
 	players = express.Router(),
 	playerMod = require('./modules/player');

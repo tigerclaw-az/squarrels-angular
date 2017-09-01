@@ -4,7 +4,6 @@ var express = require('express'),
 	path = require('path'),
 	config = require('./config/config'),
 	logger = config.logger(),
-	// log4js = require('log4js'),
 	MongodbSession = require('connect-mongodb-session')(sessionParser),
 	favicon = require('serve-favicon');
 

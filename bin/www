@@ -8,9 +8,10 @@ var appServe = require('../src/server/app-server'),
 	app = appServe.app,
 	sessionParser = appServe.sessionParser,
 	sessionStore = appServe.sessionStore,
+	config = require('../src/server/config/config'),
 	debug = require('debug')('Slide:server'),
 	http = require('http'),
-	logger = require('loggy'),
+	logger = config.logger('www'),
 	// Get port from environment and store in Express.
 	port = normalizePort(process.env.PORT || '3000');
 

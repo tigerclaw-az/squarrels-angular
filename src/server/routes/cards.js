@@ -1,5 +1,5 @@
-var logger = require('loggy'),
-	config = require('../config/config'),
+var config = require('../config/config'),
+	logger = config.logger(),
 	cards = require('express').Router();
 
 const CardModel = require('../models/CardModel').model;

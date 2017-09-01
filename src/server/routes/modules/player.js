@@ -1,5 +1,4 @@
-var logger = require('loggy'),
-	Q = require('q'),
+var Q = require('q'),
 	Player = require('../../models/PlayerModel.js').model;
 
 let playerMod = {

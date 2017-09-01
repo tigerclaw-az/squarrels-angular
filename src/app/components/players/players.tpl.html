@@ -1,8 +1,4 @@
 <div class="sq-players-wrapper">
-	<webcam channel="webcam"></webcam>
-	<div class="sq-players">
-		<player ng-repeat="p in model.players | orderBy:'!isCurrent'" game="playersCtrl.game" player="p"></player>
-	</div>
 	<form ng-show="!playerData.player && model.players.length !== 6" class="form-horizontal" name="playerForm">
 		<div class="form-group form-group-md row">
 			<div class="col-xs-12 col-sm-5">
@@ -24,5 +20,9 @@
 				</button>
 			</div>
 		</div>
+	</form>
+	<webcam channel="webcam"></webcam>
+	<div class="sq-players">
+		<player ng-repeat="p in model.players | orderBy:'!isCurrent'" game="playersCtrl.game" player="p"></player>
 	</div>
 </div>

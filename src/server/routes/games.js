@@ -193,8 +193,7 @@ games.post('/:id', function(req, res) {
 			/* eslint-disable no-undef */
 			wss.broadcast(
 				{ type: 'games', action: 'update', nuts: doc },
-				sessionId,
-				false
+				sessionId
 			);
 			/* eslint-disable no-undef */
 

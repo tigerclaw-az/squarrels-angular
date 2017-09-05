@@ -33,6 +33,6 @@
 <button
 	class="btn btn-warning new-game"
 	ng-click="gameCtrl.reset()"
-	ng-show="mainCtrl.isAdmin() && !gameCtrl.isGameStarted()">
+	ng-show="mainCtrl.isAdmin() || !gameCtrl.isGameStarted()">
 	RESET
 </button>

@@ -37,7 +37,7 @@ export default class GameModelService {
 	}
 
 	isGameStarted() {
-		return !this._.isEmpty(this.model.game);
+		return this.model.game.isGameStarted;
 	}
 
 	update(data) {

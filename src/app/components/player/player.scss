@@ -103,6 +103,7 @@
 		@include clearfix;
 
 		float: left;
+		width: 70%;
 
 		.cards-group {
 			@extend %playing-cards;

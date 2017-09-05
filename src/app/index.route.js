@@ -7,8 +7,7 @@ export function routerConfig($stateProvider, $urlRouterProvider) {
 		.state('app', {
 			abstract: true,
 			url: '',
-			controller: 'mainController',
-			controllerAs: 'mainCtrl',
+			controller: 'mainController as mainCtrl',
 			templateUrl: 'main/main.tpl.html',
 			resolve: {
 
@@ -18,11 +17,16 @@ export function routerConfig($stateProvider, $urlRouterProvider) {
 			url: '/'
 		})
 		.state('app.game', {
+			resolve: {
+				player: (playerModel) => {
+					'ngInject';
+					return playerModel.model.player;
+				}
+			},
 			url: '/game',
 			views: {
 				content: {
-					controller: 'gameController as gameCtrl',
-					templateUrl: 'components/game/game.tpl.html'
+					component: 'game'
 				}
 			}
 		});

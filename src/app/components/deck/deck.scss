@@ -37,6 +37,10 @@ deck {
 
 	&[type='action'] {
 		border: 2px inset get-color('mandy');
+
+		.card {
+			animation: .5s linear shrink;
+		}
 	}
 
 	.deck {
@@ -45,13 +49,12 @@ deck {
 		display: block;
 		height: 100%;
 		margin: 0 auto;
-		text-align: center;
 		width: 100%;
 
 		.count {
-			@include center-horizontal;
-
 			font-size: 4rem;
+			position: absolute;
+			right: 25%;
 			z-index: 1;
 		}
 

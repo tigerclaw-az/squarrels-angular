@@ -1,5 +1,5 @@
 export default class GameController {
-	constructor($rootScope, $scope, $state, $log, $q, toastr, _, deckStore, decksApi, gamesApi, gameModel, playerModel, playersApi, playersStore) {
+	constructor($rootScope, $scope, $state, $log, $q, $timeout, toastr, _, deckStore, decksApi, gamesApi, gameModel, playerModel, playersApi, playersStore) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
@@ -7,6 +7,7 @@ export default class GameController {
 		this.$state = $state;
 		this.$log = $log.getInstance(this.constructor.name);
 		this.$q = $q;
+		this.$timeout = $timeout;
 
 		this._ = _;
 		this.toastr = toastr;
@@ -217,13 +218,15 @@ export default class GameController {
 
 		actionCards.push(card.id);
 
-		this.decksApi
-			.update(actionDeck.id, { cards: actionCards })
-			.then(res => {
-				this.$log.info('decks:update()', res);
-			}, err => {
-				this.$log.error(err);
-			});
+		this.$timeout(() => {
+			this.decksApi
+				.update(actionDeck.id, { cards: actionCards })
+				.then(res => {
+					this.$log.info('decks:update()', res);
+				}, err => {
+					this.$log.error(err);
+				});
+		}, 5000);
 	}
 
 	insertDeck(id) {

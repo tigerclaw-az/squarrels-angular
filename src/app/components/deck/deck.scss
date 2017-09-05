@@ -38,30 +38,32 @@ deck {
 	&[type='action'] {
 		border: 2px inset get-color('mandy');
 
-		.action-card {
-			position: absolute;
+		// .action-card {
+		// 	position: absolute;
 
-			.card {
-				animation-fill-mode: forwards;
-				backface-visibility: hidden;
+		// 	.card {
+		// 		animation-fill-mode: forwards;
+		// 		backface-visibility: hidden;
+		// 		transform: scale(3.5);
+		// 		z-index: 5;
 
-				&.blank-- {
-					animation-duration: 4s;
-					animation-name: spin;
-					animation-timing-function: linear;
-				}
-			}
+		// 		&.blank-- {
+		// 			animation-duration: 4s;
+		// 			animation-name: spin;
+		// 			animation-timing-function: linear;
+		// 		}
+		// 	}
 
-			[card-type='action'] {
-				.card {
-					animation-delay: 3s;
-					animation-duration: 1s;
-					animation-name: spin-reverse;
-					animation-timing-function: ease-out;
-					transform: rotateY(-90deg);
-				}
-			}
-		}
+		// 	[card-type='action'] {
+		// 		.card {
+		// 			animation-delay: 3s;
+		// 			animation-duration: .5s;
+		// 			animation-name: spin-reverse;
+		// 			animation-timing-function: ease-out;
+		// 			transform: rotateY(-90deg) scale(3.5);
+		// 		}
+		// 	}
+		// }
 	}
 
 	.deck {

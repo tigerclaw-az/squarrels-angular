@@ -62,20 +62,6 @@ export default class GameController {
 
 			if (data.id) {
 				this.deckStore.update(data.id, data);
-
-				if (data.deckType === 'action') {
-					let card = data.cards[data.cards.length - 1];
-
-					this.gamesApi
-						.update(this.gameModel.model.game.id, { actionCard: card.id })
-						.then(res => {
-							this.$log.info('games:update()', res);
-
-							this.handleActionCard(card);
-						}, err => {
-							this.$log.error(err);
-						});
-				}
 			}
 		});
 
@@ -92,8 +78,53 @@ export default class GameController {
 		});
 
 		this.$rootScope.$on('websocket:games:update', (event, data) => {
+			let actionCard = data.actionCard;
+
 			this.$log.info('$on -> websocket:games:update', data);
 			this.gameModel.update(data);
+
+			// TODO:
+			// 1) Make sure the modal only shows up for non-active players
+			// 2) Only update the actionDeck ONCE!
+			if (actionCard) {
+				let modal = this.$uibModal.open({
+					appendTo: angular.element(document).find('body'),
+					backdrop: false,
+					component: 'actionCardModal',
+					keyboard: false,
+					size: 'lg',
+					resolve: {
+						card: () => {
+							return actionCard;
+						}
+					}
+				});
+
+				// Once the modal is closed, trigger the game 'actionCard'
+				modal.result.then(card => {
+					this.$log.info('modal.closed -> ', card, this);
+
+					let actionDeck = this.deckStore.getByType('action'),
+						actionCards = actionDeck.cards;
+
+					actionCards.push(card.id);
+
+					this.handleActionCard(card);
+
+					this.decksApi
+						.update(actionDeck.id, { cards: actionCards })
+						.then(res => {
+							this.$log.info('actionDeck -> ', res);
+						}, err => {
+							this.$log.error(err);
+						});
+				});
+
+				// Set timeout for when the modal should be closed
+				this.$timeout(() => {
+					modal.close(actionCard);
+				}, 5500);
+			}
 		});
 
 		this.$rootScope.$on('websocket:games:remove', (event, data) => {
@@ -190,14 +221,7 @@ export default class GameController {
 	}
 
 	handleActionCard(card) {
-		let hoardDeck = this.deckStore.getByType('discard'),
-			player = this.playerModel.model.player;
-
-		if (player.isActive) {
-			this.toastr.info(card.action, 'Action Card');
-		} else {
-			this.toastr.warning('ACTION CARD!');
-		}
+		let hoardDeck = this.deckStore.getByType('discard');
 
 		// FIXME: Only handling 'hoard' & 'winter' cards right now
 		switch (card.action) {

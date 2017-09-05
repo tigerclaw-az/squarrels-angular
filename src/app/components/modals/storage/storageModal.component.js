@@ -7,5 +7,5 @@ export const StorageModalComponent = {
 	},
 	controller,
 	controllerAs: '$ctrl',
-	templateUrl: 'components/storage-modal/storageModal.tpl.html'
+	templateUrl: 'components/modals/storage/storageModal.tpl.html'
 };

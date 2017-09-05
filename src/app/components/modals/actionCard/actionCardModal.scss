@@ -1,0 +1,37 @@
+action-card-modal {
+	.modal-body {
+		height: 60rem;
+		text-align: center;
+	}
+
+	.action-card {
+		@extend %playing-cards;
+
+		left: 35%;
+		position: absolute;
+		top: 5%;
+		transform: scale(2.5);
+
+		.card {
+			animation-fill-mode: forwards;
+			backface-visibility: hidden;
+			z-index: 5;
+
+			&.blank-- {
+				animation-duration: 4s;
+				animation-name: spin;
+				animation-timing-function: linear;
+			}
+		}
+
+		[card-type='action'] {
+			&.card {
+				animation-delay: 3s;
+				animation-duration: .5s;
+				animation-name: spin-reverse;
+				animation-timing-function: ease-out;
+				transform: rotateY(-90deg);
+			}
+		}
+	}
+}

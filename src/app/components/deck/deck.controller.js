@@ -18,6 +18,9 @@ export default class DeckController {
 		this.playersStore = playersStore;
 		this.ws = websocket;
 
+		this.maxClicks = 4;
+		this.tooManyClicks = false;
+
 		// Bindings from <deck> component
 		// this.deckId
 		// this.game
@@ -48,7 +51,7 @@ export default class DeckController {
 
 	isDisabled() {
 		return this.type === 'main' && !this.canDraw() ||
-			this.type === 'discard' && !this.canHoard() ||
+			this.type === 'discard' && this.tooManyClicks ||
 			this.type === 'action';
 	}
 
@@ -167,12 +170,21 @@ export default class DeckController {
 	onClick() {
 		this.$log.info('onClick()', this);
 
+		this.maxClicks--;
+
 		if (this.type === 'main' && this.canDraw()) {
 			this.drawCard();
 		} else if (this.type === 'discard' && this.canHoard()) {
 			this.collectHoard();
 		} else {
-			this.toastr.warning('This is nuts!');
+			if (this.maxClicks >= 0) {
+				this.toastr.warning(`${this.maxClicks} clicks LEFT!`, 'STOP THAT');
+			} else {
+				this.toastr.error('You have been banned from collecting the Hoard!');
+				this.tooManyClicks = true;
+
+				// TODO: Disable clicking even when user refreshes page
+			}
 		}
 	}
 

@@ -121,7 +121,7 @@
 
 			card {
 				float: left;
-				position: relative;
+				position: relative !important;
 				width: rem-calc($card-width-stack);
 
 				&.mine {

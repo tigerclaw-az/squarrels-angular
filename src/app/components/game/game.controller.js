@@ -9,6 +9,9 @@ export default class GameController {
 		this.$q = $q;
 		this.$timeout = $timeout;
 
+		// ???
+		this.mainCtrl = this.$scope.$parent.$parent.mainCtrl;
+
 		this._ = _;
 		this.toastr = toastr;
 
@@ -41,6 +44,8 @@ export default class GameController {
 			onError = (res => {
 				this.$log.error(res);
 			});
+
+		this.isAdmin = this.mainCtrl.isAdmin;
 
 		// FIXME: This won't work when starting new game
 		this.$scope.model = this.gameModel.model;

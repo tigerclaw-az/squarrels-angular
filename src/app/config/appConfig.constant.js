@@ -2,6 +2,7 @@
 
 export const AppConfigConstant = {
 	debug: true,
-	logLevel: 'INFO',
-	host: 'uschdancn2n6acs'
+	host: 'uschdancn2n6acs',
+	isAdmin: true,
+	logLevel: 'DEBUG'
 };

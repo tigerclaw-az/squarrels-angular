@@ -1,5 +1,5 @@
 export class MainController {
-	constructor ($scope, $state, $log, $timeout, websocket) {
+	constructor ($scope, $state, $log, $timeout, appConfig, websocket) {
 		'ngInject';
 
 		this.$scope = $scope;
@@ -9,6 +9,8 @@ export class MainController {
 		this.activate($timeout);
 
 		this.websocket = websocket;
+
+		this.isAdmin = appConfig.isAdmin;
 
 		this.websocket.connect();
 

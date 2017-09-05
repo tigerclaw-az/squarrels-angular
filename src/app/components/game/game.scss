@@ -21,3 +21,32 @@ header {
 	flex-direction: columns;
 	margin-bottom: rem-calc(24);
 }
+
+.action-card {
+	@extend %playing-cards;
+	left: 40%;
+	position: absolute !important;
+	top: 5%;
+	transform: scale(2);
+
+	.card {
+		animation-fill-mode: forwards;
+		backface-visibility: hidden;
+
+		&.blank-- {
+			animation-duration: 4s;
+			animation-name: spin;
+			animation-timing-function: linear;
+		}
+	}
+
+	[card-type='action'] {
+		.card {
+			animation-delay: 3s;
+			animation-duration: 1s;
+			animation-name: spin-reverse;
+			animation-timing-function: ease-out;
+			transform: rotateY(-90deg);
+		}
+	}
+}

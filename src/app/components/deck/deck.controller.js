@@ -1,5 +1,5 @@
 export default class DeckController {
-	constructor($rootScope, $scope, $log, toastr, _, decksApi, deckStore, playerModel, playersApi, playersStore, websocket) {
+	constructor($rootScope, $scope, $log, toastr, _, decksApi, deckStore, gamesApi, playerModel, playersApi, playersStore, websocket) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
@@ -9,6 +9,7 @@ export default class DeckController {
 		this._ = _;
 		this.toastr = toastr;
 
+		this.gamesApi = gamesApi;
 		this.decksApi = decksApi;
 		this.deckStore = deckStore;
 		this.playerModel = playerModel;
@@ -113,8 +114,7 @@ export default class DeckController {
 		this.deckStore
 			.drawCard()
 			.then(cardDrawn => {
-				let actionDeck = this.deckStore.getByType('action'),
-					cardAction = cardDrawn.action,
+				let cardAction = cardDrawn.action,
 					cardsMerge = [],
 					plData = {
 						totalCards: player.totalCards
@@ -133,14 +133,14 @@ export default class DeckController {
 
 					plData.isFirstTurn = plData.totalCards < this.playerModel.numDrawCards;
 				} else {
-					// FIXME
-					this.decksApi
-						.update(actionDeck.id, { cards: cardDrawn.id })
+					this.gamesApi
+						.update(this.game.id, { actionCard: cardDrawn.id })
 						.then(res => {
-							this.$log.info('actionDeck -> ', res);
+							this.$log.info('gameUpdate:actionCard -> ', res);
 						}, err => {
 							this.$log.error(err);
 						});
+
 
 					// Don't allow player to draw more than 7 cards
 					if (plData.totalCards === this.playerModel.numDrawCards) {

@@ -62,20 +62,6 @@ export default class GameController {
 
 			if (data.id) {
 				this.deckStore.update(data.id, data);
-
-				if (data.deckType === 'action') {
-					let card = data.cards[data.cards.length - 1];
-
-					this.gamesApi
-						.update(this.gameModel.model.game.id, { actionCard: card.id })
-						.then(res => {
-							this.$log.info('games:update()', res);
-
-							this.handleActionCard(card);
-						}, err => {
-							this.$log.error(err);
-						});
-				}
 			}
 		});
 
@@ -93,6 +79,13 @@ export default class GameController {
 
 		this.$rootScope.$on('websocket:games:update', (event, data) => {
 			this.$log.info('$on -> websocket:games:update', data);
+
+			if (data.actionCard) {
+				let card = data.actionCard;
+
+				this.handleActionCard(card);
+			}
+
 			this.gameModel.update(data);
 		});
 
@@ -190,7 +183,11 @@ export default class GameController {
 	}
 
 	handleActionCard(card) {
-		let hoardDeck = this.deckStore.getByType('discard'),
+		let actionDeck = this.deckStore.getByType('action'),
+			actionCards = actionDeck.cards.map(card => {
+				return card.id;
+			}),
+			hoardDeck = this.deckStore.getByType('discard'),
 			player = this.playerModel.model.player;
 
 		if (player.isActive) {
@@ -217,6 +214,16 @@ export default class GameController {
 				this.gamesApi.update(this.gameModel.model.game.id, { actionCard: null });
 				break;
 		}
+
+		actionCards.push(card.id);
+
+		this.decksApi
+			.update(actionDeck.id, { cards: actionCards })
+			.then(res => {
+				this.$log.info('decks:update()', res);
+			}, err => {
+				this.$log.error(err);
+			});
 	}
 
 	insertDeck(id) {

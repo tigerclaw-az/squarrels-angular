@@ -17,17 +17,10 @@
 		ng-show="deckCtrl.getTotalCards()"
 	>
 		<span
-			ng-if="deckCtrl.type !== 'action'"
-			class="card blank--"
-			ng-repeat="card in deckCtrl.getDeck().cards | limitTo: deckCtrl.cardLimit()">
-		</span>
-		<span
-			ng-if="deckCtrl.type === 'action'"
-			ng-class="{ 'action-card': deckCtrl.type === 'action'}"
-			ng-repeat="card in deckCtrl.getDeck().cards"
+			ng-class="deckCtrl.type === 'action' ? 'action--{{card.name}}' : 'blank--'"
+			ng-repeat="card in deckCtrl.getDeck().cards | limitTo: deckCtrl.cardLimit()"
+			class="card"
 		>
-			<span class="card blank--"></span>
-			<card card-id="{{card.id}}" card-type="action"></card>
 		</span>
 	</a>
 </div>

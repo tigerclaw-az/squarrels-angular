@@ -81,7 +81,7 @@ export default class GameController {
 		this.$rootScope.$on('websocket:games:update', (event, data) => {
 			this.$log.info('$on -> websocket:games:update', data);
 
-			if (data.actionCard) {
+			if (data.actionCard && !this.gameModel.model.game.actionCard) {
 				let card = data.actionCard;
 
 				this.handleActionCard(card);
@@ -193,8 +193,6 @@ export default class GameController {
 
 		if (player.isActive) {
 			this.toastr.info(card.action, 'Action Card');
-		} else {
-			this.toastr.warning('ACTION CARD!');
 		}
 
 		// FIXME: Only handling 'hoard' & 'winter' cards right now
@@ -216,17 +214,19 @@ export default class GameController {
 				break;
 		}
 
-		actionCards.push(card.id);
+		if (!this._.includes(actionCards, card.id)) {
+			actionCards.push(card.id);
 
-		this.$timeout(() => {
-			this.decksApi
-				.update(actionDeck.id, { cards: actionCards })
-				.then(res => {
-					this.$log.info('decks:update()', res);
-				}, err => {
-					this.$log.error(err);
-				});
-		}, 5000);
+			this.$timeout(() => {
+				this.decksApi
+					.update(actionDeck.id, { cards: actionCards })
+					.then(res => {
+						this.$log.info('decks:update()', res);
+					}, err => {
+						this.$log.error(err);
+					});
+			}, 5000);
+		}
 	}
 
 	insertDeck(id) {

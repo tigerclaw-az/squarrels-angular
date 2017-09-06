@@ -24,6 +24,7 @@ header {
 
 .action-card {
 	@extend %playing-cards;
+
 	left: 40%;
 	position: absolute !important;
 	top: 5%;

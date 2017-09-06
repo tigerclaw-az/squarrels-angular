@@ -58,13 +58,13 @@ export default class DeckStoreService {
 		return dealDefer.promise;
 	}
 
-	discard(id) {
+	discard(id, nextPlayer = true) {
 		let hoardDeck = this.getByType('discard'),
 			cards = hoardDeck.cards,
 			onSuccess = (res => {
 				this.$log.info('onSuccess()', res, this);
 
-				if (res[0].status === 200 && res[1].status === 200) {
+				if (res[0].status === 200 && res[1].status === 200 && nextPlayer) {
 					this.playersStore.nextPlayer();
 				}
 			}),

@@ -90,22 +90,41 @@ export default class DeckController {
 		let player = this.pModel.player;
 
 		if (player) {
-			return player.isActive && this._.isEmpty(this.game.actionCard) && player.isFirstTurn;
+			return player.isActive && !this.game.actionCard && player.isFirstTurn;
 		}
 
 		return false;
 	}
 
 	collectHoard() {
+		let player = this.pModel.player;
+
 		this.$log.info('collectHoard()', this.pModel.player, this.game.actionCard, this);
 
 		if (this.game.actionCard.action === 'hoard') {
 			this.ws.send({
 				action: 'hoard',
-				playerHoard: this.pModel.player
+				playerHoard: player
 			});
-		} else {
-			this.$log.warn('NOT HOARD CARD!');
+		} else if (!this._.isEmpty(player.cardsInHand)) {
+			this.playerModel.getCards()
+				.then(res => {
+					let cards = res.data,
+						highCard = this._.maxBy(cards, (card) => {
+							return card.cardType === 'special' ? -1 : card.amount;
+						});
+
+					this.$log.info('highCard ->', highCard);
+
+					if (!this._.isEmpty(highCard)) {
+						this.toastr.warning(highCard.name, 'You just lost a card!');
+
+						// FIXME: Only 1 card should be discarded
+						this.deckStore.discard(highCard.id, false);
+					}
+				}, (err) => {
+					this.$log.error(err);
+				});
 		}
 	}
 
@@ -167,10 +186,12 @@ export default class DeckController {
 		this.playerModel.resetSelected();
 	}
 
-	onClick() {
+	onClick($evt) {
 		this.$log.info('onClick()', this);
 
 		this.maxClicks--;
+
+		$evt.preventDefault();
 
 		if (this.type === 'main' && this.canDraw()) {
 			this.drawCard();

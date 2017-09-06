@@ -46,7 +46,18 @@ export class PlayerModelService {
 		this.$log.info('playerModel:cards -> ', plData);
 
 		this.update(plData);
+
 		return this.playersApi.update(this.model.player.id, plData);
+	}
+
+	getCards() {
+		let cards = this.model.player.cardsInHand;
+
+		if (!this._.isEmpty(cards)) {
+			return this.cardsApi.get(cards);
+		}
+
+		return this.$q.defer().resolve([]);
 	}
 
 	resetSelected() {
@@ -83,11 +94,7 @@ export class PlayerModelService {
 				this.$log.error(err);
 			});
 
-		if (!this._.isEmpty(this.model.player.cardsInHand)) {
-			this.cardsApi
-				.get(this.model.player.cardsInHand)
-				.then(onSuccess, onError);
-		}
+		this.getCards().then(onSuccess, onError);
 	}
 
 	update(data) {

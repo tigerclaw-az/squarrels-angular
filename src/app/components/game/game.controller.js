@@ -1,5 +1,5 @@
 export default class GameController {
-	constructor($rootScope, $scope, $state, $log, $q, $timeout, toastr, _, deckStore, decksApi, gamesApi, gameModel, playerModel, playersApi, playersStore) {
+	constructor($rootScope, $scope, $state, $log, $q, $timeout, toastr, _, deckStore, decksApi, gamesApi, gameModel, playersStore) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
@@ -19,8 +19,6 @@ export default class GameController {
 		this.decksApi = decksApi;
 		this.gamesApi = gamesApi;
 		this.gameModel = gameModel;
-		this.playerModel = playerModel;
-		this.playersApi = playersApi;
 		this.playersStore = playersStore;
 
 		this.$log.debug('constructor()', this);
@@ -194,28 +192,30 @@ export default class GameController {
 				return card.id;
 			}),
 			hoardDeck = this.deckStore.getByType('discard'),
-			player = this.playerModel.model.player;
-
-		if (player.isActive) {
-			this.toastr.info(card.action, 'Action Card');
-		}
+			timeout = 4000;
 
 		// FIXME: Only handling 'hoard' & 'winter' cards right now
 		switch (card.action) {
+			case 'whirlwind':
+				break;
+
 			case 'winter':
 				// plData.isActive = false;
+				timeout = 0;
 				break;
 
 			case 'hoard':
 				if (!hoardDeck.cards.length) {
 					this.toastr.info('No cards to Hoard');
 					this.gamesApi.update(this.gameModel.model.game.id, { actionCard: null });
+					timeout = 0;
 				}
 
 				break;
 
 			default:
 				this.gamesApi.update(this.gameModel.model.game.id, { actionCard: null });
+				timeout = 0;
 				break;
 		}
 
@@ -230,7 +230,7 @@ export default class GameController {
 					}, err => {
 						this.$log.error(err);
 					});
-			}, 5000);
+			}, timeout);
 		}
 	}
 

@@ -1,8 +1,11 @@
 module.exports = function(server) {
-	var	cookie = require('cookie'),
+	var	_ = require('lodash'),
+		cookie = require('cookie'),
 		cookieParser = require('cookie-parser'),
 		config = require('./config/config'),
 		logger = config.logger('websocket'),
+		gameMod = require('./routes/modules/game'),
+		playerMod = require('./routes/modules/player'),
 		WebSocket = require('ws');
 
 	const Player = require('./models/PlayerModel').model;
@@ -70,31 +73,100 @@ module.exports = function(server) {
 					if (!hoardPlayer) {
 						hoardPlayer = query;
 
-						// Remove actionCard from game
-
-						// playerMod
-						// 	.update(data.playerAction.id, { actionCard: null }, sid)
-						// 	.then(() => {
 						// 	FIXME: HACK!!
 						setTimeout(() => {
 							wss.broadcast(wsData, sid);
 							hoardPlayer = null;
 						}, 250);
-						// 	})
-						// 	.catch(err => {
-						// 		logger.error(err);
-						// 	})
 					} else {
 						ws.send(JSON.stringify(wsData));
 					}
 
 					break;
 
+				case 'whirlwind':
+					Player
+						.find({})
+						.select('+cardsInHand')
+						.exec()
+						.then(players => {
+							let playerIt = (pl) => {
+									let index = 0;
+
+									return {
+										next: () => {
+											if (index >= pl.length) {
+												index = 0;
+											}
+
+											return pl[index++];
+										}
+									};
+								},
+								cards = [],
+								startPlayer = 0,
+								playersOrder;
+
+							_.forEach(players, (pl, index) => {
+								cards.push(pl.cardsInHand);
+
+								// Remove cards from player's hand
+								pl.cardsInHand = [];
+								playerMod.update(pl.id, { cardsInHand: [] }, sid);
+
+								if (pl.isActive) {
+									startPlayer = index;
+								}
+							});
+
+							playersOrder = _.union(
+								players.slice(startPlayer),
+								players.slice(0, startPlayer)
+							);
+
+							cards = _(cards).flatten().shuffle().value();
+
+							// logger.info('playersOrder -> ', playersOrder);
+
+							let pIt = playerIt(playersOrder);
+
+							_.forEach(cards, card => {
+								let player = pIt.next();
+
+								logger.info('card -> ', card);
+
+								player.cardsInHand.push(card);
+							});
+
+							_.forEach(playersOrder, player => {
+								let newCards = player.cardsInHand,
+									playerData = {
+										cardsInHand: newCards,
+										totalCards: newCards.length
+									};
+
+								playerMod.update(
+									player.id,
+									playerData,
+									sid
+								);
+							});
+
+							// Remove the 'actionCard' from the game, which will trigger a
+							// message back to each client that the actionCard was removed
+							gameMod
+								.update(data.gameId, { actionCard: null }, sid)
+								.then(() => {})
+								.catch(() => {})
+
+							logger.info('players -> ', playersOrder);
+						});
+					break;
+
 				case 'whoami':
 					Player
 						.find(query)
 						.select('+sessionId +cardsInHand')
-						.populate('actionCard')
 						.exec()
 						.then(list => {
 							wsData = { action: 'whoami', type: 'players', nuts: list };

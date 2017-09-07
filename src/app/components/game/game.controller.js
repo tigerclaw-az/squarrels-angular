@@ -1,5 +1,5 @@
 export default class GameController {
-	constructor($rootScope, $scope, $state, $log, $q, $timeout, toastr, _, deckStore, decksApi, gamesApi, gameModel, playersStore) {
+	constructor($rootScope, $scope, $state, $log, $q, $timeout, toastr, _, deckStore, decksApi, gamesApi, gameModel, playerModel, playersStore) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
@@ -11,6 +11,7 @@ export default class GameController {
 
 		// ???
 		this.mainCtrl = this.$scope.$parent.$parent.mainCtrl;
+		this.ws = this.mainCtrl.websocket;
 
 		this._ = _;
 		this.toastr = toastr;
@@ -19,6 +20,7 @@ export default class GameController {
 		this.decksApi = decksApi;
 		this.gamesApi = gamesApi;
 		this.gameModel = gameModel;
+		this.playerModel = playerModel;
 		this.playersStore = playersStore;
 
 		this.$log.debug('constructor()', this);
@@ -45,7 +47,6 @@ export default class GameController {
 
 		this.isAdmin = this.mainCtrl.isAdmin;
 
-		// FIXME: This won't work when starting new game
 		this.$scope.model = this.gameModel.model;
 		this.$scope.playersModel = this.playersStore.model;
 
@@ -197,6 +198,14 @@ export default class GameController {
 		// FIXME: Only handling 'hoard' & 'winter' cards right now
 		switch (card.action) {
 			case 'whirlwind':
+				if (this.playerModel.isActive()) {
+					this.$timeout(() => {
+						this.ws.send({
+							action: 'whirlwind',
+							gameId: this.gameModel.model.game.id
+						});
+					}, timeout);
+				}
 				break;
 
 			case 'winter':

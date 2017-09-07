@@ -1,7 +1,8 @@
 var _ = require('lodash'),
 	config = require('../config/config'),
 	logger = config.logger('routes:games'),
-	games = require('express').Router();
+	games = require('express').Router(),
+	gameMod = require('./modules/game');
 
 const DeckModel = require('../models/DeckModel').model;
 const GameModel = require('../models/GameModel').model;
@@ -184,25 +185,16 @@ games.post('/:id', function(req, res) {
 	let gameId = req.params.id,
 		sessionId = req.session.id;
 
-	GameModel
-		.findByIdAndUpdate(gameId, req.body, { new: true })
-		.populate('actionCard')
+	gameMod
+		.update(gameId, req.body, sessionId)
 		.then(doc => {
 			let statusCode = doc ? 200 : 204;
-
-			/* eslint-disable no-undef */
-			wss.broadcast(
-				{ type: 'games', action: 'update', nuts: doc },
-				sessionId
-			);
-			/* eslint-disable no-undef */
 
 			res.status(statusCode).json(doc);
 		})
 		.catch(err => {
-			logger.error(err);
 			res.status(500).json(config.apiError(err));
-		})
+		});
 });
 
 module.exports = games;

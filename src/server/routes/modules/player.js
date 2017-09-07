@@ -9,13 +9,15 @@ let playerMod = {
 
 		Player
 			.findOneAndUpdate(playerId, data, options)
-			.populate('actionCard')
 			.then(doc => {
+				let wsData = {
+					action: 'update',
+					nuts: doc,
+					type: 'players'
+				};
+
 				/* eslint-disable no-undef */
-				wss.broadcast(
-					{ type: 'players', action: 'update', nuts: doc },
-					sid
-				);
+				wss.broadcast(wsData, sid);
 				/* eslint-enable no-undef */
 
 				defer.resolve(doc);

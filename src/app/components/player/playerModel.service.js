@@ -30,6 +30,10 @@ export class PlayerModelService {
 		this.$localStorage.player = this.model.player;
 	}
 
+	isActive() {
+		return this.model.player && this.model.player.isActive;
+	}
+
 	discard(id) {
 		let cards = this.model.player.cardsInHand;
 

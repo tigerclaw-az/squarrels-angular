@@ -25,7 +25,7 @@ export default class CardController {
 		let onSuccess = (res => {
 				this.$log.info('onSuccess()', res, this);
 
-				if (res.status === 200) {
+				if (res.status === 200 && !this._.isEmpty(res.data[0])) {
 					this.cardData = res.data[0];
 
 					let type = this.cardData.cardType,

@@ -13,7 +13,7 @@
 	},
 	"rules": {
 		"eol-last": ["error", "always"],
-		"indent": ["error", "tab", { "SwitchCase": 1 }],
+		"indent": ["warn", "tab", { "SwitchCase": 1 }],
 		"quotes": ["error", "single"],
 		"max-len": ["warn", {
 			"code": 102
@@ -21,7 +21,8 @@
 		"no-fallthrough": ["off"],
 		"no-mixed-requires": ["off"],
 		"no-warning-comments": ["warn", { "terms": ["todo", "fixme"], "location": "start" }],
-		"no-underscore-dangle": ["off"]
+		"no-underscore-dangle": ["off"],
+		"no-unused-vars": ["warn"]
 	},
 	"parserOptions": {
 		"sourceType": "module"

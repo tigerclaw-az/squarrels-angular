@@ -3,16 +3,27 @@
 deck {
 	flex: 1;
 	height: rem-calc(map-get($card-height, 'small'));
+	position: relative;
 	width: rem-calc(map-get($card-width, 'small'));
+
+	.count {
+		@include center-horizontal;
+
+		font-size: 2rem;
+		top: -30%;
+		z-index: 1;
+	}
 
 	&[type='main'] {
 		.deck {
-			box-shadow: 4px 6px 1px get-color('pickled-bean');
+			// box-shadow: 4px 6px 1px get-color('pickled-bean');
+			border: 2px outset get-color(zest);
 		}
 	}
 
 	&[type='discard'] {
 		border: 1px dashed get-color(black);
+		padding: 1rem;
 
 		.deck {
 			border: 2px dashed transparent;
@@ -36,7 +47,7 @@ deck {
 	}
 
 	&[type='action'] {
-		border: 2px inset get-color('mandy');
+		border: 2px inset get-color(carnaby-tan);
 
 		.card {
 			animation: .5s linear shrink;
@@ -51,13 +62,6 @@ deck {
 		margin: 0 auto;
 		width: 100%;
 
-		.count {
-			font-size: 4rem;
-			position: absolute;
-			right: 25%;
-			z-index: 1;
-		}
-
 		.cards-group {
 			margin: 0 auto;
 			width: rem-calc(map-get($card-width, 'small'));
@@ -65,8 +69,19 @@ deck {
 	}
 
 	@media (min-width: $screen-md-min) {
-		height: rem-calc(map-get($card-height, 'medium'));
+		$height: map-get($card-height, 'medium') + 8;
+		height: rem-calc($height);
 		width: rem-calc(map-get($card-width, 'medium'));
+
+		.count {
+			font-size: 4rem;
+			top: -25%;
+		}
+
+		&[type='discard'] {
+			height: rem-calc($height + 48);
+			padding: 2rem;
+		}
 
 		.deck {
 			.cards-group {

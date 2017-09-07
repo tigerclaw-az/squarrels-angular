@@ -103,7 +103,7 @@
 		@include clearfix;
 
 		float: left;
-		width: 70%;
+		width: 50%;
 
 		.cards-group {
 			@extend %playing-cards;
@@ -128,8 +128,16 @@
 					animation: .5s linear grow;
 				}
 
-				// TODO: Add animation when card is removed
+				&.ng-leave-active {
+					.card {
+						animation: .5s linear fade-out;
+					}
+				}
 			}
+		}
+
+		@media (min-width: $screen-md-min) {
+			width: 70%;
 		}
 	}
 }

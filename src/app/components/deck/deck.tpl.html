@@ -1,3 +1,4 @@
+<div class="count" ng-hide="deckCtrl.type === 'action'">{{deckCtrl.getTotalCards()}}</div>
 <div
 	class="deck"
 	ng-class="{
@@ -7,7 +8,6 @@
 	ng-attr-ng-drop="{{isDiscard}}"
 	ng-drop-success="deckCtrl.onDropComplete($data, $event)"
 >
-	<div class="count" ng-hide="deckCtrl.type === 'action'">{{deckCtrl.getTotalCards()}}</div>
 	<a
 		class="cards-group"
 		href="#"

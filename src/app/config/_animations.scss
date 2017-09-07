@@ -1,3 +1,17 @@
+@keyframes gradient {
+	0% {
+		background-position: 0% 14%;
+	}
+
+	50% {
+		background-position: 100% 87%;
+	}
+
+	100% {
+		background-position: 0% 14%;
+	}
+}
+
 @keyframes spin {
 	to {
 		transform: rotateY(120deg);

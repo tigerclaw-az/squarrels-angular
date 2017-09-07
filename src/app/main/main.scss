@@ -2,6 +2,12 @@
 	@include user-select(none);
 }
 
+body {
+	animation: gradient 10s ease infinite;
+	background: linear-gradient(320deg, get-color(carnaby-tan), get-color(pickled-bean), get-color(cioccolato), get-color(kenyan-copper));
+	background-size: 600% 600%;
+}
+
 a {
 	&.disabled {
 		cursor: default;

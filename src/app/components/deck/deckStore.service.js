@@ -40,7 +40,7 @@ export default class DeckStoreService {
 				this.$log.info('dealCards:then()', cards, cardIds, this);
 
 				this.playersApi
-					.update(pl.id, { cardsInHand: cardIds, totalCards: cardIds.length })
+					.update(pl.id, { cardsInHand: cardIds })
 					.then(res => {
 						this.$log.info('playersApi:update()', res, this);
 						dealDefer.resolve(cards);

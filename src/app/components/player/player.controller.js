@@ -89,8 +89,7 @@ export default class PlayerController {
 		let plData = {
 			cardsInHand: cardsInHand,
 			cardsInStorage: cardsInStorage,
-			score: this.player.score + cardsSelected[0].amount,
-			totalCards: cardsInHand.length
+			score: this.player.score + cardsSelected[0].amount
 		};
 
 		this.playersApi

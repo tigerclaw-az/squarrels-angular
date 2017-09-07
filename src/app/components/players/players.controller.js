@@ -86,8 +86,7 @@ default class PlayersController {
 			cards = this._.union(playerCards, hoardDeck.cards);
 
 			let playerObj = {
-				cardsInHand: cards,
-				totalCards: cards.length
+				cardsInHand: cards
 			};
 
 			if (data.id === currentPlayer.id) {

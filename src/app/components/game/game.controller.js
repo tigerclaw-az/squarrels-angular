@@ -197,6 +197,17 @@ export default class GameController {
 
 		// FIXME: Only handling 'hoard' & 'winter' cards right now
 		switch (card.action) {
+			case 'ambush':
+				if (this.playerModel.isActive()) {
+					this.$timeout(() => {
+						this.ws.send({
+							action: 'ambush',
+							gameId: this.gameModel.model.game.id
+						});
+					}, timeout);
+				}
+				break;
+
 			case 'whirlwind':
 				if (this.playerModel.isActive()) {
 					this.$timeout(() => {

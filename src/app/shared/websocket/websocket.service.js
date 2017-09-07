@@ -52,7 +52,8 @@ export class WebSocketService {
 	}
 
 	onError(msg) {
-		this.toastr.error(msg, 'websocket:error');
+		this.$log.error(msg);
+		this.toastr.error('websocket:error');
 
 		this.$rootScope.$broadcast('websocket:error', msg);
 	}

@@ -2,10 +2,20 @@ var Q = require('q'),
 	Player = require('../../models/PlayerModel.js').model;
 
 let playerMod = {
+	get: (data = {}) => {
+		return Player
+			.find(data)
+			.select('+cardsInHand')
+			.exec();
+	},
 	update: (id, data, sid) => {
 		let playerId = { _id: id },
 			options = { new: true },
 			defer = Q.defer();
+
+		if (data.cardsInHand) {
+			data.totalCards = data.cardsInHand.length;
+		}
 
 		Player
 			.findOneAndUpdate(playerId, data, options)

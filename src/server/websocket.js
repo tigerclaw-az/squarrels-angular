@@ -23,9 +23,10 @@ module.exports = function(server) {
 		hoardPlayer = null,
 		CLIENTS = [];
 
-	wss.broadcast = function broadcast(data, sid, all = true) {
+	wss.broadcast = (data, sid, all = true) => {
 		logger.debug('broadcast() -> ', data, sid, all);
-		wss.clients.forEach(function each(client) {
+
+		wss.clients.forEach(client => {
 			if (client.readyState === WebSocket.OPEN) {
 				if (all || client !== CLIENTS[sid]) {
 					client.send(JSON.stringify(data));
@@ -36,7 +37,28 @@ module.exports = function(server) {
 
 	wss.on('connection', function connection(ws, req) {
 		let parseCookie = cookie.parse(req.headers.cookie)['connect.sid'],
-			sid = cookieParser.signedCookie(parseCookie, '$eCuRiTy');
+			sid = cookieParser.signedCookie(parseCookie, '$eCuRiTy'),
+			playerIt = (pl) => {
+				let index = 0;
+
+				return {
+					next: () => {
+						if (index >= pl.length) {
+							index = 0;
+						}
+
+						return pl[index++];
+					}
+				};
+			},
+			resetActionCard = (id) => {
+				// Remove the 'actionCard' from the game, which will trigger a
+				// message back to each client that the actionCard was removed
+				gameMod
+					.update(id, { actionCard: null }, sid)
+					.then(() => {})
+					.catch(() => {});
+			};
 
 		logger.info('Connection accepted:', sid);
 		logger.info('Clients Connected: %s', wss.clients.size);
@@ -49,7 +71,7 @@ module.exports = function(server) {
 
 		// This is the most important callback for us, we'll handle
 		// all messages from users here.
-		ws.on('message', function(message) {
+		ws.on('message', (message) => {
 			var data = JSON.parse(message),
 				query = {
 					sessionId: sid
@@ -58,9 +80,58 @@ module.exports = function(server) {
 
 			// Process WebSocket message
 			logger.debug('Message received: ', data);
-			logger.log(`websocket:onmessage:${data.action} -> `, query);
+			logger.debug(`websocket:onmessage:${data.action} -> `, query);
 
 			switch (data.action) {
+				case 'ambush':
+					playerMod
+						.get()
+						.then(players => {
+							let cards = [],
+								plData = {},
+								playerToUpdate = {};
+
+							_.forEach(players, pl => {
+								let card = _.sampleSize(pl.cardsInHand)[0];
+
+								if (!pl.isActive) {
+									logger.debug('card -> ', card);
+
+									_.pull(pl.cardsInHand, card);
+									cards.push(card);
+
+									plData = {
+										cardsInHand: pl.cardsInHand
+									};
+
+									playerMod
+										.update(pl.id, plData, sid)
+										.then(() => {})
+										.catch(() => {});
+								} else {
+									cards = _.union(cards, pl.cardsInHand);
+									playerToUpdate = pl;
+									logger.debug('playerToUpdate -> ', playerToUpdate);
+								}
+							});
+
+							plData = {
+								cardsInHand: cards
+							};
+
+							playerMod
+								.update(playerToUpdate.id, plData, sid)
+								.then(() => {})
+								.catch(() => {});
+						})
+						.catch(err => {
+							logger.error(err);
+						});
+
+					resetActionCard(data.gameId);
+
+					break;
+
 				case 'hoard':
 					delete data.playerHoard.cardsInHand;
 
@@ -85,25 +156,10 @@ module.exports = function(server) {
 					break;
 
 				case 'whirlwind':
-					Player
-						.find({})
-						.select('+cardsInHand')
-						.exec()
+					playerMod
+						.get()
 						.then(players => {
-							let playerIt = (pl) => {
-									let index = 0;
-
-									return {
-										next: () => {
-											if (index >= pl.length) {
-												index = 0;
-											}
-
-											return pl[index++];
-										}
-									};
-								},
-								cards = [],
+							let cards = [],
 								startPlayer = 0,
 								playersOrder;
 
@@ -126,23 +182,21 @@ module.exports = function(server) {
 
 							cards = _(cards).flatten().shuffle().value();
 
-							// logger.info('playersOrder -> ', playersOrder);
+							logger.debug('playersOrder -> ', playersOrder);
 
 							let pIt = playerIt(playersOrder);
 
 							_.forEach(cards, card => {
 								let player = pIt.next();
 
-								logger.info('card -> ', card);
+								logger.debug('card -> ', card);
 
 								player.cardsInHand.push(card);
 							});
 
 							_.forEach(playersOrder, player => {
-								let newCards = player.cardsInHand,
-									playerData = {
-										cardsInHand: newCards,
-										totalCards: newCards.length
+								let playerData = {
+										cardsInHand: player.cardsInHand
 									};
 
 								playerMod.update(
@@ -152,15 +206,11 @@ module.exports = function(server) {
 								);
 							});
 
-							// Remove the 'actionCard' from the game, which will trigger a
-							// message back to each client that the actionCard was removed
-							gameMod
-								.update(data.gameId, { actionCard: null }, sid)
-								.then(() => {})
-								.catch(() => {})
+							resetActionCard(data.gameId);
 
-							logger.info('players -> ', playersOrder);
+							logger.debug('players -> ', playersOrder);
 						});
+
 					break;
 
 				case 'whoami':
@@ -176,6 +226,7 @@ module.exports = function(server) {
 						.catch(err => {
 							logger.error(err);
 						});
+
 					break;
 
 				default:
@@ -184,11 +235,11 @@ module.exports = function(server) {
 			}
 		});
 
-		ws.on('error', function(err) {
+		ws.on('error', (err) => {
 			logger.error(err);
 		});
 
-		ws.on('close', function(connection) {
+		ws.on('close', (connection) => {
 			// close user connection
 			logger.warn('Connection Closed:', connection);
 		});

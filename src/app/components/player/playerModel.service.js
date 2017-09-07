@@ -44,7 +44,6 @@ export class PlayerModelService {
 
 		let plData = {
 			cardsInHand: cards,
-			totalCards: cards.length
 		};
 
 		this.$log.info('playerModel:cards -> ', plData);
@@ -55,13 +54,15 @@ export class PlayerModelService {
 	}
 
 	getCards() {
-		let cards = this.model.player.cardsInHand;
+		let cards = this.model.player.cardsInHand,
+			defer = this.$q.defer();
 
 		if (!this._.isEmpty(cards)) {
 			return this.cardsApi.get(cards);
 		}
 
-		return this.$q.defer().resolve([]);
+		defer.resolve([]);
+		return defer;
 	}
 
 	resetSelected() {

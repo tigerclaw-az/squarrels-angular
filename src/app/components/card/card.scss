@@ -1,9 +1,9 @@
 $card-height: (
-	small: 160,
+	small: 130,
 	medium: 270
 );
 $card-width: (
-	small: 100,
+	small: 90,
 	medium: 200
 );
 $card-width-stack: 60;
@@ -59,10 +59,6 @@ $card-images: (
 
 	.card {
 		@include generate-cards;
-
-		color: get-color(white);
-		display: block;
-		font-size: 4rem;
 	}
 
 	[role='button'] {

@@ -1,8 +1,11 @@
 @import '../card/card';
 
+$deck-height: 8;
+
 deck {
 	flex: 1;
-	height: rem-calc(map-get($card-height, 'small'));
+	$height: map-get($card-height, 'small') + $deck-height;
+	height: rem-calc($height);
 	position: relative;
 	width: rem-calc(map-get($card-width, 'small'));
 
@@ -23,6 +26,7 @@ deck {
 
 	&[type='discard'] {
 		border: 1px dashed get-color(black);
+		height: rem-calc($height + 32);
 		padding: 1rem;
 
 		.deck {
@@ -69,7 +73,7 @@ deck {
 	}
 
 	@media (min-width: $screen-md-min) {
-		$height: map-get($card-height, 'medium') + 8;
+		$height: map-get($card-height, 'medium') + $deck-height;
 		height: rem-calc($height);
 		width: rem-calc(map-get($card-width, 'medium'));
 

@@ -98,17 +98,20 @@ module.exports = function(server) {
 								if (!pl.isActive) {
 									logger.debug('card -> ', card);
 
-									_.pull(pl.cardsInHand, card);
-									cards.push(card);
+									// Only update if the player has at least 1 card
+									if (card) {
+										_.pull(pl.cardsInHand, card);
+										cards.push(card);
 
-									plData = {
-										cardsInHand: pl.cardsInHand
-									};
+										plData = {
+											cardsInHand: pl.cardsInHand
+										};
 
-									playerMod
-										.update(pl.id, plData, sid)
-										.then(() => {})
-										.catch(() => {});
+										playerMod
+											.update(pl.id, plData, sid)
+											.then(() => {})
+											.catch(() => {});
+									}
 								} else {
 									cards = _.union(cards, pl.cardsInHand);
 									playerToUpdate = pl;

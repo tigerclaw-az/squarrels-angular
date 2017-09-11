@@ -185,6 +185,8 @@ games.post('/:id', function(req, res) {
 	let gameId = req.params.id,
 		sessionId = req.session.id;
 
+	logger.debug('post -> ', req.body);
+
 	gameMod
 		.update(gameId, req.body, sessionId)
 		.then(doc => {

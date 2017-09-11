@@ -6,6 +6,7 @@ module.exports = function(server) {
 		logger = config.logger('websocket'),
 		gameMod = require('./routes/modules/game'),
 		playerMod = require('./routes/modules/player'),
+		Q = require('q'),
 		WebSocket = require('ws');
 
 	const Player = require('./models/PlayerModel').model;
@@ -161,7 +162,47 @@ module.exports = function(server) {
 						.then(players => {
 							let cards = [],
 								startPlayer = 0,
-								playersOrder;
+								playersOrder,
+								updatePromises = [],
+								dealCards = () => {
+									playersOrder = _.union(
+										players.slice(startPlayer),
+										players.slice(0, startPlayer)
+									);
+
+									cards = _(cards).flatten().shuffle().value();
+
+									logger.debug('cards -> ', cards);
+									logger.debug('playersOrder1 -> ', playersOrder);
+
+									let pIt = playerIt(playersOrder);
+
+									_.forEach(cards, card => {
+										let player = pIt.next();
+
+										logger.debug('card -> ', card);
+
+										player.cardsInHand.push(card);
+									});
+
+									logger.debug('playersOrder2 -> ', playersOrder);
+
+									_.forEach(playersOrder, player => {
+										let playerData = {
+											cardsInHand: player.cardsInHand
+										};
+
+										logger.debug('playerData -> ', playerData);
+
+										playerMod.update(
+											player.id,
+											playerData,
+											sid
+										);
+									});
+
+									resetActionCard(data.gameId);
+								};
 
 							_.forEach(players, (pl, index) => {
 								let plCards = pl.cardsInHand.slice(); // Copy array
@@ -172,48 +213,19 @@ module.exports = function(server) {
 
 								// Remove cards from player's hand
 								pl.cardsInHand = [];
-								playerMod.update(pl.id, { cardsInHand: [] }, sid);
+								updatePromises.push(
+									playerMod.update(pl.id, { cardsInHand: [] }, sid)
+								);
 
 								if (pl.isActive) {
 									startPlayer = index;
 								}
 							});
 
-							playersOrder = _.union(
-								players.slice(startPlayer),
-								players.slice(0, startPlayer)
-							);
-
-							cards = _(cards).flatten().shuffle().value();
-
-							logger.debug('cards -> ', cards);
-							logger.debug('playersOrder -> ', playersOrder);
-
-							let pIt = playerIt(playersOrder);
-
-							_.forEach(cards, card => {
-								let player = pIt.next();
-
-								logger.debug('card -> ', card);
-
-								player.cardsInHand.push(card);
-							});
-
-							_.forEach(playersOrder, player => {
-								let playerData = {
-										cardsInHand: player.cardsInHand
-									};
-
-								playerMod.update(
-									player.id,
-									playerData,
-									sid
-								);
-							});
-
-							resetActionCard(data.gameId);
-
-							logger.debug('players -> ', playersOrder);
+							Q.all(updatePromises)
+								.then(() => {
+									setTimeout(dealCards, 3000);
+								});
 						});
 
 					break;

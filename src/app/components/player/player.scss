@@ -119,6 +119,7 @@
 				@extend %playing-cards;
 
 				border: 2px dotted;
+				height: rem-calc(map-get($card-height, 'small'));
 				padding: 3.5rem;
 
 				&::after {
@@ -164,6 +165,13 @@
 
 		.sq-player-cards {
 			width: 70%;
+
+			.cards-group {
+				.empty {
+					height: rem-calc(map-get($card-height, 'medium'));
+					padding: 7rem;
+				}
+			}
 		}
 	}
 }

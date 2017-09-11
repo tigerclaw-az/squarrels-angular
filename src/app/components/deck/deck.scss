@@ -1,11 +1,12 @@
 @import '../card/card';
 
-$deck-height: 8;
+$deck-height: 16;
 
 deck {
 	flex: 1;
 	$height: map-get($card-height, 'small') + $deck-height;
 	height: rem-calc($height);
+	margin-right: 1rem;
 	position: relative;
 	width: rem-calc(map-get($card-width, 'small'));
 
@@ -51,8 +52,6 @@ deck {
 	}
 
 	&[type='action'] {
-		border: 2px inset get-color(carnaby-tan);
-
 		.card {
 			animation: .5s linear shrink;
 		}
@@ -83,8 +82,8 @@ deck {
 		}
 
 		&[type='discard'] {
-			height: rem-calc($height + 48);
-			padding: 2rem;
+			height: rem-calc($height + $deck-height * 2);
+			padding: 1rem;
 		}
 
 		.deck {

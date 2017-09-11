@@ -152,8 +152,6 @@ export default class DeckController {
 
 					plData.cardsInHand = cardsMerge;
 					plData.totalCards = cardsMerge.length;
-
-					plData.isFirstTurn = plData.totalCards < this.playerModel.numDrawCards;
 				} else {
 					this.gamesApi
 						.update(this.game.id, { actionCard: cardDrawn.id })

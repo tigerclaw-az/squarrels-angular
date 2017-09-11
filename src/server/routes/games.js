@@ -134,7 +134,7 @@ games.post('/', function(req, res) {
 			Promise
 				.all(deckPromises)
 				.then(decksCreated => {
-					logger.info('decksCreated -> ', decksCreated);
+					logger.debug('decksCreated -> ', decksCreated);
 
 					let game = new GameModel({
 						isGameStarted: true,

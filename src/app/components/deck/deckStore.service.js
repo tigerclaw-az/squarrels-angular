@@ -37,12 +37,12 @@ export default class DeckStoreService {
 					return card.id
 				});
 
-				this.$log.info('dealCards:then()', cards, cardIds, this);
+				this.$log.debug('dealCards:then()', cards, cardIds, this);
 
 				this.playersApi
 					.update(pl.id, { cardsInHand: cardIds })
 					.then(res => {
-						this.$log.info('playersApi:update()', res, this);
+						this.$log.debug('playersApi:update()', res, this);
 						dealDefer.resolve(cards);
 					})
 					.catch(err => {
@@ -62,7 +62,7 @@ export default class DeckStoreService {
 		let hoardDeck = this.getByType('discard'),
 			cards = hoardDeck.cards,
 			onSuccess = (res => {
-				this.$log.info('onSuccess()', res, this);
+				this.$log.debug('onSuccess()', res, this);
 
 				if (res[0].status === 200 && res[1].status === 200 && nextPlayer) {
 					this.playersStore.nextPlayer();
@@ -73,7 +73,7 @@ export default class DeckStoreService {
 			}),
 			actions = [];
 
-		this.$log.info('discard()', id, hoardDeck, this);
+		this.$log.debug('discard()', id, hoardDeck, this);
 
 		if (this._.includes(cards, id)) {
 			this.toastr.error(id, 'CARD ALREADY DISCARDED');
@@ -102,17 +102,17 @@ export default class DeckStoreService {
 			},
 			cardDrawn = this._.sampleSize(cardsFromDeck.toDraw)[0];
 
-		this.$log.info('drawCard()', mainDeck, this);
+		this.$log.debug('drawCard()', mainDeck, this);
 
-		this.$log.info('cardsFromDeck -> ', cardsFromDeck);
-		this.$log.info('cardDrawn -> ', cardDrawn);
+		this.$log.debug('cardsFromDeck -> ', cardsFromDeck);
+		this.$log.debug('cardDrawn -> ', cardDrawn);
 
 		this._.pull(cardsFromDeck.ids, cardDrawn.id);
 		mainDeck.cards = this._.reject(mainDeck.cards, (o) => {
 			return cardDrawn.id === o.id;
 		});
 
-		this.$log.info('remainingCards -> ', mainDeck.cards);
+		this.$log.debug('remainingCards -> ', mainDeck.cards);
 
 		this.decksApi
 			.update(mainDeck.id, { cards: cardsFromDeck.ids })
@@ -133,8 +133,6 @@ export default class DeckStoreService {
 	}
 
 	get(id) {
-		this.$log.info('get()', id, this);
-
 		if (id) {
 			return this.model.deck[id];
 		}
@@ -149,7 +147,7 @@ export default class DeckStoreService {
 	}
 
 	insert(data) {
-		this.$log.info('insert()', data, this);
+		this.$log.debug('insert()', data, this);
 
 		this.model.deck[data.id] = data;
 	}
@@ -159,7 +157,7 @@ export default class DeckStoreService {
 
 		Object.assign(deck, data);
 
-		this.$log.info('update()', id, data, deck, this);
+		this.$log.debug('update()', id, data, deck, this);
 
 		return deck;
 	}

@@ -24,7 +24,7 @@ export class PlayerModelService {
 			cardsSelected: []
 		}, data);
 
-		this.$log.info('insert()', pl, this);
+		this.$log.debug('insert()', pl, this);
 
 		this.model.player = pl;
 		this.$localStorage.player = this.model.player;
@@ -37,7 +37,7 @@ export class PlayerModelService {
 	discard(id) {
 		let cards = this.model.player.cardsInHand;
 
-		this.$log.info('discard()', id, cards, this);
+		this.$log.debug('discard()', id, cards, this);
 
 		// Remove card from player
 		this._.pull(cards, id);
@@ -46,7 +46,7 @@ export class PlayerModelService {
 			cardsInHand: cards,
 		};
 
-		this.$log.info('playerModel:cards -> ', plData);
+		this.$log.debug('playerModel:cards -> ', plData);
 
 		this.update(plData);
 
@@ -66,8 +66,6 @@ export class PlayerModelService {
 	}
 
 	resetSelected() {
-		this.$log.info('resetSelected()', this);
-
 		// Reset selected cards when player draws a new card
 		angular.element(document).find('card').removeClass('selected');
 		this.model.player.cardsSelected = [];
@@ -85,7 +83,7 @@ export class PlayerModelService {
 						})
 					};
 
-				this.$log.info('showSpecialCards()', special, this);
+				this.$log.debug('showSpecialCards()', special, this);
 
 				if (special.length) {
 					this._.forEach(special, (card) => {

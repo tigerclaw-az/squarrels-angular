@@ -28,7 +28,7 @@ export default class GameController {
 
 	$onInit() {
 		let onSuccess = (res => {
-				this.$log.info('onSuccess()', res, this);
+				this.$log.debug('onSuccess()', res, this);
 
 				if (res.status === 200) {
 					let gameData = res.data[0],
@@ -56,14 +56,14 @@ export default class GameController {
 
 		// Should only fire for external clients
 		this.$rootScope.$on('websocket:decks:create', (event, data) => {
-			this.$log.info('$on -> websocket:decks:create', data);
+			this.$log.debug('$on -> websocket:decks:create', data);
 
 			this.insertDeck(data.id, data);
 		});
 
 		// Will fire for ALL clients
 		this.$rootScope.$on('websocket:decks:update', (event, data) => {
-			this.$log.info('$on -> websocket:decks:update', data);
+			this.$log.debug('$on -> websocket:decks:update', data);
 
 			if (data.id) {
 				this.deckStore.update(data.id, data);
@@ -71,19 +71,19 @@ export default class GameController {
 		});
 
 		this.$rootScope.$on('websocket:decks:remove', (event, data) => {
-			this.$log.info('$on -> websocket:decks:remove', data);
+			this.$log.debug('$on -> websocket:decks:remove', data);
 
 			this.deckStore.empty();
 		});
 
 		// Should only fire for clients that didn't click 'New Game'
 		this.$rootScope.$on('websocket:games:create', (event, data) => {
-			this.$log.info('$on -> websocket:games:create', data);
+			this.$log.debug('$on -> websocket:games:create', data);
 			this.gameModel.update(data);
 		});
 
 		this.$rootScope.$on('websocket:games:update', (event, data) => {
-			this.$log.info('$on -> websocket:games:update', data);
+			this.$log.debug('$on -> websocket:games:update', data);
 
 			if (data.actionCard && !this.gameModel.model.game.actionCard) {
 				let card = data.actionCard;
@@ -95,7 +95,7 @@ export default class GameController {
 		});
 
 		this.$rootScope.$on('websocket:games:remove', (event, data) => {
-			this.$log.info('$on -> websocket:games:remove', data);
+			this.$log.debug('$on -> websocket:games:remove', data);
 			this.gameModel.clear(data);
 		});
 
@@ -250,7 +250,7 @@ export default class GameController {
 				this.decksApi
 					.update(actionDeck.id, { cards: actionCards })
 					.then(res => {
-						this.$log.info('decks:update()', res);
+						this.$log.debug('decks:update()', res);
 					}, err => {
 						this.$log.error(err);
 					});

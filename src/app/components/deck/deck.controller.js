@@ -114,7 +114,7 @@ export default class DeckController {
 							return card.cardType === 'special' ? -1 : card.amount;
 						});
 
-					this.$log.info('highCard ->', highCard);
+					this.$log.debug('highCard ->', highCard);
 
 					if (!this._.isEmpty(highCard)) {
 						this.toastr.warning(highCard.name, 'You just lost a card!');
@@ -142,13 +142,13 @@ export default class DeckController {
 						totalCards: player.totalCards
 					};
 
-				this.$log.info('deckStore:drawCard()', cardDrawn, cardAction, this);
+				this.$log.debug('deckStore:drawCard()', cardDrawn, cardAction, this);
 
 				if (!cardAction) {
 					// Player drew a non-"action" card, so add to their hand and update
 					cardsMerge = this._.union(player.cardsInHand, [cardDrawn.id]);
 
-					this.$log.info('cards:union -> ', cardsMerge);
+					this.$log.debug('cards:union -> ', cardsMerge);
 
 					plData.cardsInHand = cardsMerge;
 					plData.totalCards = cardsMerge.length;
@@ -156,7 +156,7 @@ export default class DeckController {
 					this.gamesApi
 						.update(this.game.id, { actionCard: cardDrawn.id })
 						.then(res => {
-							this.$log.info('gameUpdate:actionCard -> ', res);
+							this.$log.debug('gameUpdate:actionCard -> ', res);
 						}, err => {
 							this.$log.error(err);
 						});
@@ -171,7 +171,7 @@ export default class DeckController {
 				this.playersApi
 					.update(player.id, plData)
 					.then(res => {
-						this.$log.info('playersApi:update()', res, this);
+						this.$log.debug('playersApi:update()', res, this);
 					})
 					.catch(err => {
 						this.$log.error('This is nuts! Error: ', err);
@@ -185,7 +185,7 @@ export default class DeckController {
 	}
 
 	onClick($evt) {
-		this.$log.info('onClick()', this);
+		this.$log.debug('onClick()', this);
 
 		this.maxClicks--;
 

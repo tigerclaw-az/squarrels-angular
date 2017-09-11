@@ -23,7 +23,7 @@ export default class CardController {
 
 	$onChanges() {
 		let onSuccess = (res => {
-				this.$log.info('onSuccess()', res, this);
+				this.$log.debug('onSuccess()', res, this);
 
 				if (res.status === 200 && !this._.isEmpty(res.data[0])) {
 					this.cardData = res.data[0];
@@ -78,7 +78,7 @@ export default class CardController {
 	onClick(e) {
 		let filterBy = (o) => { return o.id !== this.cardId };
 
-		this.$log.info('onClick()', this, this.cardId);
+		this.$log.debug('onClick()', this, this.cardId);
 
 		let $el = angular.element(e.currentTarget).parent();
 

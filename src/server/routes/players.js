@@ -87,7 +87,7 @@ players.post('/:id?', function(req, res) {
 
 			pl.save()
 				.then(() => {
-					logger.info('Player.save()', pl);
+					logger.debug('Player.save()', pl);
 
 					/* eslint-disable no-undef */
 					wss.broadcast(

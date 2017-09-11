@@ -53,7 +53,7 @@ default class PlayersController {
 		// This is triggered when a player tries to click the 'Hoard' pile after
 		// another player has already collected it
 		this.$rootScope.$on('websocket:player:hoard', ((event, data) => {
-			this.$log.info('$on -> websocket:player:hoard', data);
+			this.$log.debug('$on -> websocket:player:hoard', data);
 
 			this.toastr.error('NO HOARD FOR YOU!');
 		}));
@@ -61,7 +61,7 @@ default class PlayersController {
 		this.$rootScope.$on('websocket:players:create', ((event, data) => {
 			let currentPlayer = this.playerModel.model.player;
 
-			this.$log.info('$on -> websocket:players:create', data);
+			this.$log.debug('$on -> websocket:players:create', data);
 
 			if (this._.isEmpty(currentPlayer) || currentPlayer.id !== data.id) {
 				this.playersStore.insert(data);
@@ -81,7 +81,7 @@ default class PlayersController {
 				hoardDeck = this.deckStore.getByType('discard'),
 				cards = [];
 
-			this.$log.info('$on -> websocket:players:hoard', data);
+			this.$log.debug('$on -> websocket:players:hoard', data);
 
 			cards = this._.union(playerCards, hoardDeck.cards);
 
@@ -107,7 +107,7 @@ default class PlayersController {
 		}));
 
 		this.$rootScope.$on('websocket:players:update', ((event, data) => {
-			this.$log.info('$on -> websocket:players:update', data);
+			this.$log.debug('$on -> websocket:players:update', data);
 
 			if (data.id) {
 				this.playersStore.update(data.id, data);
@@ -119,7 +119,7 @@ default class PlayersController {
 		this.$rootScope.$on('websocket:players:whoami', ((event, data) => {
 			let playerStorage = this.$localStorage.player;
 
-			this.$log.info('$on -> websocket:players:whoami', data);
+			this.$log.debug('$on -> websocket:players:whoami', data);
 
 			if (data.length && data[0].id === playerStorage.id) {
 				let player = data[0];

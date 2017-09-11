@@ -14,14 +14,14 @@ export default class GameModelService {
 
 	endGame() {
 		let onSuccess = (res => {
-				this.$log.info('onSuccess()', res, this);
+				this.$log.debug('onSuccess()', res, this);
 				this.update(res.data);
 			}),
 			onError = (err => {
 				this.$log.error(err);
 			});
 
-		this.$log.info('endGame()', this);
+		this.$log.debug('endGame()', this);
 
 		this.gamesApi
 			.update(this.model.game.id, { isGameStarted: false })

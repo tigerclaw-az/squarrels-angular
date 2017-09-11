@@ -135,6 +135,7 @@
 					animation: .5s linear grow;
 				}
 
+				&.ng-leave,
 				&.ng-leave-active {
 					.card {
 						animation: .5s linear fade-out;

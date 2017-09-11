@@ -20,7 +20,7 @@
 	<div ng-if="isCurrent" class="sq-player-cards">
 		<div class="cards-group hand">
 			<card
-				ng-animate="animate"
+				class="animated"
 				ng-class="{ mine: isCurrent && player.cardsInHand.length}"
 				ng-if="player.cardsInHand.length"
 				ng-repeat="card in player.cardsInHand | orderBy: card.amount"

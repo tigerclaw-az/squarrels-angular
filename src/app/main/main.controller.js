@@ -1,16 +1,16 @@
 export class MainController {
-	constructor ($scope, $state, $log, $timeout, appConfig, websocket) {
+	constructor ($scope, $state, $localStorage, $log, $timeout, appConfig, websocket) {
 		'ngInject';
 
 		this.$scope = $scope;
 		this.$state = $state;
+		this.$localStorage = $localStorage;
 		this.$log = $log.getInstance(this.constructor.name);
 
-		this.activate($timeout);
-
+		this.appConfig = appConfig;
 		this.websocket = websocket;
 
-		this.isAdmin = appConfig.isAdmin;
+		this.activate();
 
 		this.websocket.connect();
 
@@ -48,9 +48,11 @@ export class MainController {
 		// }, 500);
 	}
 
-	activate($timeout) {
-		$timeout(() => {
-			this.classAnimation = 'rubberBand';
-		}, 4000);
+	activate() {
+		if (this.$localStorage.appConfig) {
+			Object.assign(this.appConfig, this.$localStorage.appConfig);
+		}
+
+		this.isAdmin = this.appConfig.isAdmin;
 	}
 }

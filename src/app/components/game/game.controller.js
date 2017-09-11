@@ -115,8 +115,10 @@ export default class GameController {
 	 * Resets the current game
 	 */
 	reset() {
-		this.gamesApi
-			.remove(this.gameModel.model.game.id);
+		if (this.gameModel.model.game.id) {
+			this.gamesApi
+				.remove(this.gameModel.model.game.id);
+		}
 	}
 
 	create() {
@@ -149,6 +151,8 @@ export default class GameController {
 			onError = (err => {
 				this.$log.error(err);
 			});
+
+		this.reset();
 
 		_.forEach(playersData, function(obj) {
 			players.push(obj.id);

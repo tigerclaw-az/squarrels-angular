@@ -28,7 +28,7 @@
 			top: 0;
 
 			&.selected {
-				top: -2rem;
+				transform: translateY(-15%);
 
 				.card {
 					border: 2px solid get-color('zest');
@@ -44,7 +44,7 @@
 
 	&.active {
 		.sq-player-info {
-			color: get-color('mandy');
+			color: get-color('zest');
 			font-weight: $font-weight-bold;
 		}
 	}
@@ -83,7 +83,7 @@
 			.sq-player-card-count {
 				@include center-horizontal;
 
-				color: get-color(white);
+				color: inherit;
 				position: absolute;
 				top: 0;
 			}

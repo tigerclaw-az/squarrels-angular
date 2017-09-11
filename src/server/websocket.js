@@ -164,7 +164,11 @@ module.exports = function(server) {
 								playersOrder;
 
 							_.forEach(players, (pl, index) => {
-								cards.push(pl.cardsInHand);
+								let plCards = pl.cardsInHand.slice(); // Copy array
+
+								logger.debug('plCards -> ', plCards);
+
+								cards = _.union(cards, plCards);
 
 								// Remove cards from player's hand
 								pl.cardsInHand = [];
@@ -182,6 +186,7 @@ module.exports = function(server) {
 
 							cards = _(cards).flatten().shuffle().value();
 
+							logger.debug('cards -> ', cards);
 							logger.debug('playersOrder -> ', playersOrder);
 
 							let pIt = playerIt(playersOrder);

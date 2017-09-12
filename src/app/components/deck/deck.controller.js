@@ -52,7 +52,8 @@ export default class DeckController {
 	isDisabled() {
 		return this.type === 'main' && !this.canDraw() ||
 			this.type === 'discard' && this.tooManyClicks ||
-			this.type === 'action';
+			this.type === 'action' ||
+			!this.game.isGameStarted;
 	}
 
 	canDiscard(card) {

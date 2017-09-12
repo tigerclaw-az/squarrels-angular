@@ -13,7 +13,7 @@
 		href="#"
 		role="button"
 		ng-class="{ disabled: deckCtrl.isDisabled() }"
-		ng-click="!deckCtrl.isDisabled() && deckCtrl.onClick($event)"
+		ng-mousedown="!deckCtrl.isDisabled() && deckCtrl.onClick($event)"
 		ng-show="deckCtrl.getTotalCards()"
 	>
 		<span

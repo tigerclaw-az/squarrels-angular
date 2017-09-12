@@ -50,6 +50,10 @@ header {
 			animation-name: spin-reverse;
 			animation-timing-function: ease-out;
 			transform: rotateY(-90deg);
+
+			&.action--whirlwind {
+				animation-name: whirlwind;
+			}
 		}
 	}
 }

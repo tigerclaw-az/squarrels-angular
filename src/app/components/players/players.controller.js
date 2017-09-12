@@ -167,6 +167,8 @@ default class PlayersController {
 				if (res.status === 201) {
 					let player = res.data;
 
+					this.sounds.play('new-player');
+
 					this.playerModel.insert(player);
 					this.playersStore.insert(player);
 				}

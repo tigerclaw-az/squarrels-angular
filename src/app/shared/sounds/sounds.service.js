@@ -6,8 +6,10 @@ export class SoundsService {
 
 		this.soundsPath = 'assets/sounds/';
 		this.soundEffects = {
-			'hoard': 'hoard.mp3',
-			'active-player': 'active-player.mp3'
+			'action-card': 'action-card.mp3',
+			'active-player': 'active-player.mp3',
+			'discard': 'discard.mp3',
+			'new-player': 'new-player.mp3'
 		}
 	}
 

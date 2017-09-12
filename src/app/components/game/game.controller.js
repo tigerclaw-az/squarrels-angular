@@ -1,5 +1,5 @@
 export default class GameController {
-	constructor($rootScope, $scope, $state, $log, $q, $timeout, toastr, _, deckStore, decksApi, gamesApi, gameModel, playerModel, playersStore) {
+	constructor($rootScope, $scope, $state, $log, $q, $timeout, toastr, _, sounds, deckStore, decksApi, gamesApi, gameModel, playerModel, playersStore) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
@@ -15,6 +15,7 @@ export default class GameController {
 
 		this._ = _;
 		this.toastr = toastr;
+		this.sounds = sounds;
 
 		this.deckStore = deckStore;
 		this.decksApi = decksApi;
@@ -198,6 +199,8 @@ export default class GameController {
 			}),
 			hoardDeck = this.deckStore.getByType('discard'),
 			timeout = 4000;
+
+		this.sounds.play('action-card');
 
 		// FIXME: Only handling 'hoard' & 'winter' cards right now
 		switch (card.action) {

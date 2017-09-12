@@ -82,7 +82,7 @@ export default class DeckStoreService {
 
 		cards.push(id);
 
-		this.sounds.play('hoard');
+		this.sounds.play('discard');
 
 		actions.push(
 			this.decksApi.update(hoardDeck.id, { cards }),

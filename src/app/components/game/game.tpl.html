@@ -6,7 +6,7 @@
 </header>
 <div class="row">
 	<div class="col-sm-12">
-		<div class="play-area" ng-if="gameCtrl.isGameStarted()">
+		<div class="play-area">
 			<deck type="{{::deck.deckType}}" deck-id="{{::deck.id}}" ng-repeat="deck in gameCtrl.getDecks()" game="model.game"></deck>
 		</div>
 	</div>

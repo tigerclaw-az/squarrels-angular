@@ -198,6 +198,7 @@ export default class GameController {
 				return card.id;
 			}),
 			hoardDeck = this.deckStore.getByType('discard'),
+			gameId = this.gameModel.model.game.id,
 			timeout = 4000;
 
 		this.sounds.play('action-card');
@@ -227,21 +228,20 @@ export default class GameController {
 				break;
 
 			case 'winter':
-				// plData.isActive = false;
-				timeout = 0;
+				this.$rootScope.$broadcast('deck:action:winter');
 				break;
 
 			case 'hoard':
 				if (!hoardDeck.cards.length) {
 					this.toastr.info('No cards to Hoard');
-					this.gamesApi.update(this.gameModel.model.game.id, { actionCard: null });
+					this.gamesApi.actionCard(gameId, null);
 					timeout = 0;
 				}
 
 				break;
 
 			default:
-				this.gamesApi.update(this.gameModel.model.game.id, { actionCard: null });
+				this.gamesApi.actionCard(gameId, null);
 				timeout = 0;
 				break;
 		}

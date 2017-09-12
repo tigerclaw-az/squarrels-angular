@@ -8,4 +8,8 @@ export class GamesApiService extends BaseApiService {
 
 		this.$log.debug('constructor()', this);
 	}
+
+	actionCard(id, value) {
+		return this.update(id, { actionCard: value });
+	}
 }

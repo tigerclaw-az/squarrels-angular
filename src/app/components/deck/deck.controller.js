@@ -154,7 +154,7 @@ export default class DeckController {
 					plData.totalCards = cardsMerge.length;
 				} else {
 					this.gamesApi
-						.update(this.game.id, { actionCard: cardDrawn.id })
+						.actionCard(this.game.id, cardDrawn.id)
 						.then(res => {
 							this.$log.debug('gameUpdate:actionCard -> ', res);
 						}, err => {

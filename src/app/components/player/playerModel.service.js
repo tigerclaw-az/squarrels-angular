@@ -77,13 +77,11 @@ export class PlayerModelService {
 				let cards = res.data,
 					special = this._.filter(cards, { cardType: 'special' }),
 					plUpdate = {
-						score: score,
-						cardsInHand: special.map(card => {
-							return card.id;
-						})
+						score: score
+						// cardsInHand: special.map(card => {
+						// 	return card.id;
+						// })
 					};
-
-				this.$log.debug('showSpecialCards()', special, this);
 
 				if (special.length) {
 					this._.forEach(special, (card) => {

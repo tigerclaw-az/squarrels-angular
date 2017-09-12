@@ -99,7 +99,7 @@ default class PlayersController {
 					.then(onSuccess, onError);
 
 				this.gamesApi
-					.update(this.game.id, { actionCard: null })
+					.actionCard(this.game.id, null)
 					.then(() => {}, () => {});
 			} else {
 				this.toastr.warning(data.name, 'HOARD TAKEN BY:');

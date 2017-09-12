@@ -1,5 +1,5 @@
 export default class CardController {
-	constructor($rootScope, $scope, $log, _, toastr, cardsApi, playersApi) {
+	constructor($rootScope, $scope, $log, _, toastr, gameModel, cardsApi, playersApi) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
@@ -10,6 +10,7 @@ export default class CardController {
 		this.toastr = toastr;
 
 		this.cardsApi = cardsApi;
+		this.gameModel = gameModel;
 		this.playersApi = playersApi;
 
 		this.cardData = {};
@@ -28,15 +29,10 @@ export default class CardController {
 				if (res.status === 200 && !this._.isEmpty(res.data[0])) {
 					this.cardData = res.data[0];
 
-					let type = this.cardData.cardType,
-						name = this.cardData.name;
+					let type = this.cardData.cardType;
 
 					if (type === 'action') {
 						this.$log.info('ACTION CARD -> ', this.cardData);
-
-						if (name === 'winter') {
-							this.$rootScope.$broadcast('deck:action:winter');
-						}
 					}
 				}
 			}),
@@ -69,7 +65,10 @@ export default class CardController {
 
 	isDisabled() {
 		if (this.player) {
-			return !this.cardId || this.cardType === 'storage' || !this.player.isActive;
+			return !this.cardId ||
+				this.cardType === 'storage' ||
+				!this.player.isActive ||
+				!this.gameModel.isGameStarted();
 		}
 
 		return true;

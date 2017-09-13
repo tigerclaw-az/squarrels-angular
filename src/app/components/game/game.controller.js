@@ -187,7 +187,7 @@ export default class GameController {
 	}
 
 	getDecks() {
-		let decks = this._.orderBy(this.deckStore.model.deck, ['deckType'], ['desc']);
+		let decks = this._.orderBy(this.deckStore.get(), ['deckType'], ['desc']);
 
 		return decks;
 	}

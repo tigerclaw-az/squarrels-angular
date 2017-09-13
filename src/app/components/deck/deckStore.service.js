@@ -15,9 +15,7 @@ export default class DeckStoreService {
 		this.playersApi = playersApi;
 		this.playersStore = playersStore;
 
-		this.model = {
-			deck: {}
-		};
+		this.model = {};
 
 		this.$log.debug('constructor()', this);
 	}
@@ -129,19 +127,23 @@ export default class DeckStoreService {
 	}
 
 	empty() {
-		this.model.deck = {};
+		this.model = {};
 	}
 
-	get(id) {
-		if (id) {
-			return this.model.deck[id];
+	get(prop, value) {
+		if (prop) {
+			return this._.find(this.model, { prop: value });
 		}
 
-		return this.model.deck;
+		return this.model;
+	}
+
+	getById(id) {
+		return this.model[id] || {};
 	}
 
 	getByType(type) {
-		return this._.find(this.model.deck, function(o) {
+		return this._.find(this.model, function(o) {
 			return o.deckType === type;
 		});
 	}
@@ -149,11 +151,11 @@ export default class DeckStoreService {
 	insert(data) {
 		this.$log.debug('insert()', data, this);
 
-		this.model.deck[data.id] = data;
+		this.model[data.id] = data;
 	}
 
 	update(id, data) {
-		let deck = this.model.deck[id];
+		let deck = this.model[id];
 
 		Object.assign(deck, data);
 

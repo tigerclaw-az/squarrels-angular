@@ -42,7 +42,7 @@ export default class DeckController {
 	}
 
 	getDeck() {
-		return this.deckStore.model.deck[this.deckId];
+		return this.deckStore.getById(this.deckId);
 	}
 
 	getTotalCards() {
@@ -161,7 +161,6 @@ export default class DeckController {
 						}, err => {
 							this.$log.error(err);
 						});
-
 
 					// Don't allow player to draw more than 7 cards
 					if (plData.totalCards === this.playerModel.numDrawCards) {

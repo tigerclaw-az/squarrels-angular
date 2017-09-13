@@ -1,22 +1,22 @@
 <header>
 	<div class="row">
-		<span class="col-sm-6">Started @ {{model.game.createdAt}}</span>
-		<span class="col-sm-4">ROUND: {{model.game.round}}</span>
+		<span class="col-sm-6">Started @ {{model.createdAt}}</span>
+		<span class="col-sm-4">ROUND: {{model.round}}</span>
 	</div>
 </header>
 <div class="row">
 	<div class="col-sm-12">
 		<div class="play-area">
-			<deck type="{{::deck.deckType}}" deck-id="{{::deck.id}}" ng-repeat="deck in gameCtrl.getDecks()" game="model.game"></deck>
+			<deck type="{{::deck.deckType}}" deck-id="{{::deck.id}}" ng-repeat="deck in gameCtrl.getDecks()" game="model"></deck>
 		</div>
 	</div>
 </div>
 <div class="row">
 	<div class="col-sm-12">
-		<players game="model.game"></players>
+		<players game="model"></players>
 		<span
-			ng-if="model.game.actionCard"
-			ng-init="card = model.game.actionCard"
+			ng-if="model.actionCard"
+			ng-init="card = model.actionCard"
 			class="action-card">
 			<span class="card blank--"></span>
 			<card card-id="{{card.id}}" card-type="action"></card>

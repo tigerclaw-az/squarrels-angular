@@ -48,7 +48,7 @@ export default class GameController {
 
 		this.isAdmin = this.mainCtrl.isAdmin;
 
-		this.$scope.model = this.gameModel.model;
+		this.$scope.model = this.gameModel.getByProp();
 		this.$scope.playersModel = this.playersStore.model;
 
 		this.$rootScope.$on('deck:action:winter', () => {
@@ -86,7 +86,7 @@ export default class GameController {
 		this.$rootScope.$on('websocket:games:update', (event, data) => {
 			this.$log.debug('$on -> websocket:games:update', data);
 
-			if (data.actionCard && !this.gameModel.model.game.actionCard) {
+			if (data.actionCard && !this.gameModel.getByProp('actionCard')) {
 				let card = data.actionCard;
 
 				this.handleActionCard(card);
@@ -116,9 +116,9 @@ export default class GameController {
 	 * Resets the current game
 	 */
 	reset() {
-		if (this.gameModel.model.game.id) {
+		if (this.gameModel.model.id) {
 			this.gamesApi
-				.remove(this.gameModel.model.game.id);
+				.remove(this.gameModel.model.id);
 		}
 	}
 
@@ -198,7 +198,7 @@ export default class GameController {
 				return card.id;
 			}),
 			hoardDeck = this.deckStore.getByType('discard'),
-			gameId = this.gameModel.model.game.id,
+			gameId = this.gameModel.model.id,
 			timeout = 4000;
 
 		this.sounds.play('action-card');
@@ -210,7 +210,7 @@ export default class GameController {
 					this.$timeout(() => {
 						this.ws.send({
 							action: 'ambush',
-							gameId: this.gameModel.model.game.id
+							gameId: this.gameModel.model.id
 						});
 					}, timeout);
 				}
@@ -221,7 +221,7 @@ export default class GameController {
 					this.$timeout(() => {
 						this.ws.send({
 							action: 'whirlwind',
-							gameId: this.gameModel.model.game.id
+							gameId: this.gameModel.model.id
 						});
 					}, timeout);
 				}
@@ -264,7 +264,7 @@ export default class GameController {
 	insertDeck(id) {
 		var deckPromise = this.$q.defer(),
 			onSuccessDeck = (res => {
-				let game = this.gameModel.model.game;
+				let game = this.gameModel.getByProp();
 
 				this.$log.debug('onSuccessDeck()', res, this);
 

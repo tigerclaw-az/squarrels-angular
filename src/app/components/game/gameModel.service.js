@@ -7,9 +7,7 @@ export default class GameModelService {
 		this._ = _;
 		this.gamesApi = gamesApi;
 
-		this.model = {
-			game: {}
-		};
+		this.model = {};
 	}
 
 	endGame() {
@@ -24,27 +22,35 @@ export default class GameModelService {
 		this.$log.debug('endGame()', this);
 
 		this.gamesApi
-			.update(this.model.game.id, { isGameStarted: false })
+			.update(this.model.id, { isGameStarted: false })
 			.then(onSuccess, onError);
 	}
 
 	clear() {
-		this.model.game = {};
+		this.model = {};
 	}
 
 	get() {
 		return this.gamesApi.get();
 	}
 
+	getByProp(prop) {
+		if (prop) {
+			return this.model[prop];
+		}
+
+		return this.model;
+	}
+
 	isGameStarted() {
-		return this.model.game.isGameStarted;
+		return this.model.isGameStarted;
 	}
 
 	update(data) {
-		Object.assign(this.model.game, data);
+		Object.assign(this.model, data);
 
 		if (!data.actionCard) {
-			this.model.game.actionCard = null;
+			this.model.actionCard = null;
 		}
 	}
 }

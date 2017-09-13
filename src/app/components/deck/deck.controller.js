@@ -91,7 +91,7 @@ export default class DeckController {
 		let player = this.pModel.player;
 
 		if (player) {
-			return player.isActive && !this.game.actionCard && player.isFirstTurn;
+			return player.isActive && this._.isEmpty(this.game.actionCard) && player.isFirstTurn;
 		}
 
 		return false;
@@ -163,7 +163,7 @@ export default class DeckController {
 						});
 
 					// Don't allow player to draw more than 7 cards
-					if (plData.totalCards === this.playerModel.numDrawCards) {
+					if (plData.totalCards >= this.playerModel.numDrawCards) {
 						plData.isFirstTurn = false;
 					}
 				}
@@ -176,6 +176,8 @@ export default class DeckController {
 					.catch(err => {
 						this.$log.error('This is nuts! Error: ', err);
 					});
+
+				this.playerModel.update({ hasDrawnCard: true });
 			})
 			.catch(err => {
 				this.$log.error(err);

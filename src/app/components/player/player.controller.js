@@ -67,7 +67,7 @@ export default class PlayerController {
 
 		evt.preventDefault();
 
-		if (this.player.isActive && !this.player.isFirstTurn && this.canStoreCards(cardsSelected)) {
+		if (this.player.isActive && this.player.hasDrawnCard && this.canStoreCards(cardsSelected)) {
 			this.storeCards(cardsSelected);
 		} else {
 			this.showStorage(this.player);

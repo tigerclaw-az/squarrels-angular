@@ -27,7 +27,7 @@ export default class GameModelService {
 	}
 
 	clear() {
-		this.model = {};
+		angular.copy({}, this.model);
 	}
 
 	get() {
@@ -47,10 +47,10 @@ export default class GameModelService {
 	}
 
 	update(data) {
-		Object.assign(this.model, data);
+		angular.copy(data, this.model);
 
 		if (!data.actionCard) {
-			this.model.actionCard = null;
+			angular.copy(null, this.model.actionCard);
 		}
 	}
 }

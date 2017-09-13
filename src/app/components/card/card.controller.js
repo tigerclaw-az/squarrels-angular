@@ -1,5 +1,5 @@
 export default class CardController {
-	constructor($rootScope, $scope, $log, _, toastr, gameModel, cardsApi, playersApi) {
+	constructor($rootScope, $scope, $log, _, toastr, cardsApi) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
@@ -10,8 +10,6 @@ export default class CardController {
 		this.toastr = toastr;
 
 		this.cardsApi = cardsApi;
-		this.gameModel = gameModel;
-		this.playersApi = playersApi;
 
 		this.cardData = {};
 
@@ -68,18 +66,17 @@ export default class CardController {
 			return !this.cardId ||
 				this.cardType === 'storage' ||
 				!this.player.isActive ||
-				!this.gameModel.isGameStarted();
+				!this.game.isGameStarted;
 		}
 
 		return true;
 	}
 
 	onClick(e) {
-		let filterBy = (o) => { return o.id !== this.cardId };
+		let filterBy = (o) => { return o.id !== this.cardId },
+			$el = angular.element(e.currentTarget).parent();
 
 		this.$log.debug('onClick()', this, this.cardId);
-
-		let $el = angular.element(e.currentTarget).parent();
 
 		e.preventDefault();
 

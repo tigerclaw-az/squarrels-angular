@@ -37,9 +37,6 @@
 				}
 			}
 		}
-
-		.sq-player-info {
-		}
 	}
 
 	&.active {
@@ -64,15 +61,17 @@
 
 		float: left;
 		margin-right: 1rem;
+		max-width: 10rem;
 
-		.sq-player-total-cards,
-		.sq-player-storage {
+		.sq-player-info-item {
+			color: inherit;
+			display: inline-block;
+			font-size: 1.5rem;
 			position: relative;
 		}
 
 		.sq-player-total-cards {
 			display: inline-block;
-			font-size: 2rem;
 
 			.card {
 				height: 5rem;
@@ -90,12 +89,12 @@
 		}
 
 		.sq-player-storage {
-			font-size: 5rem;
+			font-size: 4rem;
 
 			.sq-player-score {
 				@include center-horizontal;
 				color: get-color('carnaby-tan');
-				font-size: 2.25rem;
+				font-size: 2rem;
 				line-height: 2.25;
 				top: 0;
 			}
@@ -160,6 +159,22 @@
 		.sq-player-thumbnail {
 			img {
 				width: 10rem;
+			}
+		}
+
+		.sq-player-info {
+			max-width: 11rem;
+
+			.sq-player-info-item {
+				font-size: 3rem;
+			}
+
+			.sq-player-storage {
+				font-size: 5rem;
+
+				.sq-player-score {
+					font-size: 2.5rem;
+				}
 			}
 		}
 

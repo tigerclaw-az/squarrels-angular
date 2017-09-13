@@ -1,5 +1,5 @@
 export default class PlayerController {
-	constructor($rootScope, $scope, $log, $uibModal, _, playersApi, playerModel, websocket) {
+	constructor($rootScope, $scope, $log, $uibModal, _, toastr, playersApi, playerModel, websocket) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
@@ -8,6 +8,8 @@ export default class PlayerController {
 		this.$uibModal = $uibModal;
 
 		this._ = _;
+		this.toastr = toastr;
+
 		this.playerModel = playerModel; // Used in template
 		this.playersApi = playersApi;
 		this.ws = websocket;
@@ -32,6 +34,10 @@ export default class PlayerController {
 	}
 
 	canStoreCards(cardsSelected) {
+		if (this.game.actionCard || !cardsSelected || cardsSelected.length !== 3) {
+			return false;
+		}
+
 		let cardsMatch = this._.reduce(cardsSelected, (prev, current, index, array) => {
 			let len = array.length,
 				sameCard = prev.amount === current.amount;
@@ -47,9 +53,7 @@ export default class PlayerController {
 			return sameCard ? current : false;
 		});
 
-		return cardsSelected && cardsSelected.length === 3 &&
-			this.player.isActive && !this.game.actionCard &&
-			cardsMatch;
+		return cardsMatch;
 	}
 
 	getCurrentPlayer() {
@@ -61,10 +65,45 @@ export default class PlayerController {
 
 		this.$log.debug('onStorageClick()', evt, cardsSelected, this);
 
-		if (!this.player.isFirstTurn && this.canStoreCards(cardsSelected)) {
+		evt.preventDefault();
+
+		if (this.player.isActive && !this.player.isFirstTurn && this.canStoreCards(cardsSelected)) {
 			this.storeCards(cardsSelected);
 		} else {
 			this.showStorage(this.player);
+		}
+	}
+
+	onStorageAutoClick(evt) {
+		evt.preventDefault();
+
+		if (this.player.isActive && !this.player.isFirstTurn) {
+			// Filter out sets of 3 that have the same 'amount'
+			this.playerModel.getCards()
+				.then(res => {
+					let cards = this._.filter(res.data, (o) => {
+							return o.cardType === 'number';
+						}),
+						numberCards = this._.groupBy(cards, (o) => {
+							return o.amount;
+						}),
+						isStored = false;
+
+					this.$log.info('numberCards -> ', numberCards);
+
+					this._.forEach(numberCards, (cardsGroup) => {
+						if (cardsGroup.length % 3 === 0) {
+							this.storeCards(cardsGroup);
+							isStored = true;
+						}
+					});
+
+					if (!isStored) {
+						this.toastr.warning('No matching cards to store!');
+					}
+				}, (err) => {
+					this.$log.error(err);
+				});
 		}
 	}
 

@@ -8,14 +8,29 @@
 	</div>
 	<div class="sq-player-info">
 		<div class="sq-player-name">{{player.name}}</div>
-		<span class="sq-player-total-cards">
+		<span class="sq-player-info-item sq-player-total-cards">
 			<i class="icon icon-card card blank--"></i>
 			<span class="sq-player-card-count">{{player.totalCards}}</span>
 		</span>
-		<span class="sq-player-storage" ng-click="playerCtrl.onStorageClick($event)">
+		<a
+			href="#"
+			class="sq-player-info-item sq-player-storage"
+			title="View or Store Nuts"
+			ng-click="playerCtrl.onStorageClick($event)"
+		>
 			<i class="icon icon-tree glyphicon glyphicon-tree-deciduous"></i>
 			<span class="sq-player-score">{{player.score}}</span>
-		</span>
+		</a>
+		<a
+			href="#"
+			class="sq-player-info-item sq-player-storage-auto"
+			title="Auto Storage of Nuts"
+			ng-click="playerCtrl.onStorageAutoClick($event)"
+			ng-class="{ disabled: !player.isActive }"
+			ng-if="isCurrent"
+		>
+			<i class="icon icon-storage-auto glyphicon glyphicon-download-alt"></i>
+		</a>
 	</div>
 	<div ng-if="isCurrent" class="sq-player-cards">
 		<div class="cards-group hand">
@@ -26,6 +41,7 @@
 				ng-repeat="card in player.cardsInHand | orderBy: card.amount"
 				card-id="{{::card}}"
 				card-type="hand"
+				game="playerCtrl.game"
 				player="player"
 			></card>
 			<div ng-if="!player.cardsInHand.length" class="empty"></div>

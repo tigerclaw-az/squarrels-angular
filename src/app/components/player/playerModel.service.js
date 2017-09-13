@@ -48,21 +48,15 @@ export class PlayerModelService {
 
 		this.$log.debug('playerModel:cards -> ', plData);
 
-		this.update(plData);
+		this.update(Object.assign(plData, { hasDrawnCard: false }));
 
 		return this.playersApi.update(this.model.player.id, plData);
 	}
 
 	getCards() {
-		let cards = this.model.player.cardsInHand,
-			defer = this.$q.defer();
+		let cards = this.model.player.cardsInHand;
 
-		if (!this._.isEmpty(cards)) {
-			return this.cardsApi.get(cards);
-		}
-
-		defer.resolve([]);
-		return defer;
+		return this.cardsApi.get(cards);
 	}
 
 	resetSelected() {

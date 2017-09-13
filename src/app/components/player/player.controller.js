@@ -89,11 +89,16 @@ export default class PlayerController {
 						}),
 						isStored = false;
 
-					this.$log.info('numberCards -> ', numberCards);
+					this.$log.debug('numberCards -> ', numberCards);
 
 					this._.forEach(numberCards, (cardsGroup) => {
-						if (cardsGroup.length % 3 === 0) {
-							this.storeCards(cardsGroup);
+						let numGroups = Math.floor(cardsGroup.length / 3),
+							numToStore = numGroups * 3;
+
+						if (numToStore) {
+							let cardsToStore = this._.sampleSize(cardsGroup, numToStore);
+							this.$log.debug('cardsToStore -> ', cardsToStore);
+							this.storeCards(cardsToStore);
 							isStored = true;
 						}
 					});

@@ -1,3 +1,18 @@
 .webcam {
 	display: none;
 }
+
+.sq-players {
+	display: flex;
+	flex-wrap: wrap;
+
+	player {
+		align-items: center;
+		display: flex;
+		flex: 1 0 1px;
+
+		&.current {
+			flex: 1 0 100%;
+		}
+	}
+}

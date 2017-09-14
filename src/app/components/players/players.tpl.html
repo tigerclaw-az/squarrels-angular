@@ -23,6 +23,11 @@
 	</form>
 	<webcam channel="webcam"></webcam>
 	<div class="sq-players">
-		<player ng-repeat="p in model.players | orderBy:'!isCurrent'" game="playersCtrl.game" player="p"></player>
+		<player
+			ng-repeat="p in model.players | orderBy:'!isCurrent'"
+			ng-class="{ current: p.isCurrent }"
+			game="playersCtrl.game"
+			player="p"
+		></player>
 	</div>
 </div>

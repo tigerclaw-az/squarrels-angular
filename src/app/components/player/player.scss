@@ -16,13 +16,15 @@
 .sq-player {
 	@include clearfix;
 
-	float: left;
+	align-items: center;
+	display: flex;
 	margin-bottom: 2rem;
 	position: relative;
 	text-align: center;
 
 	&.current {
-		float: none;
+		flex: 1;
+		width: 100%;
 
 		card {
 			top: 0;
@@ -47,9 +49,7 @@
 	}
 
 	.sq-player-thumbnail {
-		float: left;
 		margin-right: 1rem;
-		transform: translateY(25%);
 
 		img {
 			width: 7.5rem;
@@ -59,15 +59,21 @@
 	.sq-player-info {
 		@include clearfix;
 
-		float: left;
+		align-items: center;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
 		margin-right: 1rem;
 		max-width: 10rem;
 
 		.sq-player-info-item {
 			color: inherit;
-			display: inline-block;
-			font-size: 1.5rem;
+			font-size: 2.5rem;
 			position: relative;
+		}
+
+		.sq-player-name {
+			flex: 1 0 100%;
 		}
 
 		.sq-player-total-cards {

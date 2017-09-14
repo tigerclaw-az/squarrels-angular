@@ -1,7 +1,7 @@
 <div class="sq-player" ng-init="pModel = playerCtrl.getCurrentPlayer(); player = playerCtrl.player; isCurrent = player.id === pModel.id"
 	ng-class="{
-		'active': player.isActive,
-		'current': isCurrent
+		active: player.isActive,
+		current: isCurrent
 	}">
 	<div class="sq-player-thumbnail">
 		<img class="img-circle" ng-src="{{player.img}}"/>

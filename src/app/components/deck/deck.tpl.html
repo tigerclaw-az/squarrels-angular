@@ -10,10 +10,10 @@
 >
 	<a
 		class="cards-group"
-		href="#"
+		href=""
 		role="button"
 		ng-class="{ disabled: deckCtrl.isDisabled() }"
-		ng-mousedown="!deckCtrl.isDisabled() && deckCtrl.onClick($event)"
+		ng-mousedown="!deckCtrl.isDisabled() && deckCtrl.onClick(); $event.preventDefault()"
 		ng-show="deckCtrl.getTotalCards()"
 	>
 		<span

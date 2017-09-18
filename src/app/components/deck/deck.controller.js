@@ -185,12 +185,10 @@ export default class DeckController {
 		this.playerModel.resetSelected();
 	}
 
-	onClick($evt) {
+	onClick() {
 		this.$log.debug('onClick()', this);
 
 		this.maxClicks--;
-
-		$evt.preventDefault();
 
 		if (this.type === 'main' && this.canDraw()) {
 			this.drawCard();

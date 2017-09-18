@@ -124,7 +124,7 @@ default class PlayersController {
 			if (data.length && data[0].id === playerStorage.id) {
 				let player = data[0];
 
-				if (this._.isEmpty(this.playerModel.player)) {
+				if (this._.isEmpty(this.playerModel.model.player)) {
 					this.playerModel.insert(player);
 					player = this.playerModel.model.player;
 				}

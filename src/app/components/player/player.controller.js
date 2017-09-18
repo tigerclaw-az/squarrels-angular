@@ -1,10 +1,11 @@
 export default class PlayerController {
-	constructor($rootScope, $scope, $log, $uibModal, _, toastr, playersApi, playerModel, websocket) {
+	constructor($rootScope, $scope, $log, $timeout, $uibModal, _, toastr, playersApi, playerModel, websocket) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
 		this.$scope = $scope;
 		this.$log = $log.getInstance(this.constructor.name);
+		this.$timeout = $timeout;
 		this.$uibModal = $uibModal;
 
 		this._ = _;
@@ -87,7 +88,8 @@ export default class PlayerController {
 						numberCards = this._.groupBy(cards, (o) => {
 							return o.amount;
 						}),
-						isStored = false;
+						isStored = false,
+						timeout = 0;
 
 					this.$log.debug('numberCards -> ', numberCards);
 
@@ -98,7 +100,12 @@ export default class PlayerController {
 						if (numToStore) {
 							let cardsToStore = this._.sampleSize(cardsGroup, numToStore);
 							this.$log.debug('cardsToStore -> ', cardsToStore);
-							this.storeCards(cardsToStore);
+
+							this.$timeout(() => {
+								this.storeCards(cardsToStore);
+							}, timeout);
+
+							timeout += 250;
 							isStored = true;
 						}
 					});

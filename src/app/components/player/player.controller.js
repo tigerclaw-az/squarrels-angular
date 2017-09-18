@@ -140,6 +140,7 @@ export default class PlayerController {
 		let plData = {
 			cardsInHand: cardsInHand,
 			cardsInStorage: cardsInStorage,
+			isFirstTurn: false,
 			score: this.player.score + cardsSelected[0].amount
 		};
 

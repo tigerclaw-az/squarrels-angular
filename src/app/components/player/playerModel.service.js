@@ -19,6 +19,7 @@ export class PlayerModelService {
 
 	insert(data) {
 		let pl = Object.assign({}, {
+			hasDrawnCard: false,
 			isCurrent: true,
 			cardsInHand: [],
 			cardsSelected: []
@@ -93,6 +94,8 @@ export class PlayerModelService {
 	}
 
 	update(data) {
+		this.$log.debug('update()', data, this);
+
 		Object.assign(this.model.player, data);
 	}
 }

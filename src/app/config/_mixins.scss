@@ -5,9 +5,16 @@
 }
 
 @mixin center-vertical {
-	top: 50%;
 	position: absolute;
+	top: 50%;
 	transform: translateY(-50%);
+}
+
+@mixin center {
+	left: 50%;
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%) translateX(-50%);
 }
 
 // Mixin that will include the fall back px declaration as well as the calculated rem value.

@@ -203,6 +203,11 @@ export default class GameController {
 
 		this.sounds.play('action-card');
 
+		// Show action card immediately if there aren't any cards to 'hoard'
+		if (!hoardDeck.cards.length) {
+			timeout = 0;
+		}
+
 		// FIXME: Only handling 'hoard' & 'winter' cards right now
 		switch (card.action) {
 			case 'ambush':
@@ -235,7 +240,6 @@ export default class GameController {
 				if (!hoardDeck.cards.length) {
 					this.toastr.info('No cards to Hoard');
 					this.gamesApi.actionCard(gameId, null);
-					timeout = 0;
 				}
 
 				break;

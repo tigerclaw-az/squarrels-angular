@@ -28,13 +28,9 @@ export class MainController {
 
 		this.$scope.$on('websocket:global:connect', (event, msg) => {
 			this.$log.debug('$on -> websocket:global:connect', msg, this);
-
-			this.$state.go('app.game');
 		});
 
 		this.$scope.$on('websocket:global:close', (event, msg) => {
-			// let action = msg.data.action;
-
 			this.$log.debug('$on -> websocket:global:close', msg, this);
 
 			this.$state.go('app.start');

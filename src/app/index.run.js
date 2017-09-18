@@ -13,14 +13,6 @@ export function runBlock($log, $state, $trace, $transitions) {
 	// to determine if a websocket connected has already been opened
 	// so we can re-route the user back to the 'game'
 	$transitions.onEnter({ to: 'app.start' }, (trans) => {
-		let websocket = trans.injector().get('websocket');
 
-		if (websocket.$ws) {
-			let status = websocket.getStatus();
-
-			if (status === websocket.STATUS.OPEN) {
-				$state.go('app.game');
-			}
-		}
 	});
 }

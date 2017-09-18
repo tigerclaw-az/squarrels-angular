@@ -14,7 +14,12 @@ export function routerConfig($stateProvider, $urlRouterProvider) {
 			}
 		})
 		.state('app.start', {
-			url: '/'
+			url: '/',
+			views: {
+				content: {
+					component: 'start'
+				}
+			}
 		})
 		.state('app.game', {
 			resolve: {

@@ -6,4 +6,13 @@ start {
 		margin: -.25rem -1.25rem;
 		width: 100vw;
 	}
+
+	.button-join-game,
+	.error {
+		@include center;
+	}
+
+	.error {
+		width: 30%;
+	}
 }

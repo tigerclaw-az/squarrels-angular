@@ -46,17 +46,18 @@ header {
 	[card-type='action'] {
 		.card {
 			animation-delay: 3s;
-			animation-duration: 1s;
+			animation-duration: .5s;
 			animation-name: spin-reverse;
 			animation-timing-function: ease-out;
 			transform: rotateY(-90deg);
 
 			&.action--whirlwind {
-				animation-name: whirlwind;
+				animation-name: action-whirlwind;
 			}
 
+			&.action--quarrel,
 			&.action--winter {
-				animation-name: winter;
+				animation-name: action-fadeout;
 			}
 		}
 	}

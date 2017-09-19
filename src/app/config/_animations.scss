@@ -24,17 +24,14 @@
 	}
 }
 
-@keyframes winter {
-	75% {
-		transform: rotateY(0deg) translateX(0%);
-	}
-
+@keyframes action-fadeout {
 	100% {
 		opacity: 0;
+		transform: rotateY(0deg) translateX(0%);
 	}
 }
 
-@keyframes whirlwind {
+@keyframes action-whirlwind {
 	25% {
 		transform: translateX(-75%);
 	}

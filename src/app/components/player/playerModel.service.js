@@ -57,7 +57,11 @@ export class PlayerModelService {
 	getCards() {
 		let cards = this.model.player.cardsInHand;
 
-		return this.cardsApi.get(cards);
+		if (!this._.isEmpty(cards)) {
+			return this.cardsApi.get(cards);
+		}
+
+		return [];
 	}
 
 	resetSelected() {
@@ -73,9 +77,6 @@ export class PlayerModelService {
 					special = this._.filter(cards, { cardType: 'special' }),
 					plUpdate = {
 						score: score
-						// cardsInHand: special.map(card => {
-						// 	return card.id;
-						// })
 					};
 
 				if (special.length) {

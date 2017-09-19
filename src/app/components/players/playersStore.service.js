@@ -39,6 +39,10 @@ export default class PlayersStoreService {
 		return this.model.players;
 	}
 
+	getAll() {
+		return this.model.players;
+	}
+
 	getNextPlayer(activeIndex) {
 		this.$log.debug('nextPlayer()', activeIndex, this);
 

@@ -1,5 +1,5 @@
 <div class="sq-players-wrapper">
-	<form ng-show="!playerData.player && model.players.length !== 6" class="form-horizontal" name="playerForm">
+	<form ng-show="!playerData.player && players.length !== 6" class="form-horizontal" name="playerForm">
 		<div class="form-group form-group-md row">
 			<div class="col-xs-12 col-sm-5">
 				<input ng-model="pName"
@@ -21,11 +21,11 @@
 			</div>
 		</div>
 	</form>
-	<webcam channel="webcam"></webcam>
+	<!-- <webcam channel="webcam"></webcam> -->
 	<div class="sq-players">
 		<player
-			ng-repeat="p in model.players | orderBy:'!isCurrent'"
-			ng-class="{ current: p.isCurrent }"
+			ng-repeat="p in players | orderBy:'isCurrent':true"
+			ng-class="{ current: 'isCurrent' }"
 			game="playersCtrl.game"
 			player="p"
 		></player>

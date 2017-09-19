@@ -40,7 +40,7 @@ default class PlayersController {
 						this.playersStore.insert(pl);
 					});
 
-					this.$log.debug('players', this.playersStore.model.players);
+					this.$log.debug('players', this.playersStore.getAll());
 				}
 			}),
 			onError = (res => {
@@ -49,6 +49,7 @@ default class PlayersController {
 
 		this.$scope.playerData = this.playerModel.model;
 		this.$scope.model = this.playersStore.model;
+		this.$scope.players = this.playersStore.getAll();
 
 		// This is triggered when a player tries to click the 'Hoard' pile after
 		// another player has already collected it

@@ -36,6 +36,12 @@ export class MainController {
 			this.$state.go('app.start');
 		});
 
+		this.$scope.$on('websocket:global:error', (event, msg) => {
+			this.$log.debug('$on -> websocket:global:error', msg, this);
+
+			this.$state.go('app.start');
+		});
+
 		// WebSocket heartbeat
 		// window.setInterval(() => {
 		// 	let status = this.websocket.getStatus();

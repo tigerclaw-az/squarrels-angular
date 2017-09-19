@@ -91,16 +91,22 @@ export default class DeckStoreService {
 			.then(onSuccess, onError);
 	}
 
-	drawCard(numbersOnly = false) {
+	drawCard(numbersOnly = false, adminCard) {
 		let mainDeck = this.getByType('main'),
 			drawDefer = this.$q.defer(),
 			cardsFromDeck = {
 				ids: mainDeck.cards.map(obj => { return obj.id }),
 				toDraw: numbersOnly ? this._.filter(mainDeck.cards, { cardType: 'number' }) : mainDeck.cards,
 			},
-			cardDrawn = this._.sampleSize(cardsFromDeck.toDraw)[0];
+			cardDrawn;
 
-		this.$log.debug('drawCard()', mainDeck, this);
+		if (adminCard) {
+			cardDrawn = this._.find(cardsFromDeck.toDraw, adminCard);
+		} else {
+			cardDrawn = this._.sampleSize(cardsFromDeck.toDraw)[0];
+		}
+
+		this.$log.debug('drawCard()', numbersOnly, adminCard, mainDeck, this);
 
 		this.$log.debug('cardsFromDeck -> ', cardsFromDeck);
 		this.$log.debug('cardDrawn -> ', cardDrawn);

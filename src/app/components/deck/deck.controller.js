@@ -30,6 +30,8 @@ export default class DeckController {
 	}
 
 	$onInit() {
+		this.isAdmin = this.$scope.$parent.$parent.gameCtrl.isAdmin;
+
 		this.$log.debug('$onInit()', this);
 	}
 
@@ -129,13 +131,13 @@ export default class DeckController {
 		}
 	}
 
-	drawCard() {
+	drawCard(adminCard) {
 		let player = this.pModel.player;
 
-		this.$log.debug('drawCard()', player, this);
+		this.$log.debug('drawCard()', player, adminCard, this);
 
 		this.deckStore
-			.drawCard()
+			.drawCard(false, adminCard)
 			.then(cardDrawn => {
 				let cardAction = cardDrawn.action,
 					cardsMerge = [],
@@ -214,5 +216,17 @@ export default class DeckController {
 		}
 
 		this.playerModel.resetSelected();
+	}
+
+	onDropdownClick(e) {
+		let $el = angular.element(e.target),
+			cardType = $el.attr('data-type'),
+			name = $el.attr('data-name');
+
+		this.$log.debug('onDropdownClick()', e, cardType, name, this);
+
+		e.preventDefault();
+
+		this.drawCard({ cardType, name });
 	}
 }

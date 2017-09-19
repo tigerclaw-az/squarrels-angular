@@ -24,3 +24,21 @@
 		</span>
 	</a>
 </div>
+<div ng-if="deckCtrl.type === 'main' && deckCtrl.isAdmin" uib-dropdown>
+	<button id="dropdown-cards" type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled">
+		Choose Card<span class="caret"></span>
+	</button>
+	<ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="dropdown-cards" ng-click="deckCtrl.onDropdownClick($event)">
+		<li role="menuitem"><a href="#" data-type="action" data-name="ambush">Ambush</a></li>
+		<li role="menuitem"><a href="#" data-type="action" data-name="hoard">Hoard</a></li>
+		<li role="menuitem"><a href="#" data-type="action" data-name="quarrel">Quarrel</a></li>
+		<li role="menuitem"><a href="#" data-type="action" data-name="whirlwind">Whirlwind</a></li>
+		<li role="menuitem"><a href="#" data-type="action" data-name="winter">Winter</a></li>
+		<li class="divider"></li>
+		<li role="menuitem"><a href="#" data-type="number" data-name="1">1</a></li>
+		<li role="menuitem"><a href="#" data-type="number" data-name="2">2</a></li>
+		<li role="menuitem"><a href="#" data-type="number" data-name="3">3</a></li>
+		<li role="menuitem"><a href="#" data-type="number" data-name="4">4</a></li>
+		<li role="menuitem"><a href="#" data-type="number" data-name="5">5</a></li>
+	</ul>
+</div>

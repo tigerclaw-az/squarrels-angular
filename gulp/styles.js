@@ -3,7 +3,7 @@
 
 // jscs:disable requireMultipleVarDecl
 var $ = require('gulp-load-plugins')({
-		pattern: ['gulp-*', 'autoprefixer']
+		pattern: ['gulp-*', 'autoprefixer', 'cssnano']
 	}),
 	gulp = require('gulp');
 
@@ -25,7 +25,8 @@ gulp.task('styles:lint', function() {
 gulp.task('styles', ['styles:lint'], function() {
 	var injectFiles = gulp.src(paths.styles.source.inject, { read: false }),
 		postcssPlugins = [
-			$.autoprefixer(options.autoprefixer)
+			$.autoprefixer(options.autoprefixer),
+			$.cssnano()
 		];
 
 	return gulp.src(paths.styles.source.index)

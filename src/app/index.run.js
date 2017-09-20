@@ -9,10 +9,18 @@ export function runBlock($log, $state, $trace, $transitions) {
 		// console.error('error:', error);
 	});
 
-	// Test when application is changing to 'app.start' route
-	// to determine if a websocket connected has already been opened
-	// so we can re-route the user back to the 'game'
-	$transitions.onEnter({ to: 'app.start' }, (trans) => {
+	// Test when application is changing to 'app.game' route
+	// to determine if a websocket connection has been OPEN
+	// and route the user back to 'start' if not
+	$transitions.onEnter({ to: 'app.game' }, (trans) => {
+		let websocket = trans.injector().get('websocket');
 
+		if (websocket.$ws) {
+			let status = websocket.getStatus();
+
+			if (status !== websocket.STATUS.OPEN) {
+				$state.go('app.start');
+			}
+		}
 	});
 }

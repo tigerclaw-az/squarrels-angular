@@ -1,10 +1,11 @@
 export default class PlayersStoreService {
-	constructor($rootScope, $log, $localStorage, toastr, _, websocket, playersApi, playerModel) {
+	constructor($rootScope, $log, $localStorage, $timeout, toastr, _, websocket, playersApi, playerModel) {
 		'ngInject';
 
 		this.$localStorage = $localStorage;
 		this.$log = $log.getInstance(this.constructor.name);
 		this.$rootScope = $rootScope;
+		this.$timeout = $timeout;
 
 		this._ = _;
 		this.toastr = toastr;
@@ -15,14 +16,45 @@ export default class PlayersStoreService {
 		this.model = {
 			players: []
 		};
+		this.totalQuarrelPlayers = 0;
 
 		this.$log.debug('constructor()', this);
 	}
 
-	get(prop, value, index = false) {
+	addQuarrelCard(id, card) {
+		let player = this.get('id', id),
+			playedCards;
+
+		player.quarrel = card;
+
+		playedCards = this.get('quarrel', null, false, true);
+
+		this.$log.debug('addQuarrelCard()', player, playedCards);
+
+		// All players have selected a card
+		if (playedCards.length === this.totalQuarrelPlayers) {
+			this.calcQuarrel();
+		}
+	}
+
+	calcQuarrel() {
+		let winner = this._.maxBy(this.model.players, pl => {
+			let card = pl.quarrel;
+
+			return card.name === 'golden' ? 6 : card.amount;
+		});
+
+		this.$log.debug('calcQuarrel()', winner, this);
+
+		this._.forEach(this.model.players, pl => {
+			this.update(pl.id, { showQuarrel: true });
+		});
+	}
+
+	get(prop, value, index = false, all = false) {
 		this.$log.debug('get()', prop, value, index, this);
 
-		let method = index ? 'findIndex' : 'find';
+		let method = index ? 'findIndex' : all ? 'filter' : 'find';
 
 		if (prop) {
 			if (value) {
@@ -33,13 +65,9 @@ export default class PlayersStoreService {
 
 			// If a 'value' wasn't given, then we're just looking for the player
 			// where the supplied 'prop' is !null/undefined
-			return this._.find(this.model.players, prop);
+			return this._[method](this.model.players, prop);
 		}
 
-		return this.model.players;
-	}
-
-	getAll() {
 		return this.model.players;
 	}
 
@@ -101,9 +129,8 @@ export default class PlayersStoreService {
 	}
 
 	update(id, data) {
-		// Find the index of player to update and modify the object
-		let playerIndex = this.get('id', id, true),
-			player = this.model.players[playerIndex];
+		// Find the player with given id to update
+		let player = this.get('id', id);
 
 		Object.assign(player, data);
 

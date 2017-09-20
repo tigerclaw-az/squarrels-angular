@@ -31,9 +31,20 @@
 		>
 			<i class="icon icon-storage-auto glyphicon glyphicon-download-alt"></i>
 		</a>
+		<div ng-if="player.quarrel" class="sq-player-quarrel" ng-class="{ flip: player.showQuarrel }">
+			<span class="card blank--"></span>
+			<card
+				class="animated"
+				card-id="{{::player.quarrel.id}}"
+				card-type="quarrel"
+				ng-class="{ winner: player.quarrel.isWinner }"
+				ng-if="player.showQuarrel"
+			></card>
+		</div>
 	</div>
 	<div ng-if="isCurrent" class="sq-player-cards">
 		<div class="cards-group hand">
+			<div ng-if="pModel.message" class="message">{{pModel.message}}</div>
 			<card
 				class="animated"
 				ng-class="{ mine: isCurrent && player.cardsInHand.length}"

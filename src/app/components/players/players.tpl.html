@@ -1,5 +1,7 @@
 <div class="sq-players-wrapper">
-	<form ng-show="!playerData.player && players.length !== 6" class="form-horizontal" name="playerForm">
+	<form class="form-horizontal" name="playerForm"
+		ng-show="!playersCtrl.game.isGameStarted && !playerData.player && players.length !== 6"
+		ng-cloak>
 		<div class="form-group form-group-md row">
 			<div class="col-xs-12 col-sm-5">
 				<input ng-model="pName"

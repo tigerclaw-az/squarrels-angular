@@ -22,7 +22,7 @@ module.exports = function(server) {
 			server
 		}),
 		hoardPlayer = null,
-		CLIENTS = [];
+		CLIENTS = {};
 
 	wss.broadcast = (data, sid, all = true) => {
 		logger.debug('broadcast() -> ', data, sid, all);
@@ -64,8 +64,7 @@ module.exports = function(server) {
 		logger.info('Connection accepted:', sid);
 		logger.info('Clients Connected: %s', wss.clients.size);
 
-		// Save sessionID against the array of
-		// clients so we can reference later
+		// Save sessionID against the map of clients so we can reference later
 		CLIENTS[sid] = ws;
 
 		ws.send(JSON.stringify({ action: 'connect', type: 'global' }));
@@ -156,6 +155,21 @@ module.exports = function(server) {
 					} else {
 						ws.send(JSON.stringify(wsData));
 					}
+
+					break;
+
+				case 'quarrel':
+					wsData = {
+						action: 'quarrel',
+						id: data.player || null,
+						type: 'players'
+					};
+
+					if (data.card) {
+						wsData.card = data.card;
+					}
+
+					wss.broadcast(wsData, sid);
 
 					break;
 
@@ -262,6 +276,7 @@ module.exports = function(server) {
 		ws.on('close', (connection) => {
 			// close user connection
 			logger.warn('Connection Closed:', connection);
+			hoardPlayer = null;
 		});
 	});
 

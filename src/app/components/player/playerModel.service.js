@@ -21,6 +21,8 @@ export class PlayerModelService {
 		let pl = Object.assign({}, {
 			hasDrawnCard: false,
 			isCurrent: true,
+			isQuarrel: false,
+			message: null,
 			cardsInHand: [],
 			cardsSelected: []
 		}, data);

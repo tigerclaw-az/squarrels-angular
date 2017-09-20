@@ -167,7 +167,7 @@ export default class GameController {
 	dealCards() {
 		let dealPromises = [];
 
-		_.forEach(this.playersStore.model.players, (pl) => {
+		_.forEach(this.playersStore.get(), (pl) => {
 			// Loop through each player and draw random set of cards, which will
 			// return a promise so we can wait for all cards to be dealt before
 			// the round starts.
@@ -208,7 +208,6 @@ export default class GameController {
 			timeout = 0;
 		}
 
-		// FIXME: Only handling 'hoard' & 'winter' cards right now
 		switch (card.action) {
 			case 'ambush':
 				if (this.playerModel.isActive()) {
@@ -219,6 +218,23 @@ export default class GameController {
 						});
 					}, timeout);
 				}
+				break;
+
+			case 'hoard':
+				if (!hoardDeck.cards.length) {
+					this.toastr.info('No cards to Hoard');
+					this.gamesApi.actionCard(gameId, null);
+				}
+
+				break;
+
+			case 'quarrel':
+				this.$timeout(() => {
+					this.ws.send({
+						action: 'quarrel',
+						gameId: this.gameModel.model.id
+					});
+				}, timeout);
 				break;
 
 			case 'whirlwind':
@@ -234,14 +250,6 @@ export default class GameController {
 
 			case 'winter':
 				this.$rootScope.$broadcast('deck:action:winter');
-				break;
-
-			case 'hoard':
-				if (!hoardDeck.cards.length) {
-					this.toastr.info('No cards to Hoard');
-					this.gamesApi.actionCard(gameId, null);
-				}
-
 				break;
 
 			default:

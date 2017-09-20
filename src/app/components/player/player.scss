@@ -107,6 +107,29 @@
 		}
 	}
 
+	.sq-player-quarrel {
+		@extend %playing-cards;
+
+		left: 0;
+		position: absolute;
+		top: 0;
+
+		&.flip {
+			@include flip-card($type: 'quarrel');
+		}
+
+		card {
+			animation: .5s linear grow;
+
+			&.ng-leave,
+			&.ng-leave-active {
+				.card {
+					animation: .5s linear fade-out;
+				}
+			}
+		}
+	}
+
 	.sq-player-cards {
 		@include clearfix;
 

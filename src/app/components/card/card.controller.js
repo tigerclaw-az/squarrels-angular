@@ -1,5 +1,5 @@
 export default class CardController {
-	constructor($rootScope, $scope, $log, _, toastr, cardsApi) {
+	constructor($rootScope, $scope, $log, _, toastr, cardsApi, playerModel, websocket) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
@@ -10,6 +10,12 @@ export default class CardController {
 		this.toastr = toastr;
 
 		this.cardsApi = cardsApi;
+		this.playerModel = playerModel;
+		this.websocket = websocket;
+
+		// Bindings from <card> component
+		// this.game
+		// this.player
 
 		this.cardData = {};
 
@@ -62,13 +68,23 @@ export default class CardController {
 	}
 
 	isDisabled() {
-		if (this.player) {
-			return !this.cardId ||
-				this.cardType === 'storage' ||
-				!this.player.isActive ||
-				!this.game.isGameStarted;
+		if (!this.player || !this.game) {
+			return true;
 		}
 
+		if (!this._.isEmpty(this.game.actionCard) && !this.player.isQuarrel) {
+			return true;
+		}
+
+		if (this.cardId && this.cardType !== 'storage' && this.game.isGameStarted) {
+			return false;
+		}
+
+		return true;
+	}
+
+	isQuarrelCard() {
+		// FIXME: Add logic to validate card can be used
 		return true;
 	}
 
@@ -78,14 +94,20 @@ export default class CardController {
 
 		this.$log.debug('onClick()', this, this.cardId);
 
-		e.preventDefault();
-
-		if ($el.hasClass('selected')) {
-			$el.removeClass('selected');
-			this.player.cardsSelected = this._.filter(this.player.cardsSelected, filterBy);
-		} else {
-			$el.addClass('selected');
-			this.player.cardsSelected.push(this.cardData);
+		if (!this._.isEmpty(this.game.actionCard) && this.isQuarrelCard()) {
+			this.websocket.send({
+				action: 'quarrel',
+				card: this.cardData,
+				player: this.player.id
+			});
+		} else if (!this.game.actionCard) {
+			if ($el.hasClass('selected')) {
+				$el.removeClass('selected');
+				this.player.cardsSelected = this._.filter(this.player.cardsSelected, filterBy);
+			} else {
+				$el.addClass('selected');
+				this.player.cardsSelected.push(this.cardData);
+			}
 		}
 	}
 }

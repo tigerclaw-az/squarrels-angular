@@ -1,6 +1,6 @@
 export
 default class PlayersController {
-	constructor($rootScope, $scope, $localStorage, $log, toastr, _, utils, sounds, decksApi, deckStore, gamesApi, playersApi, playersStore, playerModel) {
+	constructor($rootScope, $scope, $localStorage, $log, toastr, _, utils, sounds, decksApi, deckStore, gamesApi, playersApi, playersStore, playerModel, websocket) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
@@ -19,6 +19,7 @@ default class PlayersController {
 		this.playerModel = playerModel;
 		this.playersApi = playersApi;
 		this.playersStore = playersStore;
+		this.websocket = websocket;
 
 		this.newTurn = false;
 
@@ -40,7 +41,7 @@ default class PlayersController {
 						this.playersStore.insert(pl);
 					});
 
-					this.$log.debug('players', this.playersStore.getAll());
+					this.$log.debug('players', this.playersStore.get());
 				}
 			}),
 			onError = (res => {
@@ -49,7 +50,7 @@ default class PlayersController {
 
 		this.$scope.playerData = this.playerModel.model;
 		this.$scope.model = this.playersStore.model;
-		this.$scope.players = this.playersStore.getAll();
+		this.$scope.players = this.playersStore.get();
 
 		// This is triggered when a player tries to click the 'Hoard' pile after
 		// another player has already collected it
@@ -107,6 +108,35 @@ default class PlayersController {
 			}
 		}));
 
+		// Triggered when the 'quarrel' action occurs
+		this.$rootScope.$on('websocket:players:quarrel', ((event, data) => {
+			this.$log.debug('$on -> websocket:players:quarrel', data);
+
+			let player = this.playerModel.model.player;
+
+			if (!data.card) {
+				if (this._.isEmpty(player.cardsInHand)) {
+					this.websocket.send({
+						action: 'quarrel',
+						card: {},
+						player: player.id
+					});
+				} else {
+					// Display message 'Choose a Card' to player
+					this.playerModel.update({ isQuarrel: true, message: 'Choose a Card' });
+				}
+
+				// FIXME
+				this.playersStore.totalQuarrelPlayers = this.playersStore.get().length;
+			} else {
+				if (data.id === player.id) {
+					this.playerModel.update({ isQuarrel: false, message: null });
+				}
+
+				this.playersStore.addQuarrelCard(data.id, data.card);
+			}
+		}));
+
 		this.$rootScope.$on('websocket:players:update', ((event, data) => {
 			this.$log.debug('$on -> websocket:players:update', data);
 
@@ -161,7 +191,7 @@ default class PlayersController {
 				name: this.utils.getRandomStr(12)
 				// img will be set to default on server
 			},
-			video = this.$scope.webcam.video,
+			video = this.$scope.webcam ? this.$scope.webcam.video : null,
 			onSuccess = (res => {
 				this.$log.debug('onSuccess()', res, this);
 

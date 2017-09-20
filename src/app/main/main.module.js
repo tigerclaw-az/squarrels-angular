@@ -1,5 +1,3 @@
-'use strict';
-
 import { MainController } from './main.controller';
 
 let deps = [

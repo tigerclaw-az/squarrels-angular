@@ -22,3 +22,28 @@
 	font-size: $size;
 	font-size: rem-calc($size);
 }
+
+@mixin flip-card($type: 'action') {
+	.card {
+		animation-fill-mode: forwards;
+		backface-visibility: hidden;
+
+		&.blank-- {
+			animation-duration: 4s;
+			animation-name: spin;
+			animation-timing-function: linear;
+		}
+	}
+
+	[card-type=#{$type}] {
+		.card {
+			animation-delay: 3s;
+			animation-duration: .5s;
+			animation-name: spin-reverse;
+			animation-timing-function: ease-out;
+			transform: rotateY(-90deg);
+
+			@content;
+		}
+	}
+}

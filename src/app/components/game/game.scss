@@ -26,39 +26,19 @@ header {
 
 .action-card {
 	@extend %playing-cards;
+	@include flip-card {
+		&.action--whirlwind {
+			animation-name: action-whirlwind;
+		}
+
+		&.action--quarrel,
+		&.action--winter {
+			animation-name: action-fadeout;
+		}
+	}
 
 	left: 40%;
 	position: absolute !important;
 	top: -20%;
 	transform: scale(2);
-
-	.card {
-		animation-fill-mode: forwards;
-		backface-visibility: hidden;
-
-		&.blank-- {
-			animation-duration: 4s;
-			animation-name: spin;
-			animation-timing-function: linear;
-		}
-	}
-
-	[card-type='action'] {
-		.card {
-			animation-delay: 3s;
-			animation-duration: .5s;
-			animation-name: spin-reverse;
-			animation-timing-function: ease-out;
-			transform: rotateY(-90deg);
-
-			&.action--whirlwind {
-				animation-name: action-whirlwind;
-			}
-
-			&.action--quarrel,
-			&.action--winter {
-				animation-name: action-fadeout;
-			}
-		}
-	}
 }

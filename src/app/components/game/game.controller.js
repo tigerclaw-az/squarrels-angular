@@ -55,6 +55,12 @@ export default class GameController {
 			this.gameModel.endGame();
 		});
 
+		this.$rootScope.$on('game:action:quarrel', () => {
+			let gameId = this.gameModel.model.id;
+
+			this.gamesApi.actionCard(gameId, null);
+		});
+
 		// Should only fire for external clients
 		this.$rootScope.$on('websocket:decks:create', (event, data) => {
 			this.$log.debug('$on -> websocket:decks:create', data);
@@ -206,6 +212,7 @@ export default class GameController {
 		// Show action card immediately if there aren't any cards to 'hoard'
 		if (!hoardDeck.cards.length) {
 			timeout = 0;
+			this.gameModel.update({ instantAction: true });
 		}
 
 		switch (card.action) {
@@ -262,6 +269,8 @@ export default class GameController {
 			actionCards.push(card.id);
 
 			this.$timeout(() => {
+				this.gameModel.update({ instantAction: false });
+
 				this.decksApi
 					.update(actionDeck.id, { cards: actionCards })
 					.then(res => {

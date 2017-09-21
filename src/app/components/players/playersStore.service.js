@@ -1,5 +1,5 @@
 export default class PlayersStoreService {
-	constructor($rootScope, $log, $localStorage, $timeout, toastr, _, websocket, playersApi, playerModel) {
+	constructor($rootScope, $log, $localStorage, $timeout, toastr, _, websocket, gamesApi, playersApi, playerModel) {
 		'ngInject';
 
 		this.$localStorage = $localStorage;
@@ -9,6 +9,8 @@ export default class PlayersStoreService {
 
 		this._ = _;
 		this.toastr = toastr;
+
+		this.gamesApi = gamesApi;
 		this.playerModel = playerModel;
 		this.playersApi = playersApi;
 		this.ws = websocket;
@@ -23,32 +25,47 @@ export default class PlayersStoreService {
 
 	addQuarrelCard(id, card) {
 		let player = this.get('id', id),
-			playedCards;
+			playersQuarrel;
 
 		player.quarrel = card;
+		playersQuarrel = this.get('quarrel', null, false, true);
 
-		playedCards = this.get('quarrel', null, false, true);
-
-		this.$log.debug('addQuarrelCard()', player, playedCards);
+		this.$log.debug('addQuarrelCard()', player, playersQuarrel);
 
 		// All players have selected a card
-		if (playedCards.length === this.totalQuarrelPlayers) {
-			this.calcQuarrel();
+		if (playersQuarrel.length === this.totalQuarrelPlayers) {
+			this.calcQuarrel(playersQuarrel);
 		}
 	}
 
-	calcQuarrel() {
-		let winner = this._.maxBy(this.model.players, pl => {
-			let card = pl.quarrel;
+	calcQuarrel(players) {
+		let winner = this._.maxBy(players, pl => {
+				let card = pl.quarrel;
 
-			return card.name === 'golden' ? 6 : card.amount;
-		});
+				return card.name === 'golden' ? 6 : card.amount;
+			}),
+			playedCards = this._.map(players, 'quarrel');
 
 		this.$log.debug('calcQuarrel()', winner, this);
 
-		this._.forEach(this.model.players, pl => {
-			this.update(pl.id, { showQuarrel: true });
-		});
+		this.update({ showQuarrel: true });
+
+		this.$timeout(() => {
+			let cards = this._.union(winner.cardsInHand, this._.map(playedCards, 'id'));
+
+			this.$log.debug('winner cards ->', cards);
+
+			this.update(winner.id, { isQuarrelWinner: true });
+
+			this.playersApi
+				.update(winner.id, { cardsInHand: cards })
+				.then(() => {
+					this.update({ quarrel: null });
+					this.$scope.$broadcast('game:action:quarrel');
+				}, err => {
+					this.$log.error(err);
+				});
+		}, 5000);
 	}
 
 	get(prop, value, index = false, all = false) {
@@ -129,6 +146,16 @@ export default class PlayersStoreService {
 	}
 
 	update(id, data) {
+		if (!data) {
+			let data = id;
+
+			this._.forEach(this.model.players, pl => {
+				this.update(pl.id, data);
+			});
+
+			return this.model.players;
+		}
+
 		// Find the player with given id to update
 		let player = this.get('id', id);
 

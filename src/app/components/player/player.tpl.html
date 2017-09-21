@@ -31,13 +31,17 @@
 		>
 			<i class="icon icon-storage-auto glyphicon glyphicon-download-alt"></i>
 		</a>
-		<div ng-if="player.quarrel" class="sq-player-quarrel" ng-class="{ flip: player.showQuarrel }">
+		<div class="sq-player-quarrel"
+			ng-if="player.quarrel"
+			ng-class="{
+				flip: player.showQuarrel,
+				winner: player.isQuarrelWinner
+			}">
 			<span class="card blank--"></span>
 			<card
 				class="animated"
 				card-id="{{::player.quarrel.id}}"
 				card-type="quarrel"
-				ng-class="{ winner: player.quarrel.isWinner }"
 				ng-if="player.showQuarrel"
 			></card>
 		</div>

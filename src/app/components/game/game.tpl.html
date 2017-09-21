@@ -4,6 +4,7 @@
 		<span class="col-sm-4">ROUND: {{model.round}}</span>
 	</div>
 </header>
+<canvas ng-if="model.actionCard && model.actionCard.name === 'winter'" class="winter-snow"></canvas>
 <div class="row">
 	<div class="col-sm-12">
 		<div class="play-area">
@@ -24,15 +25,17 @@
 		</span>
 	</div>
 </div>
-<button
-	class="btn btn-primary new-game"
-	ng-click="gameCtrl.create()"
-	ng-show="!gameCtrl.isGameStarted() && playersModel.players.length >= 2">
-	New Game
-</button>
-<button
-	class="btn btn-warning new-game"
-	ng-click="gameCtrl.reset()"
-	ng-show="gameCtrl.isAdmin">
-	RESET
-</button>
+<div class="game-buttons">
+	<button
+		class="btn btn-primary new-game"
+		ng-click="gameCtrl.create()"
+		ng-show="!gameCtrl.isGameStarted() && playersModel.players.length >= 2">
+		New Game
+	</button>
+	<button
+		class="btn btn-warning new-game"
+		ng-click="gameCtrl.reset()"
+		ng-show="gameCtrl.isAdmin">
+		RESET
+	</button>
+</div>

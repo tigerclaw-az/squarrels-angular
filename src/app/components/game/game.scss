@@ -14,6 +14,13 @@ header {
 	padding: 1rem;
 }
 
+.winter-snow {
+	background-image: linear-gradient(bottom, rgb(105, 173, 212) 0%, rgb(23, 82, 145) 84%);
+	left: 0;
+	position: absolute;
+	top: 0;
+}
+
 .play-area {
 	@include clearfix;
 
@@ -41,4 +48,9 @@ header {
 	position: absolute !important;
 	top: -20%;
 	transform: scale(2);
+}
+
+.game-buttons {
+	position: absolute;
+	z-index: 5;
 }

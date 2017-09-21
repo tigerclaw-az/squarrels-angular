@@ -33,17 +33,28 @@ export default class GameController {
 
 				if (res.status === 200) {
 					let gameData = res.data[0],
-						decks = gameData.decks;
+						decks = gameData.decks,
+						decksPromise = [];
 
 					this.gameModel.update(gameData);
 
 					decks.forEach(deck => {
-						this.insertDeck(deck);
+						decksPromise.push(this.insertDeck(deck));
 					});
+
+					this.$q
+						.all(decksPromise)
+						.then(() => {
+							let game = this.gameModel.getByProp();
+
+							if (game.actionCard) {
+								this.handleActionCard(game.actionCard);
+							}
+						});
 				}
 			}),
-			onError = (res => {
-				this.$log.error(res);
+			onError = (err => {
+				this.$log.error(err);
 			});
 
 		this.isAdmin = this.mainCtrl.isAdmin;
@@ -52,11 +63,15 @@ export default class GameController {
 		this.$scope.playersModel = this.playersStore.model;
 
 		this.$rootScope.$on('deck:action:winter', () => {
+			this.$timeout(() => {
+				this.displayWinter();
+			}, 50);
+
 			this.gameModel.endGame();
 		});
 
 		this.$rootScope.$on('game:action:quarrel', () => {
-			let gameId = this.gameModel.model.id;
+			let gameId = this.gameModel.getByProp('id');
 
 			this.gamesApi.actionCard(gameId, null);
 		});
@@ -122,9 +137,19 @@ export default class GameController {
 	 * Resets the current game
 	 */
 	reset() {
-		if (this.gameModel.model.id) {
+		let gameId = this.gameModel.getByProp('id');
+
+		this.$log.debug('reset()', this.gameModel, this);
+
+		if (gameId) {
 			this.gamesApi
-				.remove(this.gameModel.model.id);
+				.remove(gameId)
+				.then(() => {
+					this.$log.info('Game reset successfully');
+				}, err => {
+					this.toastr.error('Unable to reset game');
+					this.$log.error(err);
+				});
 		}
 	}
 
@@ -192,6 +217,113 @@ export default class GameController {
 			});
 	}
 
+	displayWinter() {
+		var flakes = [],
+			canvas = angular.element(document.querySelector('.winter-snow'))[0],
+			ctx = canvas.getContext('2d'),
+			flakeCount = 400,
+			mX = -100,
+			mY = -100,
+			init = () => {
+				for (let i = 0; i < flakeCount; i++) {
+					let x = Math.floor(Math.random() * canvas.width),
+						y = Math.floor(Math.random() * canvas.height),
+						size = (Math.random() * 3) + 2,
+						speed = (Math.random() * 1) + 0.5,
+						opacity = (Math.random() * 0.5) + 0.3;
+
+					flakes.push({
+						speed: speed,
+						velY: speed,
+						velX: 0,
+						x: x,
+						y: y,
+						size: size,
+						stepSize: (Math.random()) / 30,
+						step: 0,
+						opacity: opacity
+					});
+				}
+
+				startAnimation();
+			},
+			reset = (flake) => {
+				flake.x = Math.floor(Math.random() * canvas.width);
+				flake.y = 0;
+				flake.size = (Math.random() * 3) + 2;
+				flake.speed = (Math.random() * 1) + 0.5;
+				flake.velY = flake.speed;
+				flake.velX = 0;
+				flake.opacity = (Math.random() * 0.5) + 0.3;
+			},
+			startAnimation = () => {
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+				for (let i = 0; i < flakeCount; i++) {
+					let flake = flakes[i],
+						x = mX,
+						y = mY,
+						minDist = 150,
+						x2 = flake.x,
+						y2 = flake.y,
+						dist = Math.sqrt((x2 - x) * (x2 - x) + (y2 - y) * (y2 - y));
+
+					if (dist < minDist) {
+						let force = minDist / (dist * dist),
+							xcomp = (x - x2) / dist,
+							ycomp = (y - y2) / dist,
+							deltaV = force / 2;
+
+						flake.velX -= deltaV * xcomp;
+						flake.velY -= deltaV * ycomp;
+
+					} else {
+						flake.velX *= .98;
+
+						if (flake.velY <= flake.speed) {
+							flake.velY = flake.speed
+						}
+
+						flake.velX += Math.cos(flake.step += .05) * flake.stepSize;
+					}
+
+					ctx.fillStyle = 'rgba(255,255,255,' + flake.opacity + ')';
+					flake.y += flake.velY;
+					flake.x += flake.velX;
+
+					if (flake.y >= canvas.height || flake.y <= 0) {
+						reset(flake);
+					}
+
+
+					if (flake.x >= canvas.width || flake.x <= 0) {
+						reset(flake);
+					}
+
+					ctx.beginPath();
+					ctx.arc(flake.x, flake.y, flake.size, 0, Math.PI * 2);
+					ctx.fill();
+				}
+
+				window.requestAnimationFrame(startAnimation);
+			};
+
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight - 3;
+
+		canvas.addEventListener('mousemove', function(e) {
+			mX = e.clientX,
+			mY = e.clientY
+		});
+
+		window.addEventListener('resize',function(){
+			canvas.width = window.innerWidth;
+			canvas.height = window.innerHeight;
+		})
+
+		init();
+	}
+
 	getDecks() {
 		let decks = this._.orderBy(this.deckStore.get(), ['deckType'], ['desc']);
 
@@ -204,14 +336,14 @@ export default class GameController {
 				return card.id;
 			}),
 			hoardDeck = this.deckStore.getByType('discard'),
-			gameId = this.gameModel.model.id,
+			gameId = this.gameModel.getByProp('id'),
 			timeout = 4000;
 
 		this.sounds.play('action-card');
 
 		// Show action card immediately if there aren't any cards to 'hoard'
 		if (!hoardDeck.cards.length) {
-			timeout = 0;
+			timeout = 300;
 			this.gameModel.update({ instantAction: true });
 		}
 
@@ -221,7 +353,7 @@ export default class GameController {
 					this.$timeout(() => {
 						this.ws.send({
 							action: 'ambush',
-							gameId: this.gameModel.model.id
+							gameId: gameId
 						});
 					}, timeout);
 				}
@@ -239,7 +371,7 @@ export default class GameController {
 				this.$timeout(() => {
 					this.ws.send({
 						action: 'quarrel',
-						gameId: this.gameModel.model.id
+						gameId: gameId
 					});
 				}, timeout);
 				break;
@@ -249,7 +381,7 @@ export default class GameController {
 					this.$timeout(() => {
 						this.ws.send({
 							action: 'whirlwind',
-							gameId: this.gameModel.model.id
+							gameId: gameId
 						});
 					}, timeout);
 				}
@@ -269,12 +401,11 @@ export default class GameController {
 			actionCards.push(card.id);
 
 			this.$timeout(() => {
-				this.gameModel.update({ instantAction: false });
-
 				this.decksApi
 					.update(actionDeck.id, { cards: actionCards })
 					.then(res => {
 						this.$log.debug('decks:update()', res);
+						// this.gameModel.update({ instantAction: false });
 					}, err => {
 						this.$log.error(err);
 					});
@@ -285,18 +416,12 @@ export default class GameController {
 	insertDeck(id) {
 		var deckPromise = this.$q.defer(),
 			onSuccessDeck = (res => {
-				let game = this.gameModel.getByProp();
-
 				this.$log.debug('onSuccessDeck()', res, this);
 
 				if (res.status === 200) {
 					let deckData = res.data[0];
 
 					this.deckStore.insert(deckData);
-
-					if (deckData.deckType === 'action' && game.actionCard) {
-						this.handleActionCard(game.actionCard);
-					}
 
 					deckPromise.resolve(deckData);
 				}
@@ -315,6 +440,6 @@ export default class GameController {
 	}
 
 	isGameStarted() {
-		return this.gameModel.isGameStarted();
+		return this.gameModel.getByProp('isGameStarted');
 	}
 }

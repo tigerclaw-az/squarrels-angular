@@ -110,17 +110,26 @@
 	.sq-player-quarrel {
 		@extend %playing-cards;
 
+		animation: .5s linear grow;
 		left: 0;
 		position: absolute;
 		top: 0;
+
+		.card {
+			transition: transform 1s linear;
+		}
 
 		&.flip {
 			@include flip-card($type: 'quarrel');
 		}
 
-		card {
-			animation: .5s linear grow;
+		&.winner {
+			.card {
+				box-shadow: 0 0 20px 20px get-color('gold');
+			}
+		}
 
+		card {
 			&.ng-leave,
 			&.ng-leave-active {
 				.card {
@@ -131,9 +140,6 @@
 	}
 
 	.sq-player-cards {
-		@include clearfix;
-
-		float: left;
 		width: 50%;
 
 		.cards-group {

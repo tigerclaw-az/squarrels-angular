@@ -29,7 +29,7 @@
 		backface-visibility: hidden;
 
 		&.blank-- {
-			animation-duration: 4s;
+			animation-duration: 3s;
 			animation-name: spin;
 			animation-timing-function: linear;
 		}
@@ -37,7 +37,7 @@
 
 	[card-type=#{$type}] {
 		.card {
-			animation-delay: 3s;
+			animation-delay: 2.5s;
 			animation-duration: .5s;
 			animation-name: spin-reverse;
 			animation-timing-function: ease-out;
@@ -49,10 +49,10 @@
 
 	&.instant {
 		.card {
-			animation-delay: .1s;
+			animation-delay: .25s;
 
-			&.blank {
-				animation-duration: .1s;
+			&.blank-- {
+				animation-duration: .25s;
 			}
 		}
 	}

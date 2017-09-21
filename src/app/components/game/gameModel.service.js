@@ -7,7 +7,9 @@ export default class GameModelService {
 		this._ = _;
 		this.gamesApi = gamesApi;
 
-		this.model = {};
+		this.model = {
+			instantAction: false
+		};
 	}
 
 	endGame() {

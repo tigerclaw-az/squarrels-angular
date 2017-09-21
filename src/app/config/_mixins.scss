@@ -46,4 +46,14 @@
 			@content;
 		}
 	}
+
+	&.instant {
+		.card {
+			animation-delay: .1s;
+
+			&.blank {
+				animation-duration: .1s;
+			}
+		}
+	}
 }

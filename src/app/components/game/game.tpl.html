@@ -17,6 +17,7 @@
 		<span
 			ng-if="model.actionCard"
 			ng-init="card = model.actionCard"
+			ng-class="{ instant: model.instantAction }"
 			class="action-card">
 			<span class="card blank--"></span>
 			<card card-id="{{card.id}}" card-type="action"></card>

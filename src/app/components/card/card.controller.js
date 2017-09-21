@@ -95,11 +95,18 @@ export default class CardController {
 		this.$log.debug('onClick()', this, this.cardId);
 
 		if (!this._.isEmpty(this.game.actionCard) && this.isQuarrelCard()) {
-			this.websocket.send({
-				action: 'quarrel',
-				card: this.cardData,
-				player: this.player.id
-			});
+			// Remove card from player and send it through the websocket
+			this.playerModel
+				.discard(this.cardData.id)
+				.then(() => {
+					this.websocket.send({
+						action: 'quarrel',
+						card: this.cardData,
+						player: this.player.id
+					});
+				}, err => {
+					this.$log.error(err);
+				});
 		} else if (!this.game.actionCard) {
 			if ($el.hasClass('selected')) {
 				$el.removeClass('selected');

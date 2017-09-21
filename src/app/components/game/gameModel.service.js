@@ -7,9 +7,7 @@ export default class GameModelService {
 		this._ = _;
 		this.gamesApi = gamesApi;
 
-		this.model = {
-			instantAction: false
-		};
+		this.model = {};
 	}
 
 	endGame() {
@@ -49,7 +47,9 @@ export default class GameModelService {
 	}
 
 	update(data) {
-		angular.copy(data, this.model);
+		this.$log.debug('update()', data, this);
+
+		angular.extend(this.model, data);
 
 		if (!data.actionCard) {
 			angular.copy(null, this.model.actionCard);

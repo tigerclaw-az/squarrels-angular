@@ -61,7 +61,7 @@ export default class PlayersStoreService {
 				.update(winner.id, { cardsInHand: cards })
 				.then(() => {
 					this.update({ quarrel: null });
-					this.$scope.$broadcast('game:action:quarrel');
+					this.$rootScope.$broadcast('game:action:quarrel');
 				}, err => {
 					this.$log.error(err);
 				});

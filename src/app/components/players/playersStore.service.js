@@ -60,7 +60,7 @@ export default class PlayersStoreService {
 			this.playersApi
 				.update(winner.id, { cardsInHand: cards })
 				.then(() => {
-					this.update({ quarrel: null });
+					this.update({ quarrel: null, showQuarrel: false });
 					this.$rootScope.$broadcast('game:action:quarrel');
 				}, err => {
 					this.$log.error(err);
@@ -146,7 +146,7 @@ export default class PlayersStoreService {
 	}
 
 	update(id, data) {
-		if (!data) {
+		if (!data && this._.isObject(id)) {
 			let data = id;
 
 			this._.forEach(this.model.players, pl => {

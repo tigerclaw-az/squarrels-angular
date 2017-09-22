@@ -107,6 +107,8 @@ export default class GameController {
 		this.$rootScope.$on('websocket:games:update', (event, data) => {
 			this.$log.debug('$on -> websocket:games:update', data);
 
+			this.gameModel.update({ instantAction: false });
+
 			if (data.actionCard && !this.gameModel.getByProp('actionCard')) {
 				let card = data.actionCard;
 
@@ -405,7 +407,6 @@ export default class GameController {
 					.update(actionDeck.id, { cards: actionCards })
 					.then(res => {
 						this.$log.debug('decks:update()', res);
-						// this.gameModel.update({ instantAction: false });
 					}, err => {
 						this.$log.error(err);
 					});

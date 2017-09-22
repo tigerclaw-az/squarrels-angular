@@ -51,7 +51,7 @@ export default class GameModelService {
 
 		angular.extend(this.model, data);
 
-		if (!data.actionCard) {
+		if (data.actionCard === null) {
 			angular.copy(null, this.model.actionCard);
 		}
 	}

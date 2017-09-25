@@ -165,7 +165,7 @@ module.exports = function(server) {
 						type: 'players'
 					};
 
-					if (data.card) {
+					if (data.hasOwnProperty('card')) {
 						wsData.card = data.card;
 					}
 

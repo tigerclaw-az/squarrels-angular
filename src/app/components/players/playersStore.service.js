@@ -51,7 +51,11 @@ export default class PlayersStoreService {
 		this.update({ showQuarrel: true });
 
 		this.$timeout(() => {
-			let cards = this._.union(winner.cardsInHand, this._.map(playedCards, 'id'));
+			let cards =
+				this._.chain(winner.cardsInHand)
+					.union(this._.map(playedCards, 'id'))
+					.compact()
+					.value();
 
 			this.$log.debug('winner cards ->', cards);
 

@@ -107,7 +107,7 @@ export default class GameController {
 		this.$rootScope.$on('websocket:games:update', (event, data) => {
 			this.$log.debug('$on -> websocket:games:update', data);
 
-			this.gameModel.update({ instantAction: false });
+			data.instantAction = false;
 
 			if (data.actionCard && !this.gameModel.getByProp('actionCard')) {
 				let card = data.actionCard;
@@ -391,6 +391,7 @@ export default class GameController {
 
 			case 'winter':
 				this.$rootScope.$broadcast('deck:action:winter');
+				timeout = 500;
 				break;
 
 			default:

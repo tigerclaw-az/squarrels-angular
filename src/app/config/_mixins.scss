@@ -37,7 +37,7 @@
 
 	[card-type=#{$type}] {
 		.card {
-			animation-delay: 2.25s;
+			animation-delay: 2.5s;
 			animation-duration: .5s;
 			animation-name: spin-reverse;
 			animation-timing-function: ease-out;
@@ -49,7 +49,7 @@
 
 	&.instant {
 		.card {
-			animation-delay: .25s;
+			animation-delay: .2s;
 
 			&.blank-- {
 				animation-duration: .25s;

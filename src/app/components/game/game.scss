@@ -33,13 +33,10 @@ header {
 .action-card {
 	@extend %playing-cards;
 	@include flip-card {
+		animation-name: action-fadeout;
+
 		&.action--whirlwind {
 			animation-name: action-whirlwind;
-		}
-
-		&.action--quarrel,
-		&.action--winter {
-			animation-name: action-fadeout;
 		}
 	}
 

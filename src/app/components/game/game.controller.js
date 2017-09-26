@@ -107,12 +107,12 @@ export default class GameController {
 		this.$rootScope.$on('websocket:games:update', (event, data) => {
 			this.$log.debug('$on -> websocket:games:update', data);
 
-			data.instantAction = false;
-
 			if (data.actionCard && !this.gameModel.getByProp('actionCard')) {
 				let card = data.actionCard;
 
 				this.handleActionCard(card);
+			} else {
+				data.instantAction = false;
 			}
 
 			this.gameModel.update(data);
@@ -339,7 +339,7 @@ export default class GameController {
 			}),
 			hoardDeck = this.deckStore.getByType('discard'),
 			gameId = this.gameModel.getByProp('id'),
-			timeout = 4000;
+			timeout = 3100;
 
 		this.sounds.play('action-card');
 
@@ -390,7 +390,6 @@ export default class GameController {
 				break;
 
 			case 'winter':
-				this.$rootScope.$broadcast('deck:action:winter');
 				timeout = 500;
 				break;
 
@@ -407,6 +406,10 @@ export default class GameController {
 				this.decksApi
 					.update(actionDeck.id, { cards: actionCards })
 					.then(res => {
+						if (card.action === 'winter') {
+							this.$rootScope.$broadcast('deck:action:winter');
+						}
+
 						this.$log.debug('decks:update()', res);
 					}, err => {
 						this.$log.error(err);

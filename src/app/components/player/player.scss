@@ -81,6 +81,7 @@
 
 			.card {
 				height: 5rem;
+				opacity: .6;
 				position: relative;
 				width: 4rem;
 			}
@@ -201,14 +202,15 @@
 			max-width: 11rem;
 
 			.sq-player-info-item {
-				font-size: 3rem;
+				font-size: 3.5rem;
 			}
 
 			.sq-player-storage {
-				font-size: 5rem;
+				font-size: 5.5rem;
 
 				.sq-player-score {
-					font-size: 2.5rem;
+					font-size: 2.75rem;
+					font-weight: $font-weight-bold;
 				}
 			}
 		}

@@ -26,8 +26,8 @@
 	<!-- <webcam channel="webcam"></webcam> -->
 	<div class="sq-players">
 		<player
-			ng-repeat="p in players | orderBy:'isCurrent':true"
-			ng-class="{ current: 'isCurrent' }"
+			ng-repeat="p in players | orderBy: 'isCurrent':true"
+			ng-class="{ current: p.isCurrent }"
 			game="playersCtrl.game"
 			player="p"
 		></player>

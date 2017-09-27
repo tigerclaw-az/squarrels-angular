@@ -17,26 +17,6 @@ export class PlayerModelService {
 		this.numDrawCards = 7;
 	}
 
-	insert(data) {
-		let pl = Object.assign({}, {
-			hasDrawnCard: false,
-			isCurrent: true,
-			isQuarrel: false,
-			message: null,
-			cardsInHand: [],
-			cardsSelected: []
-		}, data);
-
-		this.$log.debug('insert()', pl, this);
-
-		this.model.player = pl;
-		this.$localStorage.player = this.model.player;
-	}
-
-	isActive() {
-		return this.model.player && this.model.player.isActive;
-	}
-
 	discard(id) {
 		let cards = this.model.player.cardsInHand;
 
@@ -56,6 +36,14 @@ export class PlayerModelService {
 		return this.playersApi.update(this.model.player.id, plData);
 	}
 
+	getByProp(prop) {
+		if (prop) {
+			return this.model.player[prop];
+		}
+
+		return this.model.player;
+	}
+
 	getCards() {
 		let cards = this.model.player.cardsInHand;
 
@@ -64,6 +52,26 @@ export class PlayerModelService {
 		}
 
 		return [];
+	}
+
+	insert(data) {
+		let pl = Object.assign({}, {
+			hasDrawnCard: false,
+			isCurrent: true,
+			isQuarrel: false,
+			message: null,
+			cardsInHand: [],
+			cardsSelected: []
+		}, data);
+
+		this.$log.debug('insert()', pl, this);
+
+		this.model.player = pl;
+		this.$localStorage.player = this.model.player;
+	}
+
+	isActive() {
+		return this.model.player && this.model.player.isActive;
 	}
 
 	resetSelected() {

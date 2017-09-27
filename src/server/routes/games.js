@@ -33,7 +33,7 @@ games.delete('/:id', function(req, res) {
 
 			/* eslint-disable no-undef */
 			wss.broadcast(
-				{ type: 'games', action: 'remove' },
+				{ action: 'remove', type: 'games' },
 				sessionId
 			);
 			/* eslint-enable no-undef */
@@ -43,7 +43,7 @@ games.delete('/:id', function(req, res) {
 				.then(() => {
 					/* eslint-disable no-undef */
 					wss.broadcast(
-						{ type: 'decks', action: 'remove' },
+						{ action: 'remove', type: 'decks' },
 						sessionId
 					);
 					/* eslint-enable no-undef */
@@ -55,7 +55,7 @@ games.delete('/:id', function(req, res) {
 						.then(() => {
 							/* eslint-disable no-undef */
 							wss.broadcast(
-								{ type: 'players', action: 'update', nuts: playerUpdate },
+								{ action: 'update', type: 'players', nuts: playerUpdate },
 								sessionId
 							);
 							/* eslint-enable no-undef */

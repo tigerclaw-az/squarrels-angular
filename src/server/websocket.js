@@ -253,7 +253,11 @@ module.exports = function(server) {
 						.select('+sessionId +cardsInHand')
 						.exec()
 						.then(list => {
-							wsData = { action: 'whoami', type: 'players', nuts: list };
+							wsData = {
+								action: 'whoami',
+								nuts: list,
+								type: 'players'
+							};
 
 							ws.send(JSON.stringify(wsData));
 						})

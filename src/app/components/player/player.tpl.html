@@ -1,7 +1,7 @@
-<div class="sq-player" ng-init="pModel = playerCtrl.getCurrentPlayer(); player = playerCtrl.player; isCurrent = player.id === pModel.id"
+<div class="sq-player" ng-init="player = playerCtrl.player;"
 	ng-class="{
 		active: player.isActive,
-		current: isCurrent
+		current: playerCtrl.isCurrentPlayer()
 	}">
 	<div class="sq-player-thumbnail">
 		<img class="img-circle" ng-src="{{player.img}}"/>
@@ -27,7 +27,7 @@
 			title="Auto Storage of Nuts"
 			ng-click="playerCtrl.onStorageAutoClick($event)"
 			ng-class="{ disabled: !player.isActive }"
-			ng-if="isCurrent"
+			ng-if="playerCtrl.isCurrentPlayer()"
 		>
 			<i class="icon icon-storage-auto glyphicon glyphicon-download-alt"></i>
 		</a>
@@ -46,12 +46,12 @@
 			></card>
 		</div>
 	</div>
-	<div ng-if="isCurrent" class="sq-player-cards">
+	<div ng-if="playerCtrl.isCurrentPlayer()" ng-init="pModel = playerCtrl.getCurrentPlayer();" class="sq-player-cards">
 		<div class="cards-group hand">
 			<div ng-if="pModel.message" class="message">{{pModel.message}}</div>
 			<card
 				class="animated"
-				ng-class="{ mine: isCurrent && player.cardsInHand.length}"
+				ng-class="{ mine: player.cardsInHand.length}"
 				ng-if="player.cardsInHand.length"
 				ng-repeat="card in player.cardsInHand | orderBy: card.amount"
 				card-id="{{::card}}"

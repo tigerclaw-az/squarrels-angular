@@ -58,7 +58,11 @@ export default class PlayerController {
 	}
 
 	getCurrentPlayer() {
-		return this.playerModel.model.player;
+		return this.playerModel.getByProp();
+	}
+
+	isCurrentPlayer() {
+		return this.player.isCurrent;
 	}
 
 	onStorageClick(evt) {

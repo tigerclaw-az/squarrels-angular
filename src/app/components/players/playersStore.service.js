@@ -48,12 +48,18 @@ export default class PlayersStoreService {
 
 		this.$log.debug('calcQuarrel()', winner, this);
 
+		if (!winner) {
+			this.update({ quarrel: null, showQuarrel: false });
+			this.$rootScope.$broadcast('game:action:quarrel');
+
+			return false;
+		}
+
 		this.update({ showQuarrel: true });
 
 		this.$timeout(() => {
 			let cards =
-				this._.chain(winner.cardsInHand)
-					.union(this._.map(playedCards, 'id'))
+				this._(this._.map(playedCards, 'id'))
 					.compact()
 					.value();
 
@@ -61,15 +67,18 @@ export default class PlayersStoreService {
 
 			this.update(winner.id, { isQuarrelWinner: true });
 
-			this.playersApi
-				.update(winner.id, { cardsInHand: cards })
-				.then(() => {
-					this.update({ quarrel: null, showQuarrel: false });
-					this.$rootScope.$broadcast('game:action:quarrel');
-				}, err => {
-					this.$log.error(err);
-				});
-		}, 5000);
+			if (this.playerModel.isActive()) {
+				this.playersApi
+					.update(winner.id, { cardsInHand: cards, addCards: true })
+					.then(() => {
+						this.$rootScope.$broadcast('game:action:quarrel');
+					}, err => {
+						this.$log.error(err);
+					});
+			}
+
+			this.update({ quarrel: null, showQuarrel: false });
+		}, 3000);
 	}
 
 	get(prop, value, index = false, all = false) {
@@ -108,7 +117,7 @@ export default class PlayersStoreService {
 
 	insert(data) {
 		let pl = Object.assign({}, {
-				isCurrent: false
+				isCurrent: data.isCurrent || false
 			}, data),
 			existingPlayer = this._.some(this.model.players, { id: pl.id });
 

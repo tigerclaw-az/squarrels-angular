@@ -34,7 +34,7 @@ let config = {
 
 	server: 'localhost',
 
-	playerImage: 'https://placeimg.com/120/120/animals'
+	playerImage: 'assets/images/squirrel-placeholder.jpg'
 }
 
 log.configure({

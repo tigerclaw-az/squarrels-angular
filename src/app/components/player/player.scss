@@ -50,9 +50,18 @@
 
 	.sq-player-thumbnail {
 		margin-right: 1rem;
+		position: relative;
 
 		img {
 			width: 7.5rem;
+		}
+
+		.sq-player-card-count {
+			@include center-horizontal;
+			color: get-color('alabaster');
+			font-size: 5rem;
+			line-height: 1;
+			top: -30%;
 		}
 	}
 
@@ -74,25 +83,6 @@
 
 		.sq-player-name {
 			flex: 1 0 100%;
-		}
-
-		.sq-player-total-cards {
-			display: inline-block;
-
-			.card {
-				height: 5rem;
-				opacity: .6;
-				position: relative;
-				width: 4rem;
-			}
-
-			.sq-player-card-count {
-				@include center-horizontal;
-
-				color: inherit;
-				position: absolute;
-				top: 0;
-			}
 		}
 
 		.sq-player-storage {

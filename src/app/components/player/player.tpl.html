@@ -5,13 +5,10 @@
 	}">
 	<div class="sq-player-thumbnail">
 		<img class="img-circle" ng-src="{{player.img}}"/>
+		<span class="sq-player-card-count">{{player.totalCards}}</span>
 	</div>
 	<div class="sq-player-info">
 		<div class="sq-player-name">{{player.name}}</div>
-		<span class="sq-player-info-item sq-player-total-cards">
-			<i class="icon icon-card card blank--"></i>
-			<span class="sq-player-card-count">{{player.totalCards}}</span>
-		</span>
 		<a
 			href="#"
 			class="sq-player-info-item sq-player-storage"

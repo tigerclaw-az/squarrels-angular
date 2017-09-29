@@ -107,7 +107,19 @@
 		top: 0;
 
 		.card {
-			transition: transform 1s linear;
+			box-shadow: none;
+			left: 0;
+
+			&::after {
+				box-shadow: 0 0 20px 20px get-color('saffron');
+				content: '';
+				height: 100%;
+				left: 0;
+				opacity: 0;
+				position: absolute;
+				transition: opacity .5s linear;
+				width: 100%;
+			}
 		}
 
 		&.flip {
@@ -116,7 +128,9 @@
 
 		&.winner {
 			.card {
-				box-shadow: 0 0 20px 20px get-color('gold');
+				&::after {
+					opacity: 1;
+				}
 			}
 		}
 

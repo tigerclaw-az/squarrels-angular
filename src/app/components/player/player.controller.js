@@ -89,24 +89,30 @@ export default class PlayerController {
 			// Filter out sets of 3 that have the same 'amount'
 			this.playerModel.getCards()
 				.then(res => {
-					let cards = this._.filter(res.data, (o) => {
+					let numberCards = this._.filter(res.data, (o) => {
 							return o.cardType === 'number';
 						}),
-						numberCards = this._.groupBy(cards, (o) => {
+						cardsGroup = this._.groupBy(numberCards, (o) => {
 							return o.amount;
 						}),
 						isStored = false,
 						timeout = 0;
 
-					this.$log.debug('numberCards -> ', numberCards);
+					this.$log.debug('cardsGroup -> ', cardsGroup);
 
-					this._.forEach(numberCards, (cardsGroup) => {
-						let numGroups = Math.floor(cardsGroup.length / 3),
-							numToStore = numGroups * 3;
+					this._.forEach(cardsGroup, group => {
+						let total = group.length;
+						if (total < 3) {
+							return;
+						}
 
-						if (numToStore) {
-							let cardsToStore = this._.sampleSize(cardsGroup, numToStore);
+						let numGroups = Math.floor(total / 3);
+
+						for (let i = 0; i < numGroups; ++i) {
+							let cardsToStore = this._.sampleSize(group, 3);
+
 							this.$log.debug('cardsToStore -> ', cardsToStore);
+							this._.pullAll(group, cardsToStore);
 
 							this.$timeout(() => {
 								this.storeCards(cardsToStore);

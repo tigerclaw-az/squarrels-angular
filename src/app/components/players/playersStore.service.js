@@ -78,7 +78,7 @@ export default class PlayersStoreService {
 			}
 
 			this.update({ quarrel: null, showQuarrel: false });
-		}, 3000);
+		}, 5000);
 	}
 
 	get(prop, value, index = false, all = false) {

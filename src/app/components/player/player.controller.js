@@ -1,5 +1,5 @@
 export default class PlayerController {
-	constructor($rootScope, $scope, $log, $timeout, $uibModal, _, toastr, playersApi, playerModel, websocket) {
+	constructor($rootScope, $scope, $log, $timeout, $uibModal, _, toastr, playersApi, playerModel, playersStore, websocket) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
@@ -11,7 +11,8 @@ export default class PlayerController {
 		this._ = _;
 		this.toastr = toastr;
 
-		this.playerModel = playerModel; // Used in template
+		this.playerModel = playerModel;
+		this.playersStore = playersStore;
 		this.playersApi = playersApi;
 		this.ws = websocket;
 
@@ -66,13 +67,15 @@ export default class PlayerController {
 	}
 
 	onStorageClick(evt) {
-		let cardsSelected = this.player.cardsSelected;
+		let isActivePlayer = this.player.isActive,
+			hasDrawnCard = this.playerModel.getByProp('hasDrawnCard'),
+			cardsSelected = this.playerModel.getByProp('cardsSelected');
 
 		this.$log.debug('onStorageClick()', evt, cardsSelected, this);
 
 		evt.preventDefault();
 
-		if (this.player.isActive && this.player.hasDrawnCard && this.canStoreCards(cardsSelected)) {
+		if (isActivePlayer && hasDrawnCard && this.canStoreCards(cardsSelected)) {
 			this.storeCards(cardsSelected);
 		} else {
 			this.showStorage(this.player);
@@ -129,12 +132,17 @@ export default class PlayerController {
 			onSuccess = (res => {
 				if (res.status == 200) {
 					this.$log.debug(res);
+
+					this.playersStore.update(
+						this.player.id,
+						{ cardsSelected: [] }
+					);
 				}
 			}),
 			onError = (err => {
 				this.$log.error(err);
 			}),
-			cardIds = this._.map(cardsSelected, (obj) => {
+			cardIds = this._.map(cardsSelected, obj => {
 				return obj.id;
 			});
 
@@ -145,14 +153,12 @@ export default class PlayerController {
 			cardsInHand: cardsInHand,
 			cardsInStorage: cardsInStorage,
 			isFirstTurn: false,
-			score: this.player.score + cardsSelected[0].amount
+			score: this.playerModel.getByProp('score') + cardsSelected[0].amount
 		};
 
 		this.playersApi
 			.update(this.player.id, plData)
 			.then(onSuccess, onError);
-
-		this.player.cardsSelected = [];
 	}
 
 	showStorage(pl) {

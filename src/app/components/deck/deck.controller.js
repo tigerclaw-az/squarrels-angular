@@ -174,7 +174,7 @@ export default class DeckController {
 					.update(player.id, plData)
 					.then(res => {
 						this.$log.debug('playersApi:update()', res, this);
-						this.playerModel.update({ hasDrawnCard: true });
+						this.playersStore.update(player.id, { hasDrawnCard: true });
 					})
 					.catch(err => {
 						this.$log.error('This is nuts! Error: ', err);

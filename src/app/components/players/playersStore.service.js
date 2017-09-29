@@ -57,6 +57,11 @@ export default class PlayersStoreService {
 
 		this.update({ showQuarrel: true });
 
+		// FIXME
+		this.$timeout(() => {
+			this.update(winner.id, { isQuarrelWinner: true });
+		}, 3000);
+
 		this.$timeout(() => {
 			let cards =
 				this._(this._.map(playedCards, 'id'))
@@ -65,7 +70,7 @@ export default class PlayersStoreService {
 
 			this.$log.debug('winner cards ->', cards);
 
-			this.update(winner.id, { isQuarrelWinner: true });
+			this.update({ isQuarrelWinner: false });
 
 			if (this.playerModel.isActive()) {
 				this.playersApi

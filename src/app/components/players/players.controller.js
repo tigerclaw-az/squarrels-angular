@@ -26,6 +26,12 @@ default class PlayersController {
 		this.$log.debug('constructor()', this);
 	}
 
+	$onChanges() {
+		this.$scope.playerData = this.playerModel.getByProp();
+		this.$scope.model = this.playersStore.model;
+		this.$scope.players = this.playersStore.get();
+	}
+
 	$onInit() {
 		var onSuccess = (res => {
 				let playerStorage = this.$localStorage.player;
@@ -33,13 +39,17 @@ default class PlayersController {
 				this.$log.debug('onSuccess()', res, playerStorage, this);
 
 				if (res.status === 200) {
+					_.forEach(res.data, pl => {
+						if (playerStorage && playerStorage.id === pl.id) {
+							pl.isCurrent = true;
+						}
+
+						this.playersStore.insert(pl);
+					});
+
 					if (playerStorage) {
 						this.playersStore.whoami();
 					}
-
-					_.forEach(res.data, (pl) => {
-						this.playersStore.insert(pl);
-					});
 
 					this.$log.debug('players', this.playersStore.get());
 				}
@@ -47,10 +57,6 @@ default class PlayersController {
 			onError = (res => {
 				this.$log.error(res);
 			});
-
-		this.$scope.playerData = this.playerModel.getByProp();
-		this.$scope.model = this.playersStore.model;
-		this.$scope.players = this.playersStore.get();
 
 		// This is triggered when a player tries to click the 'Hoard' pile after
 		// another player has already collected it
@@ -150,16 +156,11 @@ default class PlayersController {
 		this.$rootScope.$on('websocket:players:whoami', ((event, data) => {
 			let playerStorage = this.$localStorage.player;
 
-			this.$log.debug('$on -> websocket:players:whoami', data);
+			this.$log.debug('$on -> websocket:players:whoami', playerStorage, data);
 
 			if (data.length && data[0].id === playerStorage.id) {
 				let player = data[0];
-
-				if (this._.isEmpty(this.playerModel.model.player)) {
-					player.isCurrent = true;
-					this.playerModel.insert(player);
-					player = this.playerModel.model.player;
-				}
+				player.isCurrent = true;
 
 				// If the player's turn changed to 'active', play sound
 				if (player.isActive !== this.newTurn) {
@@ -224,5 +225,9 @@ default class PlayersController {
 		this.playersApi
 			.create(plData)
 			.then(onSuccess, onError);
+	}
+
+	getCurrentPlayer() {
+		return this.playersStore.get('isCurrent', true);
 	}
 }

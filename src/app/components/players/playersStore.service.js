@@ -131,7 +131,10 @@ export default class PlayersStoreService {
 		// Ensure that player doesn't already exist
 		if (!existingPlayer) {
 			this.model.players.push(pl);
-			this.playerModel.insert(pl);
+
+			if (data.isCurrent) {
+				this.playerModel.insert(pl);
+			}
 		}
 	}
 

@@ -108,5 +108,7 @@ export class PlayerModelService {
 		this.$log.debug('update()', data, this);
 
 		Object.assign(this.model.player, data);
+
+		Object.assign(this.$localStorage.player, this.model.player);
 	}
 }

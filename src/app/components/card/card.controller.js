@@ -68,7 +68,7 @@ export default class CardController {
 	}
 
 	isDisabled() {
-		if (!this.player || !this.game) {
+		if (this._.isEmpty(this.player) || !this.game) {
 			return true;
 		}
 

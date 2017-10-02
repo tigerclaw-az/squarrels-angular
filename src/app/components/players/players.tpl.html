@@ -1,6 +1,6 @@
 <div class="sq-players-wrapper">
 	<form class="form-horizontal" name="playerForm"
-		ng-show="!playersCtrl.game.isGameStarted && !playerData.player && players.length !== 6"
+		ng-show="!playersCtrl.game.isGameStarted && !playersCtrl.getCurrentPlayer() && players.length !== 6"
 		ng-cloak>
 		<div class="form-group form-group-md row">
 			<div class="col-xs-12 col-sm-5">

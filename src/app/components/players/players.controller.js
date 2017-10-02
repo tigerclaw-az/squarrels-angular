@@ -48,7 +48,7 @@ default class PlayersController {
 				this.$log.error(res);
 			});
 
-		this.$scope.playerData = this.playerModel.model;
+		this.$scope.playerData = this.playerModel.getByProp();
 		this.$scope.model = this.playersStore.model;
 		this.$scope.players = this.playersStore.get();
 
@@ -156,6 +156,7 @@ default class PlayersController {
 				let player = data[0];
 
 				if (this._.isEmpty(this.playerModel.model.player)) {
+					player.isCurrent = true;
 					this.playerModel.insert(player);
 					player = this.playerModel.model.player;
 				}
@@ -200,7 +201,7 @@ default class PlayersController {
 
 					this.sounds.play('new-player');
 
-					this.playerModel.insert(player);
+					player.isCurrent = true;
 					this.playersStore.insert(player);
 				}
 			}),

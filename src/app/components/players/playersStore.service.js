@@ -122,7 +122,7 @@ export default class PlayersStoreService {
 
 	insert(data) {
 		let pl = Object.assign({}, {
-				isCurrent: data.isCurrent || false
+				isCurrent: false
 			}, data),
 			existingPlayer = this._.some(this.model.players, { id: pl.id });
 
@@ -131,6 +131,7 @@ export default class PlayersStoreService {
 		// Ensure that player doesn't already exist
 		if (!existingPlayer) {
 			this.model.players.push(pl);
+			this.playerModel.insert(pl);
 		}
 	}
 

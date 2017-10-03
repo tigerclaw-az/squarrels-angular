@@ -1,5 +1,5 @@
 export class PlayerModelService {
-	constructor($log, $localStorage, $q, _, cardsApi, playersApi) {
+	constructor($log, $localStorage, $q, _, cardsApi, playersApi, websocket) {
 		'ngInject';
 
 		this.$log = $log.getInstance(this.constructor.name);
@@ -9,6 +9,7 @@ export class PlayerModelService {
 		this._ = _;
 		this.cardsApi = cardsApi;
 		this.playersApi = playersApi;
+		this.websocket = websocket;
 
 		this.model = {
 			player: null
@@ -105,6 +106,22 @@ export class PlayerModelService {
 	}
 
 	update(data) {
+		let player = this.model.player;
+
+		if (data.isQuarrel) {
+			if (this._.isEmpty(player.cardsInHand)) {
+				this.websocket.send({
+					action: 'quarrel',
+					card: {},
+					player: player.id
+				});
+
+				return false;
+			}
+
+			data.message = 'Choose a Card';
+		}
+
 		this.$log.debug('update()', data, this);
 
 		Object.assign(this.model.player, data);

@@ -121,16 +121,7 @@ default class PlayersController {
 			let player = this.playerModel.model.player;
 
 			if (!data.card) {
-				if (this._.isEmpty(player.cardsInHand)) {
-					this.websocket.send({
-						action: 'quarrel',
-						card: {},
-						player: player.id
-					});
-				} else {
-					// Display message 'Choose a Card' to player
-					this.playerModel.update({ isQuarrel: true, message: 'Choose a Card' });
-				}
+				this.playerModel.update({ isQuarrel: true });
 
 				// FIXME
 				this.playersStore.totalQuarrelPlayers = this.playersStore.get().length;

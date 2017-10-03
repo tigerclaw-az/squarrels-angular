@@ -28,7 +28,8 @@
 		>
 			<i class="icon icon-storage-auto glyphicon glyphicon-download-alt"></i>
 		</a>
-		<div class="sq-player-quarrel"
+		<div
+			class="sq-player-quarrel animated"
 			ng-if="player.quarrel"
 			ng-class="{
 				flip: player.showQuarrel,
@@ -36,7 +37,6 @@
 			}">
 			<span class="card blank--"></span>
 			<card
-				class="animated"
 				card-id="{{::player.quarrel.id}}"
 				card-type="quarrel"
 				ng-if="player.showQuarrel"
@@ -44,19 +44,18 @@
 		</div>
 	</div>
 	<div ng-if="playerCtrl.isCurrentPlayer()" ng-init="pModel = playerCtrl.getCurrentPlayer();" class="sq-player-cards">
-		<div class="cards-group hand">
+		<div class="cards-group hand" ng-if="pModel.cardsInHand.length">
 			<div ng-if="pModel.message" class="message">{{pModel.message}}</div>
 			<card
 				class="animated"
-				ng-class="{ mine: player.cardsInHand.length}"
-				ng-if="player.cardsInHand.length"
-				ng-repeat="card in player.cardsInHand | orderBy: card.amount"
+				ng-class="{ mine: pModel.cardsInHand.length}"
+				ng-repeat="card in pModel.cardsInHand | orderBy: card.amount"
 				card-id="{{::card}}"
 				card-type="hand"
 				game="playerCtrl.game"
 				player="pModel"
 			></card>
-			<div ng-if="!player.cardsInHand.length" class="empty"></div>
 		</div>
+		<div ng-if="!pModel.cardsInHand.length" class="empty"></div>
 	</div>
 </div>

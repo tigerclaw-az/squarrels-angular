@@ -18,7 +18,7 @@
 
 	align-items: center;
 	display: flex;
-	margin-bottom: 2rem;
+	margin-bottom: 5rem;
 	position: relative;
 	text-align: center;
 
@@ -134,12 +134,10 @@
 			}
 		}
 
-		card {
-			&.ng-leave,
-			&.ng-leave-active {
-				.card {
-					animation: .5s linear fade-out;
-				}
+		&.ng-leave,
+		&.ng-leave-active {
+			card {
+				animation: .75s ease-out disappear;
 			}
 		}
 	}
@@ -154,18 +152,6 @@
 				position: absolute;
 			}
 
-			.empty {
-				@extend %playing-cards;
-
-				border: 2px dotted;
-				height: rem-calc(map-get($card-height, 'small'));
-				padding: 3.5rem;
-
-				&::after {
-					content: 'NO CARDS';
-				}
-			}
-
 			card {
 				float: left;
 				position: relative !important;
@@ -178,9 +164,21 @@
 				&.ng-leave,
 				&.ng-leave-active {
 					.card {
-						animation: .5s linear fade-out;
+						animation: .75s ease-out fade-out;
 					}
 				}
+			}
+		}
+
+		.empty {
+			@extend %playing-cards;
+
+			border: 2px dotted;
+			height: rem-calc(map-get($card-height, 'small'));
+			padding: 3.5rem;
+
+			&::after {
+				content: 'NO CARDS';
 			}
 		}
 	}
@@ -222,11 +220,10 @@
 		.sq-player-cards {
 			width: 70%;
 
-			.cards-group {
-				.empty {
-					height: rem-calc(map-get($card-height, 'medium'));
-					padding: 7rem;
-				}
+			.empty {
+				font-size: 4rem;
+				height: rem-calc(map-get($card-height, 'medium'));
+				padding: 5rem;
 			}
 		}
 	}

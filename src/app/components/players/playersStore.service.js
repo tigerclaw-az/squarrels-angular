@@ -1,10 +1,11 @@
 export default class PlayersStoreService {
-	constructor($rootScope, $log, $localStorage, $timeout, toastr, _, websocket, gamesApi, playersApi, playerModel) {
+	constructor($rootScope, $log, $localStorage, $q, $timeout, toastr, _, websocket, gamesApi, playersApi, playerModel) {
 		'ngInject';
 
 		this.$localStorage = $localStorage;
 		this.$log = $log.getInstance(this.constructor.name);
 		this.$rootScope = $rootScope;
+		this.$q = $q;
 		this.$timeout = $timeout;
 
 		this._ = _;
@@ -18,6 +19,8 @@ export default class PlayersStoreService {
 		this.model = {
 			players: []
 		};
+
+		this.quarrelCards = [];
 		this.totalQuarrelPlayers = 0;
 
 		this.$log.debug('constructor()', this);
@@ -39,51 +42,72 @@ export default class PlayersStoreService {
 	}
 
 	calcQuarrel(players) {
-		let winner = this._.maxBy(players, pl => {
+		let playedCards = this._.map(players, 'quarrel'),
+			playerGroups = this._.groupBy(players, pl => {
 				let card = pl.quarrel;
 
 				return card.name === 'golden' ? 6 : card.amount;
 			}),
-			playedCards = this._.map(players, 'quarrel');
+			winningCard = _.max(_.keys(playerGroups)),
+			winners = playerGroups[winningCard],
+			winnerDefer = this.$q.defer();
 
-		this.$log.debug('calcQuarrel()', winner, this);
+		this.$log.debug('calcQuarrel()', playerGroups, winners, this);
 
-		if (!winner) {
+		// All players had empty hands, therefore no quarrel winner
+		if (!winners.length) {
 			this.update({ quarrel: null, showQuarrel: false });
 			this.$rootScope.$broadcast('game:action:quarrel');
 
 			return false;
 		}
 
+		this.quarrelCards = this._.union(this.quarrelCards, playedCards);
 		this.update({ showQuarrel: true });
 
-		// FIXME
+		// FIXME: Should happen after transition of card flip is finished
 		this.$timeout(() => {
-			this.update(winner.id, { isQuarrelWinner: true });
+			if (winners.length === 1) {
+				winnerDefer.resolve(winners[0]);
+			} else {
+				winnerDefer.reject(winners);
+			}
 		}, 3000);
 
-		this.$timeout(() => {
-			let cards =
-				this._(this._.map(playedCards, 'id'))
-					.compact()
-					.value();
+		winnerDefer.promise
+			.then(winner => {
+				this.update(winner.id, { isQuarrelWinner: true });
 
-			this.$log.debug('winner cards ->', cards);
+				this.$timeout(() => {
+					let cards =
+						this._(this._.map(this.quarrelCards, 'id'))
+							.compact()
+							.value();
 
-			this.update({ isQuarrelWinner: false });
+					this.$log.debug('winner cards ->', cards);
 
-			if (this.playerModel.isActive()) {
-				this.playersApi
-					.update(winner.id, { cardsInHand: cards, addCards: true })
-					.then(() => {
-						this.$rootScope.$broadcast('game:action:quarrel');
-					}, err => {
-						this.$log.error(err);
-					});
-			}
+					this.update({ isQuarrelWinner: false });
 
-			this.update({ quarrel: null, showQuarrel: false });
-		}, 5000);
+					if (this.playerModel.isActive()) {
+						this.playersApi
+							.update(winner.id, { cardsInHand: cards, addCards: true })
+							.then(() => {
+								this.$rootScope.$broadcast('game:action:quarrel');
+							}, err => {
+								this.$log.error(err);
+							});
+					}
+
+					this.quarrelCards = [];
+					this.update({ quarrel: null, showQuarrel: false });
+				}, 2500);
+			})
+			.catch(tiedPlayers => {
+				this.totalQuarrelPlayers = tiedPlayers.length;
+				this._.forEach(tiedPlayers, pl => {
+					this.update(pl.id, { quarrel: null, isQuarrel: true, showQuarrel: false });
+				});
+			});
 	}
 
 	get(prop, value, index = false, all = false) {

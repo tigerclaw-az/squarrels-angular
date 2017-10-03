@@ -32,10 +32,16 @@
 		ng-show="!gameCtrl.isGameStarted() && playersModel.players.length >= 2">
 		New Game
 	</button>
-	<button
-		class="btn btn-warning new-game"
-		ng-click="gameCtrl.reset()"
-		ng-show="gameCtrl.isAdmin">
-		RESET
+</div>
+
+<div class="admin-options" ng-show="gameCtrl.isAdmin" uib-dropdown>
+	<button id="dropdown-options" type="button" class="btn btn-secondary" uib-dropdown-toggle ng-disabled="disabled">
+		Option<span class="caret"></span>
 	</button>
+	<ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="dropdown-options" ng-click="gameCtrl.onAdminOption($event)">
+		<li role="menuitem"><a href="#" data-option="reset-game">Reset Game</a></li>
+		<li role="menuitem"><a href="#" data-option="reset-hoard-cards">Reset Hoard Cards</a></li>
+		<li role="menuitem"><a href="#" data-option="reset-player-cards">Reset Player Cards</a></li>
+		<li role="menuitem"><a href="#" data-option="skip-player">Skip Player</a></li>
+	</ul>
 </div>

@@ -107,7 +107,7 @@ export default class PlayersStoreService {
 	}
 
 	getNextPlayer(activeIndex) {
-		this.$log.debug('nextPlayer()', activeIndex, this);
+		this.$log.debug('getNextPlayer()', activeIndex, this);
 
 		if (activeIndex === -1) {
 			return _.sample(this.model.players).id;

@@ -65,7 +65,7 @@ export default class GameController {
 		this.$rootScope.$on('deck:action:winter', () => {
 			this.$timeout(() => {
 				this.displayWinter();
-			}, 50);
+			}, 1);
 
 			this.gameModel.endGame();
 		});
@@ -132,27 +132,6 @@ export default class GameController {
 
 	$onDestroy() {
 		this.$log.debug('$onDestroy()', this);
-	}
-
-	/**
-	 * TEMPORARY
-	 * Resets the current game
-	 */
-	reset() {
-		let gameId = this.gameModel.getByProp('id');
-
-		this.$log.debug('reset()', this.gameModel, this);
-
-		if (gameId) {
-			this.gamesApi
-				.remove(gameId)
-				.then(() => {
-					this.$log.info('Game reset successfully');
-				}, err => {
-					this.toastr.error('Unable to reset game');
-					this.$log.error(err);
-				});
-		}
 	}
 
 	create() {
@@ -446,5 +425,44 @@ export default class GameController {
 
 	isGameStarted() {
 		return this.gameModel.getByProp('isGameStarted');
+	}
+
+	onAdminOption(evt) {
+		let $el = angular.element(evt.target),
+			option = $el.attr('data-option');
+
+		this.$log.debug('onAdminOption()', evt, option);
+
+		switch (option) {
+			case 'reset-game':
+				this.reset();
+				break;
+
+			case 'skip-player':
+				this.playersStore.nextPlayer();
+				break;
+		}
+
+		evt.preventDefault();
+	}
+
+	/**
+	 * Resets the current game
+	 */
+	reset() {
+		let gameId = this.gameModel.getByProp('id');
+
+		this.$log.debug('reset()', this.gameModel, this);
+
+		if (gameId) {
+			this.gamesApi
+				.remove(gameId)
+				.then(() => {
+					this.toastr.info('Game reset successfully');
+				}, err => {
+					this.toastr.error('Unable to reset game');
+					this.$log.error(err);
+				});
+		}
 	}
 }

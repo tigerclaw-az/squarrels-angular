@@ -58,6 +58,7 @@ export default class GameController {
 			});
 
 		this.isAdmin = this.mainCtrl.isAdmin;
+		this.isSoundEnabled = this.sounds.enabled;
 
 		this.$scope.model = this.gameModel.getByProp();
 		this.$scope.playersModel = this.playersStore.model;
@@ -440,6 +441,27 @@ export default class GameController {
 
 			case 'skip-player':
 				this.playersStore.nextPlayer();
+				break;
+		}
+
+		evt.preventDefault();
+	}
+
+	onSettingClick(evt) {
+		let $el = angular.element(evt.target);
+
+		if (!$el.attr('data-setting')) {
+			$el = $el.parent();
+		}
+
+		let setting = $el.attr('data-setting');
+
+		this.$log.debug('onSettingClick()', evt, setting);
+
+		switch(setting) {
+			case 'toggle-sound':
+				this.sounds.toggle();
+				this.isSoundEnabled = this.sounds.enabled;
 				break;
 		}
 

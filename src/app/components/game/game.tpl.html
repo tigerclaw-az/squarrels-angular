@@ -1,7 +1,26 @@
 <header>
 	<div class="row">
-		<span class="col-sm-6">Started @ {{model.createdAt}}</span>
-		<span class="col-sm-4">ROUND: {{model.round}}</span>
+		<span class="header-item game-start">Started @ {{model.createdAt}}</span>
+		<span class="header-item game-round">ROUND: {{model.round}}</span>
+		<span class="header-item settings" uib-dropdown>
+			<button id="dropdown-settings" class="btn btn-default btn-dropdown" type="button" uib-dropdown-toggle>
+				<i class="icon icon-settings glyphicon glyphicon-cog"></i>
+			</button>
+			<ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="dropdown-settings" ng-click="gameCtrl.onSettingClick($event)">
+				<li role="menuitem">
+					<a href="#" data-setting="toggle-sound">
+						<i class="icon icon-mute glyphicon"
+							ng-class="{
+								'glyphicon-volume-off': gameCtrl.isSoundEnabled,
+								'glyphicon-volume-down': !gameCtrl.isSoundEnabled
+							}">
+						</i>
+						<span ng-if="gameCtrl.isSoundEnabled">Disable Sounds</span>
+						<span ng-if="!gameCtrl.isSoundEnabled">Enable Sounds</span>
+					</a>
+				</li>
+			</ul>
+		</span>
 	</div>
 </header>
 <canvas ng-if="model.actionCard && model.actionCard.name === 'winter'" class="winter-snow"></canvas>
@@ -35,7 +54,7 @@
 </div>
 
 <div class="admin-options" ng-show="gameCtrl.isAdmin" uib-dropdown>
-	<button id="dropdown-options" type="button" class="btn btn-secondary" uib-dropdown-toggle ng-disabled="disabled">
+	<button id="dropdown-options" type="button" class="btn btn-default" uib-dropdown-toggle>
 		Option<span class="caret"></span>
 	</button>
 	<ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="dropdown-options" ng-click="gameCtrl.onAdminOption($event)">

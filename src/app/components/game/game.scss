@@ -8,9 +8,14 @@ header {
 	background-size: 40px 160px, 60px 29px, 27px 27px;
 	color: get-color(white);
 	height: 4rem;
-	line-height: 1.25;
+	line-height: 2;
 	margin: 0 -1rem;
-	padding: 1rem;
+	padding: .5rem 1rem;
+
+	.btn-dropdown {
+		padding: .25rem .75rem;
+		vertical-align: baseline;
+	}
 }
 
 .winter-snow {

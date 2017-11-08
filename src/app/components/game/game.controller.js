@@ -331,10 +331,14 @@ export default class GameController {
 
 		switch (card.action) {
 			case 'ambush':
+			case 'communism':
+			case 'quarrel':
+			case 'whirlwind':
 				if (this.playerModel.isActive()) {
+					// FIXME: Action should happen after card has flipped
 					this.$timeout(() => {
 						this.ws.send({
-							action: 'ambush',
+							action: card.action,
 							gameId: gameId
 						});
 					}, timeout);
@@ -347,26 +351,6 @@ export default class GameController {
 					this.gamesApi.actionCard(gameId, null);
 				}
 
-				break;
-
-			case 'quarrel':
-				this.$timeout(() => {
-					this.ws.send({
-						action: 'quarrel',
-						gameId: gameId
-					});
-				}, timeout);
-				break;
-
-			case 'whirlwind':
-				if (this.playerModel.isActive()) {
-					this.$timeout(() => {
-						this.ws.send({
-							action: 'whirlwind',
-							gameId: gameId
-						});
-					}, timeout);
-				}
 				break;
 
 			case 'winter':

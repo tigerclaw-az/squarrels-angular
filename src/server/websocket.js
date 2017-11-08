@@ -135,11 +135,26 @@ module.exports = function(server) {
 
 					break;
 
+				case 'communism':
+					playerMod
+						.get()
+						.then(players => {
+							let wsData = {
+								action: data.action,
+								type: 'player',
+								nuts: players
+							};
+
+							ws.send(JSON.stringify(wsData));
+						});
+
+					break;
+
 				case 'hoard':
 					delete data.playerHoard.cardsInHand;
 
 					wsData = {
-						action: 'hoard',
+						action: data.action,
 						type: 'player' + (!hoardPlayer ? 's' : ''),
 						nuts: data.playerHoard
 					};
@@ -160,7 +175,7 @@ module.exports = function(server) {
 
 				case 'quarrel':
 					wsData = {
-						action: 'quarrel',
+						action: data.action,
 						id: data.player || null,
 						type: 'players'
 					};

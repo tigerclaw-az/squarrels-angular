@@ -76,21 +76,6 @@ default class PlayersController {
 			}
 		}));
 
-		this.$rootScope.$on('websocket:player:communism', (event, data) => {
-			let currentPlayer = this.playerModel.model.player,
-				cards = [];
-
-			this.$log.debug('$on -> websocket:players:communism', data);
-
-			if (data.length) {
-				this._.forEach(data, player => {
-					if (player.id !== currentPlayer.id) {
-						cards = this._.concat(cards, data.cardsInHand);
-					}
-				});
-			}
-		});
-
 		// This is triggered when a player successfully collected the 'Hoard' pile
 		this.$rootScope.$on('websocket:players:hoard', ((event, data) => {
 			let currentPlayer = this.playerModel.model.player,

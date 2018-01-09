@@ -141,7 +141,7 @@ module.exports = function(server) {
 						.then(players => {
 							let wsData = {
 								action: data.action,
-								type: 'player',
+								type: 'game',
 								nuts: players
 							};
 

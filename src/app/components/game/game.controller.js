@@ -71,6 +71,20 @@ export default class GameController {
 			this.gameModel.endGame();
 		});
 
+		this.$rootScope.$on('websocket:game:communism', (event, data) => {
+			let currentPlayer = this.playerModel.model.player;
+
+			this.$log.debug('$on -> websocket:game:communism', data);
+
+			if (data.length) {
+				this._.forEach(data, player => {
+					if (player.id !== currentPlayer.id) {
+						// cards = this._.concat(cards, data.cardsInHand);
+					}
+				});
+			}
+		});
+
 		this.$rootScope.$on('game:action:quarrel', () => {
 			let gameId = this.gameModel.getByProp('id');
 

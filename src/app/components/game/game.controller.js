@@ -1,5 +1,8 @@
 export default class GameController {
-	constructor($rootScope, $scope, $state, $log, $q, $timeout, toastr, _, sounds, deckStore, decksApi, gamesApi, gameModel, playerModel, playersStore) {
+	constructor(
+		$rootScope, $scope, $state, $log, $q, $timeout, $uibModal,
+		toastr, _, sounds, deckStore, decksApi, gamesApi, gameModel,
+		playerModel, playersStore) {
 		'ngInject';
 
 		this.$rootScope = $rootScope;
@@ -8,6 +11,7 @@ export default class GameController {
 		this.$log = $log.getInstance(this.constructor.name);
 		this.$q = $q;
 		this.$timeout = $timeout;
+		this.$uibModal = $uibModal;
 
 		// ???
 		this.mainCtrl = this.$scope.$parent.$parent.mainCtrl;
@@ -80,6 +84,7 @@ export default class GameController {
 				this._.forEach(data, player => {
 					if (player.id !== currentPlayer.id) {
 						// cards = this._.concat(cards, data.cardsInHand);
+						this.showCardsForCommunism(player);
 					}
 				});
 			}
@@ -484,5 +489,30 @@ export default class GameController {
 					this.$log.error(err);
 				});
 		}
+	}
+
+	showCardsForCommunism(pl) {
+		let onClose = (data => {
+				this.$log.debug('onClose()', data, this);
+			}),
+			onError = (err => {
+				if (err !== 'backdrop click') {
+					this.$log.error(err);
+				}
+			});
+
+		this.$log.debug('showCardsForCommunism()', pl, this);
+
+		let modal = this.$uibModal.open({
+			appendTo: angular.element(document).find('players'),
+			component: 'communismModal',
+			resolve: {
+				player: () => {
+					return pl;
+				}
+			}
+		});
+
+		modal.result.then(onClose, onError);
 	}
 }

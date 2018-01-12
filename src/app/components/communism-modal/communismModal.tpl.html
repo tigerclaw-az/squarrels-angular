@@ -1,0 +1,15 @@
+<div class="modal-header">
+	<h3 class="modal-title" id="modal-title">{{ $ctrl.player.name }}'s Cards</h3>
+</div>
+<div class="modal-body clearfix" id="modal-body">
+	<div class="cards-group">
+		<card
+			ng-repeat="card in $ctrl.cards | orderBy: card.amount"
+			card-id="{{::card}}"
+			card-type="storage"
+		></card>
+	</div>
+</div>
+<div class="modal-footer">
+
+</div>

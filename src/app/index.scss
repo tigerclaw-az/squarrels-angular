@@ -1,4 +1,7 @@
 $icon-font-path: '../../bower_components/bootstrap-sass/assets/fonts/bootstrap/';
+$bootstrap-sass-asset-helper: true;
+
+@import '../../bower_components/bootstrap-sass/assets/stylesheets/bootstrap';
 
 @import 'config/variables';
 
@@ -86,7 +89,7 @@ textarea {
 }
 
 /* Responsive: Portrait tablets and up */
-@media(min-width: #{$screen-tablet}) {
+@media(min-width: #{$container-tablet}) {
 	/* Remove the padding we set earlier */
 	.header,
 	.marketing,

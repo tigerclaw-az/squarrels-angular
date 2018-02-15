@@ -1,3 +1,5 @@
+var angular = require('angular');
+
 export function config(logEnhancerProvider, $httpProvider, $animateProvider, toastrConfig, appConfig) {
 	'ngInject';
 

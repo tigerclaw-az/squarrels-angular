@@ -1,8 +1,6 @@
-'use strict';
-
 export const AppConfigConstant = {
 	debug: true,
-	host: 'uschdancn2n6acs',
+	host: 'tigerclaw-Satellite-L655',
 	isAdmin: false,
 	logLevel: 'DEBUG'
 };

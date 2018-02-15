@@ -5,7 +5,7 @@
  *  This file contains the variables used in other gulp files
  *  which defines tasks.
  */
-
+var moduleImporter = require('sass-module-importer');
 var path = require('path');
 
 exports.settings = {
@@ -94,7 +94,7 @@ exports.options = {
 	babelify: {
 		plugins: [[ 'angularjs-annotate', { explicitOnly: true } ]],
 		// Use all of the ES2015 spec
-		presets: ['es2015'],
+		presets: ['env'],
 		sourceMaps: true
 	},
 	browserify: {
@@ -110,11 +110,11 @@ exports.options = {
 		port: 8181,
 		reloadOnRestart: true,
 		watchEvents: ['add', 'change', 'unlink'],
-		proxy: {
-			// cookies: { stripDomain: false },
-			target: 'uschdancn2n6acs:3000'
-			// ws: true
-		}
+		// proxy: {
+		// 	cookies: { stripDomain: false },
+		// 	target: 'uschdancn2n6acs:3000'
+		// 	ws: true
+		// }
 	},
 	imagemin: {
 		optimizationLevel: 3,
@@ -144,6 +144,7 @@ exports.options = {
 	sass: {
 		errLogToConsole: true,
 		includePaths: [],
+		// importer: moduleImporter(),
 		outputStyle: 'expanded',
 		precision: 10
 	},
@@ -156,7 +157,7 @@ exports.options = {
 	 *  to inject css preprocessor deps and js files in karma
 	 */
 	wiredep: {
-		exclude: [/\/jquery\.js$/, /\/bootstrap\.js$/, /\/bootstrap-sass\/.*\.js/, /\/bootstrap\.css/],
+		exclude: [/\/bootstrap\.js$/, /\/bootstrap-sass\/.*\.js/, /\/bootstrap\.css/],
 		directory: 'bower_components',
 		overrides: {
 			'jquery-ui': {

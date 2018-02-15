@@ -1,10 +1,8 @@
+let angular = require('angular');
+
 import { MainController } from './main.controller';
 
-let deps = [
-	'angular-logger'
-];
-
 export default angular
-	.module('main', deps)
+	.module('main', [])
 	.controller('mainController', MainController)
 ;

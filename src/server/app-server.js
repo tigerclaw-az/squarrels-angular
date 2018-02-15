@@ -22,8 +22,8 @@ app.set('trust proxy', 1);
 
 // app.use(log4js.connectLogger(log4js.getLogger('http'), { level: 'auto' }));
 
-app.use(bodyParser.json({ limit: '50mb' }));
-app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+app.use(bodyParser.json({ limit: '75mb' }));
+app.use(bodyParser.urlencoded({ limit: '75mb', extended: true }));
 
 // ----------
 // SESSION

@@ -1,3 +1,5 @@
+let howler = require('howler');
+
 export class SoundsService {
 	constructor($log, appConfig) {
 		'ngInject';
@@ -17,7 +19,7 @@ export class SoundsService {
 
 	play(name) {
 		let source = this.soundsPath + this.soundEffects[name],
-			sound = new window.Howl({
+			sound = new howler({
 				src: [source]
 			});
 

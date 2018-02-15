@@ -5,8 +5,6 @@ export default class BaseApiService {
 		this.$http = $http;
 		this.$log = $log.getInstance(this.constructor.name);
 
-		this._ = _;
-
 		this.host = `${appConfig.host}:3000`;
 		this.path = path;
 		this.url = `//${this.host}/api/${path}`;

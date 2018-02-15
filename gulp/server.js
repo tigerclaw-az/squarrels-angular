@@ -67,7 +67,6 @@ gulp.task('watch', ['build'], function() {
 	gulp.watch(paths.styles.source.all, { cwd: './' }, ['styles'], function() {
 		browserSync.reload({ stream: true });
 	});
-	gulp.watch(['bower.json', paths.html.index], ['wiredep', 'fonts']);
 
 	gulp.watch(path.join(paths.html.source), { cwd: './' }, function(event) {
 		browserSync.reload(event.path);

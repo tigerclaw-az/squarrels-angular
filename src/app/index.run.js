@@ -5,8 +5,8 @@ export function runBlock($log, $state, $trace, $transitions) {
 	$trace.enable('TRANSITION');
 
 	// Add any logic for handling errors from state transitions
-	$state.defaultErrorHandler(function() {
-		// console.error('error:', error);
+	$state.defaultErrorHandler(function(error) {
+		$log.error(error);
 	});
 
 	// Test when application is changing to 'app.game' route

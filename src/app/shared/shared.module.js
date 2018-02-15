@@ -4,8 +4,10 @@ import { SoundsService } from './sounds/sounds.service';
 import { UtilsService } from './utils/utils.service';
 import { WebSocketService } from './websocket/websocket.service';
 
+import 'angular-websocket';
+
 export default angular
-	.module('shared', [])
+	.module('shared', ['angular-websocket'])
 	.service('gamesApi', GamesApiService)
 	.service('playersApi', PlayersApiService)
 	.service('sounds', SoundsService)

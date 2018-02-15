@@ -7,8 +7,7 @@ var $ = require('gulp-load-plugins')({
 	}),
 	gulp = require('gulp');
 
-var browserSync = require('browser-sync'),
-	wiredep = require('wiredep').stream;
+var browserSync = require('browser-sync');
 
 var conf = require('./config'),
 	options = conf.options,
@@ -32,7 +31,7 @@ gulp.task('styles', ['styles:lint'], function() {
 	return gulp.src(paths.styles.source.index)
 		.pipe($.plumber(options.errorHandler))
 		.pipe($.inject(injectFiles, options.inject)).on('error', conf.errorHandler('inject'))
-		.pipe(wiredep(options.wiredep))
+		// .pipe(wiredep(options.wiredep))
 		.pipe($.sourcemaps.init())
 		.pipe($.sass(options.sass)).on('error', conf.errorHandler('sass'))
 		.pipe($.postcss(postcssPlugins)).on('error', conf.errorHandler('postcss'))

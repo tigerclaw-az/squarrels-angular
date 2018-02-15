@@ -7,8 +7,7 @@ var $ = require('gulp-load-plugins')({
 	}),
 	gulp = require('gulp');
 
-var path = require('path'),
-	wiredep = require('wiredep').stream;
+var path = require('path');
 
 var conf = require('./config'),
 	options = conf.options,
@@ -41,7 +40,7 @@ gulp.task('html', ['wiredep', 'partials', 'scripts', 'styles'], function() {
 });
 
 gulp.task('fonts', function() {
-	return gulp.src($.mainBowerFiles().concat(paths.fonts.source))
+	return gulp.src(paths.fonts.source)
 		.pipe($.filter('**/*.{eot,otf,svg,ttf,woff,woff2}'))
 		.pipe($.if('*.{eot,svg,ttf,woff}', $.flatten()))
 		.pipe(gulp.dest(paths.fonts.serve));
@@ -69,7 +68,7 @@ gulp.task('clean', function() {
 // Inject bower components
 gulp.task('wiredep', function() {
 	return gulp.src([path.join(paths.src, '/*.html')])
-		.pipe(wiredep(options.wiredep))
+		// .pipe(wiredep(options.wiredep))
 		.pipe(gulp.dest(paths.serve.public));
 });
 

@@ -21,11 +21,18 @@ gulp.task('styles:lint', function() {
 		.pipe($.sassLint.failOnError());
 });
 
-gulp.task('styles', ['styles:lint'], function() {
+gulp.task('fonts', function() {
+	return gulp.src(['node_modules/bootstrap-sass/assets/fonts/**/*', paths.fonts.source])
+		.pipe($.filter('**/*.{eot,otf,svg,ttf,woff,woff2}'))
+		.pipe($.if('*.{eot,svg,ttf,woff}', $.flatten()))
+		.pipe(gulp.dest(paths.fonts.serve));
+});
+
+gulp.task('styles', ['styles:lint', 'fonts'], function() {
 	var injectFiles = gulp.src(paths.styles.source.inject, { read: false }),
 		postcssPlugins = [
 			$.autoprefixer(options.autoprefixer),
-			$.cssnano()
+			// $.cssnano()
 		];
 
 	return gulp.src(paths.styles.source.index)

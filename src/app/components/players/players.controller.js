@@ -39,7 +39,7 @@ default class PlayersController {
 				this.$log.debug('onSuccess()', res, playerStorage, this);
 
 				if (res.status === 200) {
-					_.forEach(res.data, pl => {
+					this._.forEach(res.data, pl => {
 						if (playerStorage && playerStorage.id === pl.id) {
 							pl.isCurrent = true;
 						}

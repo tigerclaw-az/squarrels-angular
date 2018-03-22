@@ -1,6 +1,6 @@
 export const AppConfigConstant = {
 	debug: true,
-	host: 'tigerclaw-Satellite-L655',
+	host: 'c3po',
 	isAdmin: false,
 	logLevel: 'DEBUG'
 };

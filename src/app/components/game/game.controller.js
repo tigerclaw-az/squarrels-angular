@@ -187,7 +187,7 @@ export default class GameController {
 
 		this.reset();
 
-		_.forEach(playersData, function(obj) {
+		this._.forEach(playersData, function(obj) {
 			players.push(obj.id);
 		});
 
@@ -199,7 +199,7 @@ export default class GameController {
 	dealCards() {
 		let dealPromises = [];
 
-		_.forEach(this.playersStore.get(), (pl) => {
+		this._.forEach(this.playersStore.get(), (pl) => {
 			// Loop through each player and draw random set of cards, which will
 			// return a promise so we can wait for all cards to be dealt before
 			// the round starts.

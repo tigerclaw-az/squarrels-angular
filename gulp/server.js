@@ -24,7 +24,7 @@ function browserSyncInit(baseDir, browser) {
 
 	if (baseDir === paths.src || (util.isArray(baseDir) && baseDir.indexOf(paths.src) !== -1)) {
 		routes = {
-			'/bower_components': 'bower_components'
+			'../../node_modules': '/node_modules'
 		};
 	}
 
@@ -104,5 +104,5 @@ browserSync.use(browserSyncSpa({
 }));
 
 gulp.task('serve', ['nodemon', 'watch'], function() {
-	browserSyncInit([conf.paths.serve.public, conf.paths.src]);
+	browserSyncInit(['./', conf.paths.serve.public, conf.paths.src]);
 });

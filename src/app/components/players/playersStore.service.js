@@ -48,7 +48,7 @@ export default class PlayersStoreService {
 
 				return card.name === 'golden' ? 6 : card.amount;
 			}),
-			winningCard = _.max(_.keys(playerGroups)),
+			winningCard = this._.max(this._.keys(playerGroups)),
 			winners = playerGroups[winningCard],
 			winnerDefer = this.$q.defer();
 
@@ -134,7 +134,7 @@ export default class PlayersStoreService {
 		this.$log.debug('getNextPlayer()', activeIndex, this);
 
 		if (activeIndex === -1) {
-			return _.sample(this.model.players).id;
+			return this._.sample(this.model.players).id;
 		} else if (activeIndex === this.model.players.length - 1) {
 			activeIndex = 0;
 		} else {

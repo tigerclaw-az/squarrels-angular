@@ -1,7 +1,8 @@
-$icon-font-path: '../../bower_components/bootstrap-sass/assets/fonts/bootstrap/';
-$bootstrap-sass-asset-helper: true;
+// $icon-font-path: '../../node_modules/bootstrap-sass/assets/fonts/bootstrap/';
+$icon-font-path: '/fonts/bootstrap/';
+// $bootstrap-sass-asset-helper: true;
 
-@import '../../bower_components/bootstrap-sass/assets/stylesheets/bootstrap';
+@import '../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap';
 
 @import 'config/variables';
 

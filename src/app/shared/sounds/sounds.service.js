@@ -19,7 +19,7 @@ export class SoundsService {
 
 	play(name) {
 		let source = this.soundsPath + this.soundEffects[name],
-			sound = new howler({
+			sound = new howler.Howl({
 				src: [source]
 			});
 
